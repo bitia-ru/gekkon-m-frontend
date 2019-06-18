@@ -1,0 +1,61 @@
+.climbing-card-m {
+    margin-bottom: 30px;
+}
+
+.climbing-card-m__inner {
+    padding: 16px;
+    display: block;
+    text-decoration: none;
+}
+
+.climbing-card-m__header {
+    font-size: 20px;
+    color: #f1f1f1;
+    line-height: 32px;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.climbing-card-m__img {
+    width: 100%;
+    height: 100%;
+}
+
+.climbing-card-m_gravity {
+    background-color: #197BED;
+}
+
+.climbing-card-m_limestone {
+    background-color: #7AB914;
+}
+
+.climbing-card-m_atmosphere {
+    background-color: #DD445F;
+}
+
+.climbing-card-m_tokyo {
+    background-color: #09BDA7;
+}
+
+.climbing-card-m__container-inner {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+
+.climbing-card-m__col-xs-12 {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+@media screen and (min-width: 576px) {
+    .climbing-card-m__col-sm-6 {
+        width: calc(50% - 24px);
+        max-width: 50%;
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+}

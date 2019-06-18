@@ -1,0 +1,107 @@
+.content__inner {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.content__col-md-4 {
+    width: calc(33.33% - 30px);
+    margin-left: 15px;
+    margin-right: 15px;
+    display: flex;
+}
+
+@media screen and (min-width: 1600px) {
+    .content__col-lg-3 {
+        width: calc(25% - 30px);
+        margin-left: 15px;
+        margin-right: 15px;
+        display: flex;
+    }
+}
+
+.content__route-card {
+    margin-bottom: 30px;
+    display: flex;
+    width: 100%;
+}
+
+.route-card {
+    width: 100%;
+    height: 100%;
+    min-height: 350px;
+    padding: 25px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow .4s ease-out;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    box-sizing: border-box;
+    outline: none;
+    background-color: #FFFFFF;
+    cursor: pointer;
+}
+
+.route-card:hover {
+    box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.12);
+}
+
+.route-card:focus {
+    box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.12), 0px 0px 0px 2px rgba(0, 108, 235, 0.7);
+}
+
+.route-card__edit {
+    box-shadow: none;
+    background-color: #FDFDFD;
+    border: 4px dashed #D1D5E2;
+    opacity: .7;
+    transition: opacity .4s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.route-card__edit:hover {
+    box-shadow: none;
+    opacity: 1;
+}
+
+.route-card__edit-icon {
+    display: block;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    border: 4px solid #D1D5E2;
+    position: relative;
+}
+
+.route-card__edit-icon::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 4px;
+    background-color: #D1D5E2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.route-card__edit-icon::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 4px;
+    background-color: #D1D5E2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.route-card__edit-title {
+    font-family: GilroyBold, sans-serif;
+    font-size: 20px;
+    color: #D1D5E2;
+    margin-top: 25px;
+}

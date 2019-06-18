@@ -1,0 +1,55 @@
+.like-button {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    font-family: GilroyRegular, sans-serif;
+    cursor: pointer;
+    outline: none;
+}
+
+.like-button:hover .like-button__count {
+    color: #1f1f1f;
+}
+
+.like-button:hover .like-button__icon svg {
+    fill: #1f1f1f;
+}
+
+.like-button__icon {
+    width: 20px;
+    height: 17px;
+    display: flex;
+    margin-right: 8px;
+    margin-top: -3px;
+}
+
+.like-button__icon svg {
+    transition: fill .4s ease-out;
+    fill: #828282;
+}
+
+.like-button__count {
+    color: #828282;
+    font-size: 16px;
+    transition: color .4s ease-out;
+    line-height: 1.5em;
+}
+
+.like-button_active .like-button__count {
+    color: #ff3347;
+}
+
+.like-button_active .like-button__icon svg {
+    fill: #ff3347;
+}
+
+.like-button_active:hover .like-button__count {
+    color: #ff3347;
+}
+
+.like-button_active:hover .like-button__icon svg {
+    fill: #ff3347;
+}

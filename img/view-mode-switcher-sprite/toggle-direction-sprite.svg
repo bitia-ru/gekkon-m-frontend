@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+
+	<symbol id="toggle-table" viewBox="0 0 30 30">
+		<rect width="12.75" height="12.75" />
+		<rect x="17.25" width="12.75" height="12.75" />
+		<rect y="17.25" width="12.75" height="12.75" />
+		<rect x="17.25" y="17.25" width="12.75" height="12.75" />
+	</symbol>
+
+	<symbol id="toggle-list" viewBox="0 0 30 30">
+		<rect width="6" height="6" />
+		<rect x="9" width="21" height="6" />
+		<rect y="12" width="6" height="6" />
+		<rect x="9" y="12" width="21" height="6" />
+		<rect y="24" width="6" height="6" />
+		<rect x="9" y="24" width="21" height="6" />
+	</symbol>
+
+	<symbol id="toggle-map" viewBox="0 0 14 14">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M14.001 5.61589V1L14.001 0H13.001H8.38516V2L12.001 2V5.61589H14.001ZM1 0.000341214L5.61582 0.000341415V2.00034L2 2.00034L2 5.61623L0 5.61623V1.00034V0.00034117L1 0.000341214ZM0.000488281 13.0009V8.38499H2.00049V12.0009H5.61631V14.0009H1.00049H0.000488281V13.0009ZM13.0009 14.0009H8.84668V12.0009H12.0009V8.385H14.0009V13.0009L14.0009 14.0009H13.0009ZM7.00094 9.7698C8.53048 9.7698 9.77043 8.52983 9.77043 7.00026C9.77043 5.47069 8.53048 4.23073 7.00094 4.23073C5.47139 4.23073 4.23145 5.47069 4.23145 7.00026C4.23145 8.52983 5.47139 9.7698 7.00094 9.7698Z" />
+	</symbol>
+</svg>
+
+

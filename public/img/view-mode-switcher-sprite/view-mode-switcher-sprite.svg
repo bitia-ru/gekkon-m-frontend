@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+
+	<symbol id="toggle-table" viewBox="0 0 30 30">
+		<rect width="12.75" height="12.75" />
+		<rect x="17.25" width="12.75" height="12.75" />
+		<rect y="17.25" width="12.75" height="12.75" />
+		<rect x="17.25" y="17.25" width="12.75" height="12.75" />
+	</symbol>
+
+	<symbol id="toggle-list" viewBox="0 0 30 30">
+		<rect width="6" height="6" />
+		<rect x="9" width="21" height="6" />
+		<rect y="12" width="6" height="6" />
+		<rect x="9" y="12" width="21" height="6" />
+		<rect y="24" width="6" height="6" />
+		<rect x="9" y="24" width="21" height="6" />
+	</symbol>
+</svg>

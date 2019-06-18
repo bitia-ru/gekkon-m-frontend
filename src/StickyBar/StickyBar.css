@@ -1,0 +1,26 @@
+.sticky-bar__item {
+    position: sticky;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background-color: transparent;
+    overflow: hidden;
+}
+
+@keyframes loading {
+    0% {
+        width: 0;
+    }
+}
+
+.sticky-bar__item-indicator {
+    background-color: #006CEB;
+    height: 100%;
+    width: 100%;
+    transition: width 0.5s ease-out,opacity 0.5s linear;
+}
+
+.sticky-bar__item-indicator_active {
+    animation: loading 20s cubic-bezier(0, 0.78, 1, 0.53) 0s infinite;
+    opacity: 1;
+}

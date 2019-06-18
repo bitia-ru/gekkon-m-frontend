@@ -1,0 +1,49 @@
+.comment-block {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.comment-block__header {
+    font-size: 18px;
+    color: #1f1f1f;
+    font-family: GilroyBold;
+    line-height: 1.3em;
+    margin-bottom: 10px;
+}
+
+.comment-block__count-comment {
+    font-family: GilroyBold, sans-serif;
+    font-size: 18px;
+    color: #1f1f1f;
+    margin-bottom: 8px;
+}
+
+.comment-block__list {
+    padding-right: 10px;
+}
+
+.comment-block__show-comments {
+    background-color: #F3F3F3;
+    color: #6F6F6F;
+    font-family: GilroyRegular, sans-serif;
+    font-size: 14px;
+    border: 0;
+    box-shadow: none;
+    width: 100%;
+    padding: 14px 20px;
+    transition: box-shadow .4s ease-out;
+    margin-top: 4px;
+    margin-bottom: 0;
+    cursor: pointer;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.comment-block__show-comments:focus {
+    box-shadow: 0px 0px 0px 2px rgba(0, 108, 235, 0.7);
+}
+
+.comment-block__inner {
+    margin-left: 10px;
+}

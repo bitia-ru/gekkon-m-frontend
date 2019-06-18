@@ -1,0 +1,39 @@
+.route-status-m {
+    display: inline-flex;
+    align-items: center;
+    background-color: #F3F3F3;
+    color: #8A8A8A;
+    font-size: 10px;
+    font-family: GilroyRegular, sans-serif;
+    padding: 4px 10px;
+    box-sizing: border-box;
+    line-height: 1.7em;
+}
+
+.route-status-m__type {
+    background-color: #ffffff;
+    width: 13px;
+    height: 13px;
+    display: flex;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.route-status-m__type_flash {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%225%22%20height%3D%229%22%20viewBox%3D%220%200%205%209%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M5%202.87357H2.85937L4.84376%200H2.34374L0%204.31035H1.84376L0%208.33333L5%202.87357Z%22%20fill%3D%22%23F5CA3D%22/%3E%0A%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-size: 5px 9px;
+    background-position: center;
+}
+
+.route-status-m__type_redpoint {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Ccircle%20cx%3D%227.5%22%20cy%3D%227.5%22%20r%3D%227.5%22%20fill%3D%22%23FF3347%22/%3E%0A%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-size: 9px 9px;
+    background-position: center;
+}
+
+.route-status-m_complete {
+    background-color: #006CEB;
+    color: #ffffff;
+}
