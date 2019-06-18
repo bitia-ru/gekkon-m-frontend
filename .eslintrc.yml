@@ -1,0 +1,23 @@
+env:
+  browser: true
+  es6: true
+extends: airbnb
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 2018
+  sourceType: module
+parser: "babel-eslint"
+plugins:
+  - react
+rules:
+  "react/jsx-first-prop-new-line": [1, multiline]
+  "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+  # TODO: enable after refactoring:
+  "jsx-a11y/click-events-have-key-events": [0]
+  "jsx-a11y/anchor-is-valid": [0]
+  "react/forbid-prop-types": [0]
+  "indent": ["error", 2]

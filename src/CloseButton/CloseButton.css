@@ -1,0 +1,23 @@
+.close-m {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2217%22%20height%3D%2217%22%20viewBox%3D%220%200%2017%2017%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M9.44112%208.02691L16.0245%201.44351L14.6103%200.0292969L8.02691%206.6127L1.44351%200.0292969L0.0292969%201.44351L6.6127%208.02691L0.0292969%2014.6103L1.44351%2016.0245L8.02691%209.44112L14.6103%2016.0245L16.0245%2014.6103L9.44112%208.02691Z%22%20fill%3D%22%231F1F1F%22/%3E%0A%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transition: opacity .4s ease-out;
+}
+
+.close-m_light {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2217%22%20height%3D%2217%22%20viewBox%3D%220%200%2017%2017%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Crect%20width%3D%222.40413%22%20height%3D%2221.6372%22%20transform%3D%22matrix%280.707111%20-0.707103%200.707111%200.707103%200%201.7002%29%22%20fill%3D%22%23C4C4C4%22/%3E%0A%3Crect%20width%3D%222.40413%22%20height%3D%2221.6372%22%20transform%3D%22matrix%280.707111%200.707103%20-0.707111%200.707103%2015.3008%200%29%22%20fill%3D%22%23C4C4C4%22/%3E%0A%3C/svg%3E%0A");
+}
+
+.close-m:hover {
+    opacity: .6;
+}

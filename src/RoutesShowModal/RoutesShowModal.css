@@ -1,0 +1,32 @@
+.collapsable-block-m__header {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    padding-right: 15px;
+    padding-bottom: 16px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #1f1f1f;
+    font-family: GilroyBold;
+    line-height: 1.3em;
+}
+
+.collapsable-block-m__header_edit {
+    cursor: default;
+}
+
+.collapsable-block-m__header_edit::after {
+    display: none;
+}
+
+.collapsable-block-m__content {
+    color: #1f1f1f;
+    font-size: 16px;
+    line-height: 1.3em;
+    margin-bottom: 18px;
+}

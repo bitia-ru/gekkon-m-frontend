@@ -1,0 +1,1 @@
+export const DEFAULT_COMMENTS_DISPLAYED = 3;
