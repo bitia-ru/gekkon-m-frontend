@@ -393,13 +393,6 @@
     transform: translateX(-50%);
 }
 
-.modal-block-m__image-wrapper {
-    width: 100%;
-    overflow: hidden;
-    height: 100%;
-    position: relative;
-}
-
 .modal-block-m__fixed-top {
     position: fixed;
     z-index: 20;

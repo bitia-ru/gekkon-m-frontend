@@ -1,9 +1,6 @@
 .route-editor {
-    width: 100%;
+    overflow: hidden;
     height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .route-editor__img-container {
@@ -14,11 +11,6 @@
     position: relative;
 }
 
-.route-editor__img-container img {
-    height: 100%;
-}
-
-.route-editor__inner-container {
-    overflow: hidden;
+.route-editor__img {
     height: 100%;
 }
