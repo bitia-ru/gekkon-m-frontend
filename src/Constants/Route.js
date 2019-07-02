@@ -11,7 +11,9 @@ export const CROP_DEFAULT = {
   width: 100,
 };
 
-export const PERCENT_THRESHOLD = 2;
+export const SHORT_CLICK_DELAY = 500; // ms
+
+export const SHOW_TRASH_DELAY = 1000; // ms
 
 export const MARKER_DISPLAY_SHIFT = 4; // percent
 

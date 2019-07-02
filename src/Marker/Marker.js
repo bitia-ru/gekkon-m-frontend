@@ -14,6 +14,22 @@ export default class Marker extends Component {
       event.preventDefault();
     };
 
+    xShift = () => {
+      const { radius, angle } = this.props;
+      if (angle === 0 || angle === 90) {
+        return radius;
+      }
+      return -radius;
+    };
+
+    yShift = () => {
+      const { radius, angle } = this.props;
+      if (angle === 90 || angle === 180) {
+        return radius;
+      }
+      return -radius;
+    };
+
     render() {
       const {
         editable, left, top, dx, dy, radius, angle,
@@ -23,8 +39,8 @@ export default class Marker extends Component {
           <div
             className="marker"
             style={{
-              left: `calc(${left + dx}% - ${radius}px)`,
-              top: `calc(${top + dy}% - ${radius}px)`,
+              left: `calc(${left + dx}% - ${radius - this.xShift()}px)`,
+              top: `calc(${top + dy}% - ${radius - this.yShift()}px)`,
               zIndex: 100,
             }}
           >
