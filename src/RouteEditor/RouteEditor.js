@@ -4,9 +4,10 @@ import * as R from 'ramda';
 import Marker from '../Marker/Marker';
 import MARKER_RADIUS from '../Constants/Marker';
 import {
-  PERCENT_THRESHOLD,
+  SHORT_CLICK_DELAY,
   MARKER_DISPLAY_SHIFT,
   MARKER_SEARCH_RADIUS,
+  SHOW_TRASH_DELAY,
 } from '../Constants/Route';
 import Trash from '../Trash/Trash';
 import CloseButton from '../CloseButton/CloseButton';
@@ -23,10 +24,11 @@ export default class RouteEditor extends Component {
       topTrashActive: false,
       bottomTrashActive: false,
     };
-    this.timerId = null;
+    this.showTrashTimerId = null;
+    this.shortClickTimerId = null;
     this.topTrashRef = null;
     this.bottomTrashRef = null;
-    this.isShifted = false;
+    this.isRotate = true;
     this.shift = 0;
   }
 
@@ -90,19 +92,10 @@ export default class RouteEditor extends Component {
       const imageContainerRect = this.imageContainerRef.getBoundingClientRect();
       const pointersCopy = R.clone(pointers);
       const index = movingPointerIndex;
-      if (!this.isShifted) {
-        const { dx } = pointers[movingPointerIndex];
-        const { dy } = pointers[movingPointerIndex];
-        if (((dx ** 2) + (dy ** 2)) ** 0.5 > PERCENT_THRESHOLD ** 2) {
-          this.isShifted = true;
-          this.shift = MARKER_DISPLAY_SHIFT;
-        }
-      }
       const dx = clientX - imageContainerRect.x;
       const dy = clientY - imageContainerRect.y;
-      const { angle } = pointersCopy[movingPointerIndex];
-      const newX = dx / imageContainerRect.width * 100 - this.shift - this.getXShift(angle);
-      const newY = dy / imageContainerRect.height * 100 - this.shift - this.getYShift(angle);
+      const newX = dx / imageContainerRect.width * 100 - this.shift;
+      const newY = dy / imageContainerRect.height * 100 - this.shift;
       if (newX > 0 && newX < 100) {
         pointersCopy[index].dx = newX - pointers[index].x;
         pointersCopy[index].dy = newY - pointers[index].y;
@@ -114,6 +107,8 @@ export default class RouteEditor extends Component {
   rotate = (index) => {
     const { pointers, updatePointers } = this.props;
     const pointersCopy = R.clone(pointers);
+    pointersCopy[index].x += pointersCopy[index].dx;
+    pointersCopy[index].y += pointersCopy[index].dy;
     pointersCopy[index].dx = 0;
     pointersCopy[index].dy = 0;
     pointersCopy[index].angle = (pointersCopy[index].angle + 90) % 360;
@@ -177,21 +172,21 @@ export default class RouteEditor extends Component {
     const imageContainerRect = this.imageContainerRef.getBoundingClientRect();
     if (this.isMoving) {
       event.preventDefault();
+      clearTimeout(this.shortClickTimerId);
       const { clientX, clientY } = event.changedTouches[0];
       const isOverTopTrash = this.touchIsOver(this.topTrashRef, clientX, clientY);
       const isOverBottomTrash = this.touchIsOver(this.bottomTrashRef, clientX, clientY);
       if (isOverTopTrash || isOverBottomTrash) {
         this.removePointer(movingPointerIndex);
-      } else if (!this.isShifted) {
+      } else if (this.isRotate) {
         this.rotate(movingPointerIndex);
         this.setState({ movingPointerIndex: null });
       } else {
         const pointersCopy = R.clone(pointers);
         const dx = clientX - imageContainerRect.x;
         const dy = clientY - imageContainerRect.y;
-        const { angle } = pointersCopy[movingPointerIndex];
-        const newX = dx / imageContainerRect.width * 100 - this.shift - this.getXShift(angle);
-        const newY = dy / imageContainerRect.height * 100 - this.shift - this.getYShift(angle);
+        const newX = dx / imageContainerRect.width * 100 - this.shift;
+        const newY = dy / imageContainerRect.height * 100 - this.shift;
         const newDx = newX - pointersCopy[movingPointerIndex].x;
         const newDy = newY - pointersCopy[movingPointerIndex].y;
         pointersCopy[movingPointerIndex].x += newDx;
@@ -202,9 +197,8 @@ export default class RouteEditor extends Component {
         this.setState({ movingPointerIndex: null });
       }
       this.isMoving = false;
-      this.isShifted = false;
       this.shift = 0;
-      clearTimeout(this.timerId);
+      clearTimeout(this.showTrashTimerId);
       this.setState({
         showTopTrash: false,
         showBottomTrash: false,
@@ -214,15 +208,11 @@ export default class RouteEditor extends Component {
     } else {
       const clientX = event.changedTouches[0].clientX / imageContainerRect.width * 100;
       const clientY = event.changedTouches[0].clientY / imageContainerRect.height * 100;
-      let dx = clientX - this.clientX;
-      let dy = clientY - this.clientY;
-      if (((dx ** 2) + (dy ** 2)) ** 0.5 <= PERCENT_THRESHOLD ** 2) {
-        dx = clientX - imageContainerRect.x / imageContainerRect.width * 100;
-        dy = clientY - imageContainerRect.y / imageContainerRect.height * 100;
-        const xPosition = dx + MARKER_RADIUS / imageContainerRect.width * 100;
-        const yPosition = dy - MARKER_RADIUS / imageContainerRect.height * 100;
-        this.addPointer(xPosition, yPosition);
-      }
+      const dx = clientX - imageContainerRect.x / imageContainerRect.width * 100;
+      const dy = clientY - imageContainerRect.y / imageContainerRect.height * 100;
+      const xPosition = dx + MARKER_RADIUS / imageContainerRect.width * 100;
+      const yPosition = dy - MARKER_RADIUS / imageContainerRect.height * 100;
+      this.addPointer(xPosition + this.getXShift(0), yPosition + this.getYShift(0));
     }
   };
 
@@ -235,15 +225,37 @@ export default class RouteEditor extends Component {
     event.preventDefault();
   };
 
+  afterRotateDelay = () => {
+    const { pointers, updatePointers } = this.props;
+    const { movingPointerIndex } = this.state;
+    const pointersCopy = R.clone(pointers);
+    this.isRotate = false;
+    this.shift = MARKER_DISPLAY_SHIFT;
+    pointersCopy[movingPointerIndex].dx -= this.shift;
+    pointersCopy[movingPointerIndex].dy -= this.shift;
+    updatePointers(pointersCopy);
+  };
+
   onStartMoving = (index, clientX, clientY) => {
     const { pointers, updatePointers } = this.props;
     this.isMoving = true;
     const self = this;
     if (pointers[index].y > 50) {
-      this.timerId = setTimeout(() => self.setState({ showTopTrash: true }), 1000);
+      this.showTrashTimerId = setTimeout(
+        () => self.setState({ showTopTrash: true }),
+        SHOW_TRASH_DELAY,
+      );
     } else {
-      this.timerId = setTimeout(() => self.setState({ showBottomTrash: true }), 1000);
+      this.showTrashTimerId = setTimeout(
+        () => self.setState({ showBottomTrash: true }),
+        SHOW_TRASH_DELAY,
+      );
     }
+    this.isRotate = true;
+    this.shortClickTimerId = setTimeout(
+      () => self.afterRotateDelay(),
+      SHORT_CLICK_DELAY,
+    );
     const pointersCopy = R.clone(pointers);
     const imageContainerRect = this.imageContainerRef.getBoundingClientRect();
     const dx = clientX - imageContainerRect.x;
@@ -285,40 +297,42 @@ export default class RouteEditor extends Component {
               </div>
             </div>
           </div>
-          <div
-            role="button"
-            tabIndex="0"
-            className="modal-block-m__image-wrapper"
-            ref={(ref) => { this.imageContainerRef = ref; }}
-            onTouchStart={editable ? this.onTouchStart : null}
-            onTouchEnd={editable ? this.onTouchEnd : null}
-            onTouchMove={editable ? this.onTouchMove : null}
-            onContextMenu={this.onContextMenu}
-            style={{ touchAction: editable ? 'none' : 'auto', outline: 'none' }}
-          >
-            <img
-              className="modal-block-m__image-track"
-              src={routePhoto}
-              alt={route.name}
-            />
-            {mapIndexed((pointer, index) => (
-              <Marker
-                key={index}
-                editable={editable}
-                removePointer={editable ? (() => this.removePointer(index)) : null}
-                onStartMoving={
-                  editable
-                    ? ((x, y) => this.onStartMoving(index, x, y))
-                    : null
-                }
-                angle={pointer.angle}
-                radius={MARKER_RADIUS}
-                dx={pointer.dx}
-                dy={pointer.dy}
-                left={pointer.x}
-                top={pointer.y}
+          <div className="route-editor">
+            <div
+              role="button"
+              tabIndex="0"
+              className="route-editor__img-container"
+              ref={(ref) => { this.imageContainerRef = ref; return true; }}
+              onTouchStart={editable ? this.onTouchStart : null}
+              onTouchEnd={editable ? this.onTouchEnd : null}
+              onTouchMove={editable ? this.onTouchMove : null}
+              onContextMenu={this.onContextMenu}
+              style={{ touchAction: editable ? 'none' : 'auto', outline: 'none' }}
+            >
+              <img
+                className="route-editor__img"
+                src={routePhoto}
+                alt={route.name}
               />
-            ), pointers)}
+              {mapIndexed((pointer, index) => (
+                <Marker
+                  key={index}
+                  editable={editable}
+                  removePointer={editable ? (() => this.removePointer(index)) : null}
+                  onStartMoving={
+                    editable
+                      ? ((x, y) => this.onStartMoving(index, x, y))
+                      : null
+                  }
+                  angle={pointer.angle}
+                  radius={MARKER_RADIUS}
+                  dx={pointer.dx}
+                  dy={pointer.dy}
+                  left={pointer.x}
+                  top={pointer.y}
+                />
+              ), pointers)}
+            </div>
           </div>
         </div>
       </div>
