@@ -262,18 +262,14 @@ export default class SignUpForm extends Component {
                     dark
                   />
                 </li>
-                <li>
-                  <SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive />
-                </li>
-                <li>
-                  <SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive />
-                </li>
-                <li>
-                  <SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive />
-                </li>
-                <li>
-                  <SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive />
-                </li>
+                { false
+                    && <>
+                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive /></li>
+                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive /></li>
+                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive /></li>
+                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive /></li>
+                    </>
+                }
               </ul>
             </div>
           </div>

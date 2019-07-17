@@ -64,6 +64,11 @@
     transition: color .4s ease-out;
 }
 
+.footer-m__list-link-disabled {
+    color: #444444;
+    pointer-events: none;
+}
+
 .footer-m__list-link:hover {
     color: #FCFCFC;
 }

@@ -18,10 +18,7 @@ const FilterControl = ({
     </button>
     <div className="content-m__nav">
       <div className="content-m__info-block">{`Всего трасс: ${numOfRoutes}`}</div>
-      <ViewModeSwitcher
-        onViewModeChange={onViewModeChange}
-        viewMode={viewMode}
-      />
+      { false && <ViewModeSwitcher onViewModeChange={onViewModeChange} viewMode={viewMode} /> }
     </div>
   </React.Fragment>
 );

@@ -56,6 +56,11 @@
     padding-bottom: 14px;
 }
 
+.m-menu__list-link-disabled {
+    color: #9F9F9F;
+    pointer-events: none;
+}
+
 .m-menu__list-link:hover, .m-menu__list-link:focus, .m-menu__list-link:active {
     color: #006CEB;
 }

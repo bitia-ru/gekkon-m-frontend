@@ -21,24 +21,9 @@ const Footer = ({
           Соцсети
         </h3>
         <ul className="social-links">
-          <li>
-            <SocialLinkButton
-              href={VK_LINK}
-              xlinkHref={`${socialLinks}#icon-vk`}
-            />
-          </li>
-          <li>
-            <SocialLinkButton
-              href={FACEBOOK_LINK}
-              xlinkHref={`${socialLinks}#icon-facebook`}
-            />
-          </li>
-          <li>
-            <SocialLinkButton
-              href={TWITTER_LINK}
-              xlinkHref={`${socialLinks}#icon-twitter`}
-            />
-          </li>
+          <li><SocialLinkButton href={VK_LINK} xlinkHref={`${socialLinks}#icon-vk`} /></li>
+          <li><SocialLinkButton href={FACEBOOK_LINK} xlinkHref={`${socialLinks}#icon-facebook`} /></li>
+          <li><SocialLinkButton href={TWITTER_LINK} xlinkHref={`${socialLinks}#icon-twitter`} /></li>
         </ul>
       </div>
 
@@ -106,7 +91,7 @@ const Footer = ({
               <Link to="/" className="footer-m__list-link">Скалодромы</Link>
             </li>
             <li className="footer-m__list-item">
-              <Link to="/crags" className="footer-m__list-link">Скалы</Link>
+              <Link to="/crags" className="footer-m__list-link footer-m__list-link-disabled">Скалы</Link>
             </li>
           </ul>
         </div>

@@ -59,20 +59,22 @@ export default class MainMenu extends Component {
         <div className="m-menu__inner">
           <UserIcon user={user} hideMenu={hideMenu} />
           <ul className="m-menu__list">
-            <li className="m-menu__list-item">
-              <input
-                type="text"
-                onChange={event => this.setState({ searchString: event.target.value })}
-                onKeyPress={this.keyPress}
-                placeholder="Поиск"
-                className="m-menu__search"
-              />
-            </li>
+            { false
+                && <li className="m-menu__list-item">
+                  <input
+                    type="text"
+                    onChange={event => this.setState({ searchString: event.target.value })}
+                    onKeyPress={this.keyPress}
+                    placeholder="Поиск"
+                    className="m-menu__search"
+                  />
+                </li>
+            }
             <li className="m-menu__list-item">
               <Link to="/" className="m-menu__list-link" onClick={hideMenu}>Скалодромы</Link>
             </li>
             <li className="m-menu__list-item">
-              <Link to="/crags" className="m-menu__list-link" onClick={hideMenu}>Скалы</Link>
+              <Link to="/crags" className="m-menu__list-link m-menu__list-link-disabled" onClick={hideMenu}>Скалы</Link>
             </li>
           </ul>
           <MenuList
@@ -92,18 +94,14 @@ export default class MainMenu extends Component {
                   dark
                 />
               </li>
-              <li>
-                <SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive />
-              </li>
-              <li>
-                <SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive />
-              </li>
-              <li>
-                <SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive />
-              </li>
-              <li>
-                <SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive />
-              </li>
+              { false
+                  && <>
+                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive /></li>
+                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive /></li>
+                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive /></li>
+                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive /></li>
+                  </>
+              }
             </ul>
           </div>
         </div>
