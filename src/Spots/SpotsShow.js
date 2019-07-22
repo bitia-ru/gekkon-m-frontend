@@ -41,6 +41,7 @@ import RESULT_FILTERS from '../Constants/ResultFilters';
 import CARDS_PER_PAGE from '../Constants/RouteCardTable';
 import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
 import { NUM_OF_DAYS } from '../Constants/Route';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -299,11 +300,10 @@ class SpotsShow extends Authorization {
     });
     if (this.state.sectorId === 0) {
       this.reloadSpot();
-      this.props.history.push(`/spots/${this.state.spotId}`);
     } else {
       this.reloadSector(this.state.sectorId);
-      this.props.history.push(`/spots/${this.state.spotId}/sectors/${this.state.sectorId}`);
     }
+    this.props.history.goBack();
     this.reloadUserAscents();
     this.reloadRoutes({}, null);
   };
@@ -956,7 +956,7 @@ class SpotsShow extends Authorization {
     })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
-        this.props.history.push(
+        this.props.history.replace(
           `/spots/${spotId}/sectors/${sectorId}/routes/${response.data.payload.id}`,
         );
         this.setState({
@@ -996,13 +996,7 @@ class SpotsShow extends Authorization {
     })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
-        if (sectorId === 0) {
-          this.props.history.push(`/spots/${spotId}/routes/${currentShown.id}`);
-        } else {
-          this.props.history.push(
-            `/spots/${spotId}/sectors/${sectorId}/routes/${currentShown.id}`,
-          );
-        }
+        this.props.history.goBack();
         this.setState({
           editRouteIsWaiting: false,
           editMode: false,
@@ -1035,21 +1029,13 @@ class SpotsShow extends Authorization {
   };
 
   cancelEdit = () => {
-    const { spotId, sectorId, currentShown } = this.state;
+    const { currentShown } = this.state;
     if (currentShown.id === null) {
       this.setState({ routesModalVisible: false });
-      if (sectorId === 0) {
-        this.props.history.push(`/spots/${spotId}`);
-      } else {
-        this.props.history.push(`/spots/${spotId}/sectors/${sectorId}`);
-      }
+      this.props.history.goBack();
     } else {
       this.setState({ editMode: false });
-      if (sectorId === 0) {
-        this.props.history.push(`/spots/${spotId}/routes/${currentShown.id}`);
-      } else {
-        this.props.history.push(`/spots/${spotId}/sectors/${sectorId}/routes/${currentShown.id}`);
-      }
+      this.props.history.goBack();
     }
   };
 
@@ -1198,6 +1184,7 @@ class SpotsShow extends Authorization {
     );
     return (
       <React.Fragment>
+        <ScrollToTopOnMount />
         {
           this.state.showFilters
             ? (

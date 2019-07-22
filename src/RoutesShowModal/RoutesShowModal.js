@@ -11,6 +11,7 @@ import RouteDataTable from '../RouteDataTable/RouteDataTable';
 import RouteView from '../RouteView/RouteView';
 import RouteEditor from '../RouteEditor/RouteEditor';
 import CloseButton from '../CloseButton/CloseButton';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import './RoutesShowModal.css';
 
 export default class RoutesShowModal extends Component {
@@ -121,6 +122,7 @@ export default class RoutesShowModal extends Component {
     } = this.state;
     return (
       <React.Fragment>
+        <ScrollToTopOnMount />
         {
           showRouteMark
             ? (

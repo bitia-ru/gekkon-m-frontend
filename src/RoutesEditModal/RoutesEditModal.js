@@ -18,6 +18,7 @@ import RouteColorPicker from '../RouteColorPicker/RouteColorPicker';
 import DatePicker from '../DatePicker/DatePicker';
 import btnHandlerImage from '../../img/btn-handler/btn-handler-sprite.svg';
 import pointImage from '../../img/route-img/point.svg';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import './RoutesEditModal.css';
 
 export default class RoutesEditModal extends Component {
@@ -272,6 +273,7 @@ export default class RoutesEditModal extends Component {
     const saveDisabled = (!routeChanged && !pointersChanged);
     return (
       <React.Fragment>
+        <ScrollToTopOnMount />
         {
           showRouteMark
             ? (

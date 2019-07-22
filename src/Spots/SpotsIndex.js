@@ -24,6 +24,7 @@ import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
 import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -159,6 +160,7 @@ class SpotsIndex extends Authorization {
             )
             : ''
         }
+        <ScrollToTopOnMount />
         <ToastContainer
           ref={this.setToastContainerRef}
           onClick={() => this.container.clear()}

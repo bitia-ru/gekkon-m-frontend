@@ -11,6 +11,7 @@ import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
 import Profile from '../Profile/Profile';
 import StickyBar from '../StickyBar/StickyBar';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
 class CragsIndex extends Authorization {
   componentDidMount() {
@@ -84,6 +85,7 @@ class CragsIndex extends Authorization {
             )
             : ''
         }
+        <ScrollToTopOnMount />
         <ToastContainer
           ref={this.setToastContainerRef}
           onClick={() => this.container.clear()}

@@ -22,6 +22,7 @@ import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
 import aboutImage from '../../img/header-img/about.jpg';
 import { TITLE, TITLES, ABOUT_DATA } from '../Constants/About';
+import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
 class About extends Authorization {
   constructor(props) {
@@ -123,6 +124,7 @@ class About extends Authorization {
             />
           )
         }
+        <ScrollToTopOnMount />
         <ToastContainer
           ref={this.setToastContainerRef}
           onClick={() => this.container.clear()}
