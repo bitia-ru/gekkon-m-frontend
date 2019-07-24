@@ -40,6 +40,7 @@ module.exports = () => ({
     }),
     new webpack.EnvironmentPlugin({
       API_URL: '',
+      SENTRY_DSN: '',
       CLIENT_ID: '',
     }),
   ],

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as R from 'ramda';
 import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastr';
-import ApiUrl from '../ApiUrl';
+import { ApiUrl } from '../Environ';
 import {
   setSelectedPage,
   setDefaultSelectedPages,

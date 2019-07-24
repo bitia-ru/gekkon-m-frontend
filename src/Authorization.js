@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import * as R from 'ramda';
 import SALT_ROUNDS from './Constants/Bcrypt';
 import { domain } from './Constants/Cookies';
-import ApiUrl from './ApiUrl';
+import { ApiUrl } from './Environ';
 import { CLIENT_ID, REDIRECT_URI } from './Constants/Vk';
 import RE_EMAIL from './Constants/Constraints';
 

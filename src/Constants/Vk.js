@@ -1,4 +1,4 @@
-import ApiUrl from '../ApiUrl';
+import { ApiUrl } from '../Environ';
 import ClientId from '../ClientId';
 
 export const CLIENT_ID = ClientId;

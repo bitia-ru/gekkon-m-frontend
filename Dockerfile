@@ -9,8 +9,10 @@ RUN npm i --production
 
 ARG apiUrl
 ARG clientId
+ARG sentryDsn
 ENV API_URL ${apiUrl}
 ENV CLIENT_ID ${clientId}
+ENV SENTRY_DSN ${sentryDsn}
 
 RUN npm run build --development
 

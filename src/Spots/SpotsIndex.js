@@ -17,7 +17,7 @@ import {
   increaseNumOfActiveRequests,
   decreaseNumOfActiveRequests,
 } from '../actions';
-import ApiUrl from '../ApiUrl';
+import { ApiUrl } from '../Environ';
 import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
 import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
