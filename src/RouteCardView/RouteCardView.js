@@ -53,7 +53,3 @@ RouteCardView.propTypes = {
   sectorId: PropTypes.number.isRequired,
   onRouteClick: PropTypes.func.isRequired,
 };
-
-RouteCardView.defaultProps = {
-  user: null,
-};

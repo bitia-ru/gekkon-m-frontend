@@ -13,7 +13,7 @@ const Counter = ({
 );
 
 Counter.propTypes = {
-  number: PropTypes.number.isRequired,
+  number: PropTypes.number,
   text: PropTypes.string.isRequired,
 };
 

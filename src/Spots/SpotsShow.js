@@ -42,6 +42,8 @@ import CARDS_PER_PAGE from '../Constants/RouteCardTable';
 import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
 import { NUM_OF_DAYS } from '../Constants/Route';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import { avail, notAvail } from '../Utils';
+import { userStateToUser } from '../Utils/Workarounds';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -65,7 +67,7 @@ class SpotsShow extends Authorization {
       numOfPages: 1,
       perPage: CARDS_PER_PAGE,
       spot: {},
-      infoData: [],
+      infoData: undefined,
       routesModalVisible: false,
       currentShown: {},
       editMode: false,
@@ -73,12 +75,13 @@ class SpotsShow extends Authorization {
       ctrlPressed: false,
       comments: [],
       numOfComments: 0,
-      numOfLikes: 0,
+      numOfLikes: undefined,
       isLiked: false,
       likeId: 0,
+      likeBtnIsBusy: false,
       ascent: null,
-      numOfRedpoints: 0,
-      numOfFlash: 0,
+      numOfRedpoints: undefined,
+      numOfFlash: undefined,
       users: [],
       editRouteIsWaiting: false,
       showMenu: false,
@@ -89,14 +92,20 @@ class SpotsShow extends Authorization {
   }
 
   componentDidMount() {
-    this.props.history.listen((location, action) => {
+    const {
+      history,
+      user,
+      saveToken: saveTokenProp,
+      saveUser: saveUserProp,
+    } = this.props;
+    history.listen((location, action) => {
       if (action === 'POP') {
         const data = location.pathname.split('/');
         if (data.length > 3 && data[3] === 'sectors') {
           const sectorId = parseInt(data[4], 10);
           if (data.length > 5 && data[5] === 'routes') {
             if (data[6] === 'new') {
-              if (this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'creator')) {
+              if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
                 this.addRoute();
               } else {
                 window.location = '/';
@@ -105,7 +114,7 @@ class SpotsShow extends Authorization {
               const routeIndex = 6;
               this.loadingRouteId = data[routeIndex];
               if (data.length > 7 && data[7] === 'edit') {
-                if (this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'creator')) {
+                if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
                   this.loadUsers();
                   this.loadEditMode = true;
                   this.setState({ sectorId });
@@ -130,7 +139,7 @@ class SpotsShow extends Authorization {
         } else {
           if (data.length > 3 && data[3] === 'routes') {
             if (data[4] === 'new') {
-              if (this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'creator')) {
+              if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
                 this.addRoute();
               } else {
                 window.location = '/';
@@ -139,7 +148,7 @@ class SpotsShow extends Authorization {
               const routeIndex = 4;
               this.loadingRouteId = data[routeIndex];
               if (data.length > 5 && data[5] === 'edit') {
-                if (this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'creator')) {
+                if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
                   this.loadUsers();
                   this.loadEditMode = true;
                   this.setState({ sectorId: 0 });
@@ -167,11 +176,11 @@ class SpotsShow extends Authorization {
 
     if (Cookies.get('user_session_token') !== undefined) {
       const token = Cookies.get('user_session_token');
-      this.props.saveToken(token);
-      this.signIn(token, (user) => {
-        this.reloadUserAscents(user.id);
+      saveTokenProp(token);
+      this.signIn(token, (currentUser) => {
+        this.reloadUserAscents(currentUser.id);
         const data = window.location.pathname.split('/');
-        if (user.role === 'admin' || user.role === 'creator') {
+        if (currentUser.role === 'admin' || currentUser.role === 'creator') {
           if (R.find(e => e === 'new', data)) {
             this.addRoute();
           }
@@ -183,11 +192,11 @@ class SpotsShow extends Authorization {
         } else if (R.find(e => (e === 'new' || e === 'edit'), data)) {
           window.location = '/';
         }
-        this.reloadSectors(this.state.sectorId, user);
+        this.reloadSectors(this.state.sectorId, currentUser);
         if (this.state.sectorId === 0) {
-          this.reloadSpot(user.id);
+          this.reloadSpot(currentUser.id);
         } else {
-          this.reloadSector(this.state.sectorId, user.id);
+          this.reloadSector(this.state.sectorId, currentUser.id);
         }
       });
     } else {
@@ -198,6 +207,7 @@ class SpotsShow extends Authorization {
       } else {
         this.reloadSector(this.state.sectorId);
       }
+      saveUserProp({ id: null });
     }
     this.props.loadFromLocalStorageSelectedFilters();
     if (this.props.routeMarkColors.length === 0) {
@@ -225,7 +235,8 @@ class SpotsShow extends Authorization {
   };
 
   reloadUserAscents = (userId) => {
-    const id = (userId || (this.props.user ? this.props.user.id : null));
+    const { user } = this.props;
+    const id = (userId || (avail(user.id) ? user.id : null));
     if (!id) {
       this.setState({ ascents: [] });
       return;
@@ -291,12 +302,13 @@ class SpotsShow extends Authorization {
       routesModalVisible: false,
       comments: [],
       numOfComments: 0,
-      numOfLikes: 0,
+      numOfLikes: undefined,
       isLiked: false,
       likeId: 0,
+      likeBtnIsBusy: false,
       ascent: null,
-      numOfRedpoints: 0,
-      numOfFlash: 0,
+      numOfRedpoints: undefined,
+      numOfFlash: undefined,
     });
     if (this.state.sectorId === 0) {
       this.reloadSpot();
@@ -328,12 +340,13 @@ class SpotsShow extends Authorization {
   };
 
   reloadSpot = (userId) => {
+    const { user } = this.props;
     let currentUserId;
     if (userId === null || userId === undefined) {
-      if (this.props.user === null) {
+      if (notAvail(user.id)) {
         currentUserId = 0;
       } else {
-        currentUserId = this.props.user.id;
+        currentUserId = user.id;
       }
     } else {
       currentUserId = userId;
@@ -367,12 +380,13 @@ class SpotsShow extends Authorization {
   };
 
   reloadSector = (id, userId) => {
+    const { user } = this.props;
     let currentUserId;
     if (userId === null || userId === undefined) {
-      if (this.props.user === null) {
+      if (notAvail(user.id)) {
         currentUserId = 0;
       } else {
-        currentUserId = this.props.user.id;
+        currentUserId = user.id;
       }
     } else {
       currentUserId = userId;
@@ -459,8 +473,8 @@ class SpotsShow extends Authorization {
       });
   };
 
-  reloadRoutes = (filters = {}, page = 1, user) => {
-    const { selectedFilters, selectedPages } = this.props;
+  reloadRoutes = (filters = {}, page = 1, userCurr) => {
+    const { user, selectedFilters, selectedPages } = this.props;
     const { perPage } = this.state;
     const currentSectorId = parseInt(
       (filters.sectorId === null || filters.sectorId === undefined)
@@ -509,7 +523,7 @@ class SpotsShow extends Authorization {
         personal: currentPersonal,
       },
     };
-    if (user || this.props.user) {
+    if (userCurr || avail(user.id)) {
       params.filters.result = (currentResult.length === 0 ? [null] : currentResult);
     }
     if (currentName !== '') {
@@ -594,7 +608,7 @@ class SpotsShow extends Authorization {
       this.reloadSpot();
       this.props.history.push(`/spots/${this.state.spotId}`);
     }
-    this.setState({ sectorId: id });
+    this.setState({ sectorId: id, infoData: undefined });
     this.reloadRoutes({ sectorId: id }, null);
   };
 
@@ -807,29 +821,33 @@ class SpotsShow extends Authorization {
   };
 
   reloadLikes = (routeId) => {
+    const { user } = this.props;
     this.props.increaseNumOfActiveRequests();
     Axios.get(`${ApiUrl}/v1/routes/${routeId}/likes`)
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const like = (
-          this.props.user === null
+          notAvail(user.id)
             ? 0
-            : (R.find(R.propEq('user_id', this.props.user.id))(response.data.payload))
+            : (R.find(R.propEq('user_id', user.id))(response.data.payload))
         );
-        const isLiked = this.props.user === null ? false : (like !== undefined);
+        const isLiked = notAvail(user.id) ? false : (like !== undefined);
         this.setState({
           numOfLikes: response.data.metadata.all,
           isLiked,
+          likeBtnIsBusy: false,
           likeId: like === undefined ? 0 : like.id,
         });
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
+        this.setState({ likeBtnIsBusy: false });
         this.displayError(error);
       });
   };
 
   onLikeChange = () => {
     this.props.increaseNumOfActiveRequests();
+    this.setState({ likeBtnIsBusy: true });
     if (this.state.isLiked) {
       Axios({
         url: `${ApiUrl}/v1/likes/${this.state.likeId}`,
@@ -842,6 +860,7 @@ class SpotsShow extends Authorization {
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
+          this.setState({ likeBtnIsBusy: false });
         });
     } else {
       const params = {
@@ -857,19 +876,21 @@ class SpotsShow extends Authorization {
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
+          this.setState({ likeBtnIsBusy: false });
         });
     }
   };
 
   reloadAscents = (routeId) => {
+    const { user } = this.props;
     this.props.increaseNumOfActiveRequests();
     Axios.get(`${ApiUrl}/v1/routes/${routeId}/ascents`)
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const ascent = (
-          this.props.user === null
+          notAvail(user.id)
             ? null
-            : (R.find(R.propEq('user_id', this.props.user.id))(response.data.payload))
+            : (R.find(R.propEq('user_id', user.id))(response.data.payload))
         );
         this.setState({
           ascent: ascent === undefined ? null : ascent,
@@ -973,6 +994,7 @@ class SpotsShow extends Authorization {
           numOfLikes: 0,
           isLiked: false,
           likeId: 0,
+          likeBtnIsBusy: false,
           numOfRedpoints: 0,
           numOfFlash: 0,
         });
@@ -1047,11 +1069,25 @@ class SpotsShow extends Authorization {
 
   content = () => {
     const { user } = this.props;
+    const {
+      spot, sector, sectorId, infoData,
+    } = this.state;
+    const {
+      likeBtnIsBusy,
+    } = this.state;
     let numOfRoutes;
     if (this.state.sectorId === 0) {
-      numOfRoutes = this.state.infoData[1] ? this.state.infoData[1].count : 0;
+      numOfRoutes = infoData ? infoData[1].count : 0;
     } else {
-      numOfRoutes = this.state.infoData[0] ? this.state.infoData[0].count : 0;
+      numOfRoutes = infoData ? infoData[0].count : 0;
+    }
+    let data;
+    if (sectorId === 0) {
+      data = spot;
+    } else if (sector.id === sectorId) {
+      data = sector;
+    } else {
+      data = {};
     }
     if (this.state.routesModalVisible) {
       if (this.state.editMode) {
@@ -1062,7 +1098,7 @@ class SpotsShow extends Authorization {
               this.state.sectorId === 0
                 ? (
                   R.find(
-                    sector => sector.id === this.state.currentShown.sector_id,
+                    s => s.id === this.state.currentShown.sector_id,
                     this.props.sectors,
                   )
                 )
@@ -1071,7 +1107,7 @@ class SpotsShow extends Authorization {
             cancel={this.cancelEdit}
             users={this.state.users}
             routeMarkColors={this.props.routeMarkColors}
-            user={this.props.user}
+            user={userStateToUser(user)}
             numOfActiveRequests={this.props.numOfActiveRequests}
             createRoute={this.createRoute}
             updateRoute={this.updateRoute}
@@ -1093,8 +1129,9 @@ class SpotsShow extends Authorization {
           numOfComments={this.state.numOfComments}
           numOfLikes={this.state.numOfLikes}
           isLiked={this.state.isLiked}
+          likeBtnIsBusy={likeBtnIsBusy}
           onLikeChange={this.onLikeChange}
-          user={this.props.user}
+          user={userStateToUser(user)}
           numOfActiveRequests={this.props.numOfActiveRequests}
           ascent={this.state.ascent}
           numOfRedpoints={this.state.numOfRedpoints}
@@ -1105,13 +1142,13 @@ class SpotsShow extends Authorization {
       );
     }
     return (
-      <React.Fragment>
+      <>
         <div className="sticky-bar">
           <Header
-            data={this.state.sectorId === 0 ? this.state.spot : this.state.sector}
+            data={data}
             sectors={this.props.sectors}
-            sectorId={this.state.sectorId}
-            infoData={this.state.infoData}
+            sectorId={sectorId}
+            infoData={infoData}
             changeSectorFilter={this.changeSectorFilter}
             showMenu={() => this.setState({ showMenu: true })}
           />
@@ -1119,7 +1156,7 @@ class SpotsShow extends Authorization {
             this.state.showMenu
               ? (
                 <MainMenu
-                  user={user}
+                  user={userStateToUser(user)}
                   hideMenu={() => this.setState({ showMenu: false })}
                   changeNameFilter={this.changeNameFilter}
                   logIn={this.logIn}
@@ -1134,7 +1171,7 @@ class SpotsShow extends Authorization {
           <Content
             routes={R.pathOr([], [this.state.spotId, this.state.sectorId], this.props.routes)}
             ascents={this.state.ascents}
-            user={this.props.user}
+            user={userStateToUser(user)}
             addRoute={this.goToNew}
             sectorId={this.state.sectorId}
             page={
@@ -1151,12 +1188,12 @@ class SpotsShow extends Authorization {
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
         </div>
         <Footer
-          user={this.props.user}
+          user={userStateToUser(user)}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -1183,7 +1220,7 @@ class SpotsShow extends Authorization {
         : DEFAULT_FILTERS.categoryTo
     );
     return (
-      <React.Fragment>
+      <>
         <ScrollToTopOnMount />
         {
           this.state.showFilters
@@ -1195,7 +1232,7 @@ class SpotsShow extends Authorization {
                 categoryTo={categoryTo}
                 period={period}
                 filters={
-                  user
+                  avail(user.id)
                     ? filters
                     : (
                       R.filter(
@@ -1252,22 +1289,20 @@ class SpotsShow extends Authorization {
             : ''
         }
         {
-          (this.props.user && this.state.profileFormVisible)
-            ? (
-              <Profile
-                user={this.props.user}
-                onFormSubmit={this.submitProfileForm}
-                removeVk={this.removeVk}
-                numOfActiveRequests={this.props.numOfActiveRequests}
-                showToastr={this.showToastr}
-                enterWithVk={this.enterWithVk}
-                isWaiting={this.state.profileIsWaiting}
-                closeForm={this.closeProfileForm}
-                formErrors={this.state.profileFormErrors}
-                resetErrors={this.profileResetErrors}
-              />
-            )
-            : ''
+          (avail(user.id) && this.state.profileFormVisible) && (
+            <Profile
+              user={user}
+              onFormSubmit={this.submitProfileForm}
+              removeVk={this.removeVk}
+              numOfActiveRequests={this.props.numOfActiveRequests}
+              showToastr={this.showToastr}
+              enterWithVk={this.enterWithVk}
+              isWaiting={this.state.profileIsWaiting}
+              closeForm={this.closeProfileForm}
+              formErrors={this.state.profileFormErrors}
+              resetErrors={this.profileResetErrors}
+            />
+          )
         }
         <ToastContainer
           ref={(ref) => { this.container = ref; }}
@@ -1275,7 +1310,7 @@ class SpotsShow extends Authorization {
           className="toast-top-right"
         />
         {this.content()}
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -95,7 +95,3 @@ Content.propTypes = {
   numOfRoutes: PropTypes.number.isRequired,
   showFilters: PropTypes.func.isRequired,
 };
-
-Content.defaultProps = {
-  user: null,
-};

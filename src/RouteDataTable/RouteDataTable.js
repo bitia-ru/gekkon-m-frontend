@@ -24,7 +24,7 @@ const RouteDataTable = ({ route, user }) => {
     <div className="route-m__table">
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Сложность:
+          Сложность:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           <div
@@ -63,13 +63,13 @@ const RouteDataTable = ({ route, user }) => {
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Народная категория:
+          Народная категория:
         </div>
         <div className="route-m__table-item route-m__table-item-right" />
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Тип:
+          Тип:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           {R.find(R.propEq('title', route.kind), ROUTE_KINDS).text}
@@ -77,7 +77,7 @@ const RouteDataTable = ({ route, user }) => {
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Дата накрутки:
+          Дата накрутки:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           {
@@ -91,7 +91,7 @@ const RouteDataTable = ({ route, user }) => {
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Дата cкрутки:
+          Дата cкрутки:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           {
@@ -105,7 +105,7 @@ const RouteDataTable = ({ route, user }) => {
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-            Накрутчик:
+          Накрутчик:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           <div
@@ -127,10 +127,6 @@ const RouteDataTable = ({ route, user }) => {
 RouteDataTable.propTypes = {
   user: PropTypes.object,
   route: PropTypes.object.isRequired,
-};
-
-RouteDataTable.defaultProps = {
-  user: null,
 };
 
 export default RouteDataTable;

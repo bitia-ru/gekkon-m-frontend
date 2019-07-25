@@ -48,7 +48,7 @@ export default class Authorization extends React.Component {
       .then(() => {
         decreaseNumOfActiveRequests();
         removeToken();
-        saveUser(null);
+        saveUser({ id: null });
         if (this.afterLogOut) {
           this.afterLogOut();
         }
@@ -78,6 +78,7 @@ export default class Authorization extends React.Component {
         decreaseNumOfActiveRequests();
         Cookies.remove('user_session_token', { path: '', domain: domain() });
         removeToken();
+        saveUser({ id: null });
       });
   };
 

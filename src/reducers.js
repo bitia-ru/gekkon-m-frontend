@@ -39,7 +39,7 @@ const sectorsReducer = (state = [], action) => {
   }
 };
 
-const userReducer = (state = null, action) => {
+const userReducer = (state = {}, action) => {
   switch (action.type) {
   case acts.SAVE_USER:
     return action.user;

@@ -23,8 +23,4 @@ UserIcon.propTypes = {
   hideMenu: PropTypes.func.isRequired,
 };
 
-UserIcon.defaultProps = {
-  user: null,
-};
-
 export default UserIcon;

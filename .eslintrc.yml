@@ -23,3 +23,4 @@ rules:
   "indent": ["error", 2]
   "react/no-unused-state": "off"
   "jsx-a11y/label-has-for": "off"
+  "react/require-default-props": "off"

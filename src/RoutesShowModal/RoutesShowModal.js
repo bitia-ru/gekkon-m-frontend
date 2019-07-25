@@ -23,6 +23,7 @@ export default class RoutesShowModal extends Component {
       commentContent: '',
       currentPointers: [],
       showRouteMark: false,
+      routeImageLoading: true,
     };
   }
 
@@ -108,6 +109,7 @@ export default class RoutesShowModal extends Component {
       changeAscentResult,
       numOfLikes,
       isLiked,
+      likeBtnIsBusy,
       onLikeChange,
       numOfRedpoints,
       numOfFlash,
@@ -118,27 +120,30 @@ export default class RoutesShowModal extends Component {
       goToProfile,
     } = this.props;
     const {
-      currentPointers, quoteComment, commentContent, showRouteMark,
+      currentPointers, quoteComment, commentContent, showRouteMark, routeImageLoading,
     } = this.state;
+    const showLoadPhotoMsg = (
+      (!route.photo || !routeImageLoading) && user && this.canEditRoute(user, route)
+    );
     return (
-      <React.Fragment>
+      <>
         <ScrollToTopOnMount />
         {
-          showRouteMark
-            ? (
-              <RouteEditor
-                route={route}
-                routePhoto={
-                  typeof (route.photo) === 'string'
-                    ? route.photo
-                    : route.photo.url
-                }
-                pointers={currentPointers}
-                editable={false}
-                hide={() => this.setState({ showRouteMark: false })}
-              />
-            )
-            : ''
+          showRouteMark && (
+            <RouteEditor
+              route={route}
+              routePhoto={
+                typeof (route.photo) === 'string'
+                  ? route.photo
+                  : route.photo.url
+              }
+              pointers={currentPointers}
+              editable={false}
+              hide={() => this.setState({ showRouteMark: false })}
+              routeImageLoading={routeImageLoading}
+              onImageLoad={() => this.setState({ routeImageLoading: false })}
+            />
+          )
         }
         <div className="route-m">
           <div className="route-m__container">
@@ -148,57 +153,51 @@ export default class RoutesShowModal extends Component {
               </div>
             </div>
             {
-              user
-                ? (
-                  <RouteStatus
-                    ascent={ascent}
-                    changeAscentResult={changeAscentResult}
-                  />
-                )
-                : ''
+              user && (
+                <RouteStatus
+                  ascent={ascent}
+                  changeAscentResult={changeAscentResult}
+                />
+              )
             }
             <h1 className="route-m__title" style={user ? {} : { marginTop: '0px' }}>
               <span className="route-m__title-number">
-                {
-                  route.number
-                    ? `№ ${route.number}`
-                    : `# ${route.id}`
-                }
+                {route.number ? `№ ${route.number}` : `# ${route.id}`}
               </span>
               {
-                route.name
-                  ? (
-                    <span className="route-m__title-place-wrapper">
+                route.name && (
+                  <span className="route-m__title-place-wrapper">
+                    <span className="route-m__title-place">
                       <span className="route-m__title-place">
-                        <span className="route-m__title-place">
-                          {`(“${route.name}”)`}
-                        </span>
+                        {`(“${route.name}”)`}
                       </span>
                     </span>
-                  )
-                  : ''
+                  </span>
+                )
               }
             </h1>
           </div>
           <div className="route-m__route-block">
             <div className="route-m__route">
-              <div className="route-m__route-descr">
-                <div className="route-m__route-descr-picture" />
-                <div className="route-m__route-descr-text">
-                Загрузите фото трассы
-                </div>
-              </div>
               {
-                route.photo
-                  ? (
-                    <RouteView
-                      route={route}
-                      routePhoto={route.photo.url}
-                      pointers={currentPointers}
-                      onClick={() => this.setState({ showRouteMark: true })}
-                    />
-                  )
-                  : ''
+                showLoadPhotoMsg && (
+                  <div className="route-m__route-descr">
+                    <div className="route-m__route-descr-picture" />
+                    <div className="route-m__route-descr-text">Загрузите фото трассы</div>
+                  </div>
+                )
+              }
+              {
+                route.photo && (
+                  <RouteView
+                    route={route}
+                    routePhoto={route.photo.url}
+                    pointers={currentPointers}
+                    onClick={() => this.setState({ showRouteMark: true })}
+                    routeImageLoading={routeImageLoading}
+                    onImageLoad={() => this.setState({ routeImageLoading: false })}
+                  />
+                )
               }
             </div>
             <div className="route-m__route-footer">
@@ -207,7 +206,8 @@ export default class RoutesShowModal extends Component {
                   <LikeButton
                     numOfLikes={numOfLikes}
                     isLiked={isLiked}
-                    onChange={user === null ? null : onLikeChange}
+                    busy={likeBtnIsBusy}
+                    onChange={!user ? null : onLikeChange}
                   />
                 </div>
                 <div className="route-m__route-count">
@@ -223,45 +223,42 @@ export default class RoutesShowModal extends Component {
             <RouteDataTable route={route} user={user} />
           </div>
           {
-            route.description
-              ? (
-                <div className="route-m__item">
-                  <div className="collapsable-block-m">
-                    <button type="button" className="collapsable-block-m__header">
-                      Описание
-                    </button>
-                    <div className="collapsable-block-m__content">
-                      {route.description}
-                    </div>
+            route.description && (
+              <div className="route-m__item">
+                <div className="collapsable-block-m">
+                  <button type="button" className="collapsable-block-m__header">
+                    Описание
+                  </button>
+                  <div className="collapsable-block-m__content">
+                    {route.description}
                   </div>
                 </div>
-              ) : ''
+              </div>
+            )
           }
           {
-            (user && this.canEditRoute(user, route))
-              ? (
-                <div className="route-m__route-controls">
-                  <div className="route-m__btn-delete">
-                    <Button
-                      size="big"
-                      buttonStyle="gray"
-                      title="Удалить"
-                      smallFont
-                      onClick={removeRoute}
-                    />
-                  </div>
-                  <div className="route-m__btn-save">
-                    <Button
-                      size="big"
-                      buttonStyle="normal"
-                      title="Редактировать"
-                      smallFont
-                      onClick={openEdit}
-                    />
-                  </div>
+            (user && this.canEditRoute(user, route)) && (
+              <div className="route-m__route-controls">
+                <div className="route-m__btn-delete">
+                  <Button
+                    size="big"
+                    buttonStyle="gray"
+                    title="Удалить"
+                    smallFont
+                    onClick={removeRoute}
+                  />
                 </div>
-              )
-              : ''
+                <div className="route-m__btn-save">
+                  <Button
+                    size="big"
+                    buttonStyle="normal"
+                    title="Редактировать"
+                    smallFont
+                    onClick={openEdit}
+                  />
+                </div>
+              </div>
+            )
           }
           <div className="route-m__item">
             <CommentBlock
@@ -284,7 +281,7 @@ export default class RoutesShowModal extends Component {
             />
           </div>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
@@ -292,6 +289,9 @@ export default class RoutesShowModal extends Component {
 RoutesShowModal.propTypes = {
   user: PropTypes.object,
   ascent: PropTypes.object,
+  numOfRedpoints: PropTypes.number,
+  numOfFlash: PropTypes.number,
+  numOfLikes: PropTypes.number,
   route: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   openEdit: PropTypes.func.isRequired,
@@ -300,15 +300,12 @@ RoutesShowModal.propTypes = {
   comments: PropTypes.array.isRequired,
   removeComment: PropTypes.func.isRequired,
   saveComment: PropTypes.func.isRequired,
-  numOfLikes: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
+  likeBtnIsBusy: PropTypes.bool.isRequired,
   onLikeChange: PropTypes.func.isRequired,
-  numOfRedpoints: PropTypes.number.isRequired,
-  numOfFlash: PropTypes.number.isRequired,
   changeAscentResult: PropTypes.func.isRequired,
 };
 
 RoutesShowModal.defaultProps = {
-  user: null,
   ascent: null,
 };

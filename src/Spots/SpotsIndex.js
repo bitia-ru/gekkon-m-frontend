@@ -25,6 +25,8 @@ import Profile from '../Profile/Profile';
 import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import { avail } from '../Utils';
+import { userStateToUser } from '../Utils/Workarounds';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -43,6 +45,9 @@ class SpotsIndex extends Authorization {
   }
 
   componentDidMount() {
+    const {
+      saveUser: saveUserProp,
+    } = this.props;
     this.props.history.listen((location, action) => {
       if (action === 'POP') {
         this.setState({ profileFormVisible: (location.hash === '#profile') });
@@ -56,7 +61,7 @@ class SpotsIndex extends Authorization {
       Axios.get(`${ApiUrl}/v1/users/mail_activation/${code}`, { params: { id: userId } })
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
-          this.props.saveUser(response.data.payload);
+          saveUserProp(response.data.payload);
           this.showToastr('success', 'Успешно', 'Активация email');
         }).catch(() => {
           this.props.decreaseNumOfActiveRequests();
@@ -75,6 +80,8 @@ class SpotsIndex extends Authorization {
       const token = Cookies.get('user_session_token');
       this.props.saveToken(token);
       this.signIn(token);
+    } else {
+      saveUserProp({ id: null });
     }
   }
 
@@ -98,7 +105,7 @@ class SpotsIndex extends Authorization {
   render() {
     const { user } = this.props;
     return (
-      <React.Fragment>
+      <>
         {
           this.state.signUpFormVisible
             ? (
@@ -143,7 +150,7 @@ class SpotsIndex extends Authorization {
             : ''
         }
         {
-          (user && this.state.profileFormVisible)
+          (avail(user.id) && this.state.profileFormVisible)
             ? (
               <Profile
                 user={user}
@@ -169,7 +176,7 @@ class SpotsIndex extends Authorization {
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}
-            user={user}
+            user={userStateToUser(user)}
             logIn={this.logIn}
             signUp={this.signUp}
           />
@@ -177,7 +184,7 @@ class SpotsIndex extends Authorization {
             this.state.showMenu
               ? (
                 <MainMenu
-                  user={user}
+                  user={userStateToUser(user)}
                   hideMenu={() => this.setState({ showMenu: false })}
                   changeNameFilter={this.changeNameFilter}
                   logIn={this.logIn}
@@ -193,12 +200,12 @@ class SpotsIndex extends Authorization {
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
         </div>
         <Footer
-          user={user}
+          user={userStateToUser(user)}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}
         />
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -28,7 +28,7 @@ const Comment = ({
           {
             (user && (user.name || user.login))
               ? (
-                <React.Fragment>
+                <>
                   <a
                     role="link"
                     tabIndex="0"
@@ -36,10 +36,10 @@ const Comment = ({
                     className="comment__answer"
                     onClick={() => startAnswer(comment)}
                   >
-                                      Ответить
+                    Ответить
                   </a>
-&nbsp;
-                </React.Fragment>
+                  &nbsp;
+                </>
               )
               : ''
           }
@@ -53,7 +53,7 @@ const Comment = ({
                   className="comment__answer"
                   onClick={() => removeComment(comment)}
                 >
-                                  Удалить
+                  Удалить
                 </a>
               )
               : ''
@@ -70,10 +70,6 @@ Comment.propTypes = {
   startAnswer: PropTypes.func.isRequired,
   removeComment: PropTypes.func.isRequired,
   comment: PropTypes.object.isRequired,
-};
-
-Comment.defaultProps = {
-  user: null,
 };
 
 export default Comment;

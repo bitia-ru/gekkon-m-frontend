@@ -9,22 +9,20 @@ const RouteCardTable = ({
 }) => (
   <div className="content-m__inner-card">
     {
-      (sectorId !== 0 && user)
-        ? (
-          <div className="content-m__col-sm-6 content-m__col-xs-12">
-            <a
-              role="link"
-              tabIndex="0"
-              style={{ outline: 'none' }}
-              className="card-m card-m__edit"
-              onClick={addRoute}
-            >
-              <span className="card-m__edit-icon" />
-              <span className="card-m__edit-title">Добавить новую трассу</span>
-            </a>
-          </div>
-        )
-        : ''
+      (sectorId !== 0 && user) && (
+        <div className="content-m__col-sm-6 content-m__col-xs-12">
+          <a
+            role="link"
+            tabIndex="0"
+            style={{ outline: 'none' }}
+            className="card-m card-m__edit"
+            onClick={addRoute}
+          >
+            <span className="card-m__edit-icon" />
+            <span className="card-m__edit-title">Добавить новую трассу</span>
+          </a>
+        </div>
+      )
     }
     {R.map(route => (
       <RouteCard
@@ -45,10 +43,6 @@ RouteCardTable.propTypes = {
   addRoute: PropTypes.func.isRequired,
   sectorId: PropTypes.number.isRequired,
   onRouteClick: PropTypes.func.isRequired,
-};
-
-RouteCardTable.defaultProps = {
-  user: null,
 };
 
 export default RouteCardTable;

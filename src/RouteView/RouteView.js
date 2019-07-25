@@ -12,7 +12,7 @@ export default class RouteView extends Component {
 
   render() {
     const {
-      route, routePhoto, pointers, onClick,
+      route, routePhoto, pointers, onClick, onImageLoad, routeImageLoading,
     } = this.props;
     const mapIndexed = R.addIndex(R.map);
     return (
@@ -30,19 +30,31 @@ export default class RouteView extends Component {
               className="route-editor__img"
               src={routePhoto}
               alt={route.name}
+              onLoad={onImageLoad}
+              style={{ visibility: routeImageLoading ? 'hidden' : 'visible' }}
             />
-            {mapIndexed((pointer, index) => (
-              <Marker
-                key={index}
-                editable={false}
-                angle={pointer.angle}
-                radius={MARKER_RADIUS}
-                dx={pointer.dx}
-                dy={pointer.dy}
-                left={pointer.x}
-                top={pointer.y}
-              />
-            ), pointers)}
+            {
+              !routeImageLoading
+                ? (
+                  <>
+                    {
+                      mapIndexed((pointer, index) => (
+                        <Marker
+                          key={index}
+                          editable={false}
+                          angle={pointer.angle}
+                          radius={MARKER_RADIUS}
+                          dx={pointer.dx}
+                          dy={pointer.dy}
+                          left={pointer.x}
+                          top={pointer.y}
+                        />
+                      ), pointers)
+                    }
+                  </>
+                )
+                : ''
+            }
           </div>
         </div>
       </div>
@@ -51,12 +63,15 @@ export default class RouteView extends Component {
 }
 
 RouteView.propTypes = {
+  routeImageLoading: PropTypes.bool,
   onClick: PropTypes.func,
   routePhoto: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
   pointers: PropTypes.array.isRequired,
+  onImageLoad: PropTypes.func.isRequired,
 };
 
 RouteView.defaultProps = {
   onClick: null,
+  routeImageLoading: false,
 };

@@ -12,6 +12,8 @@ import LogInForm from '../LogInForm/LogInForm';
 import Profile from '../Profile/Profile';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import { avail } from '../Utils';
+import { userStateToUser } from '../Utils/Workarounds';
 
 class CragsIndex extends Authorization {
   componentDidMount() {
@@ -68,22 +70,20 @@ class CragsIndex extends Authorization {
             : ''
         }
         {
-          (user && this.state.profileFormVisible)
-            ? (
-              <Profile
-                user={user}
-                onFormSubmit={this.submitProfileForm}
-                removeVk={this.removeVk}
-                numOfActiveRequests={this.props.numOfActiveRequests}
-                showToastr={this.showToastr}
-                enterWithVk={this.enterWithVk}
-                isWaiting={this.state.profileIsWaiting}
-                closeForm={this.closeProfileForm}
-                formErrors={this.state.profileFormErrors}
-                resetErrors={this.profileResetErrors}
-              />
-            )
-            : ''
+          (avail(user.id) && this.state.profileFormVisible) && (
+            <Profile
+              user={user}
+              onFormSubmit={this.submitProfileForm}
+              removeVk={this.removeVk}
+              numOfActiveRequests={this.props.numOfActiveRequests}
+              showToastr={this.showToastr}
+              enterWithVk={this.enterWithVk}
+              isWaiting={this.state.profileIsWaiting}
+              closeForm={this.closeProfileForm}
+              formErrors={this.state.profileFormErrors}
+              resetErrors={this.profileResetErrors}
+            />
+          )
         }
         <ScrollToTopOnMount />
         <ToastContainer
@@ -94,7 +94,7 @@ class CragsIndex extends Authorization {
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}
-            user={user}
+            user={userStateToUser(user)}
             logIn={this.logIn}
             signUp={this.signUp}
           />
@@ -102,7 +102,7 @@ class CragsIndex extends Authorization {
             this.state.showMenu
               ? (
                 <MainMenu
-                  user={user}
+                  user={userStateToUser(user)}
                   hideMenu={() => this.setState({ showMenu: false })}
                   changeNameFilter={this.changeNameFilter}
                   logIn={this.logIn}
@@ -117,7 +117,7 @@ class CragsIndex extends Authorization {
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
         </div>
         <Footer
-          user={user}
+          user={userStateToUser(user)}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}

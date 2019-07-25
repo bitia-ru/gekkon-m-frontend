@@ -22,6 +22,8 @@ import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
 import faqImage from '../../img/header-img/faq.jpg';
 import { TITLE, TITLES, FAQ_DATA } from '../Constants/Faq';
+import { avail } from '../Utils';
+import { userStateToUser } from '../Utils/Workarounds';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
 class Faq extends Authorization {
@@ -37,6 +39,7 @@ class Faq extends Authorization {
     const {
       history,
       saveToken: saveTokenProp,
+      saveUser: saveUserProp,
     } = this.props;
     history.listen((location, action) => {
       if (action === 'POP') {
@@ -47,6 +50,8 @@ class Faq extends Authorization {
       const token = Cookies.get('user_session_token');
       saveTokenProp(token);
       this.signIn(token);
+    } else {
+      saveUserProp({ id: null });
     }
   }
 
@@ -109,7 +114,7 @@ class Faq extends Authorization {
           )
         }
         {
-          (user && this.state.profileFormVisible) && (
+          (avail(user.id) && this.state.profileFormVisible) && (
             <Profile
               user={user}
               onFormSubmit={this.submitProfileForm}
@@ -139,7 +144,7 @@ class Faq extends Authorization {
           {
             this.state.showMenu && (
               <MainMenu
-                user={user}
+                user={userStateToUser(user)}
                 hideMenu={() => this.setState({showMenu: false})}
                 changeNameFilter={this.changeNameFilter}
                 logIn={this.logIn}
@@ -154,7 +159,7 @@ class Faq extends Authorization {
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
         </div>
         <Footer
-          user={user}
+          user={userStateToUser(user)}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}

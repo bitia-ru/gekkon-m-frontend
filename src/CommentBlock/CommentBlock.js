@@ -9,7 +9,7 @@ const CommentBlock = ({
 }) => (
   <div className="comment-block">
     <div className="comment-block__header">
-                    Коментарии
+      Коментарии
     </div>
     <div className="comment-block__list">
       {R.map(comment => (
@@ -43,10 +43,6 @@ CommentBlock.propTypes = {
   startAnswer: PropTypes.func.isRequired,
   removeComment: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
-};
-
-CommentBlock.defaultProps = {
-  user: null,
 };
 
 export default CommentBlock;

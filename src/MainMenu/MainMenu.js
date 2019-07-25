@@ -76,7 +76,7 @@ export default class MainMenu extends Component {
             </li>
           </ul>
           <MenuList
-            items={user === null ? GUEST_ITEMS_DATA : USER_ITEMS_DATA}
+            items={!user ? GUEST_ITEMS_DATA : USER_ITEMS_DATA}
             onClick={this.onItemSelect}
             textFieldName="title"
           />
@@ -121,8 +121,4 @@ MainMenu.propTypes = {
   openProfile: PropTypes.func.isRequired,
   hideMenu: PropTypes.func.isRequired,
   enterWithVk: PropTypes.func.isRequired,
-};
-
-MainMenu.defaultProps = {
-  user: null,
 };

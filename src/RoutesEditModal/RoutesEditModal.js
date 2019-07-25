@@ -43,6 +43,7 @@ export default class RoutesEditModal extends Component {
       showInstalledAtSelect: false,
       showInstalledUntilSelect: false,
       showRouteMark: false,
+      routeImageLoading: true,
     };
   }
 
@@ -267,12 +268,13 @@ export default class RoutesEditModal extends Component {
       showInstalledAtSelect,
       showInstalledUntilSelect,
       showRouteMark,
+      routeImageLoading,
     } = this.state;
     const routeChanged = JSON.stringify(route) !== JSON.stringify(fieldsOld);
     const pointersChanged = JSON.stringify(currentPointers) !== JSON.stringify(currentPointersOld);
     const saveDisabled = (!routeChanged && !pointersChanged);
     return (
-      <React.Fragment>
+      <>
         <ScrollToTopOnMount />
         {
           showRouteMark
@@ -288,6 +290,8 @@ export default class RoutesEditModal extends Component {
                 editable
                 updatePointers={this.updatePointers}
                 hide={() => this.setState({ showRouteMark: false })}
+                routeImageLoading={routeImageLoading}
+                onImageLoad={() => this.setState({ routeImageLoading: false })}
               />
             )
             : ''
@@ -332,41 +336,41 @@ export default class RoutesEditModal extends Component {
                 </div>
                 <div className="route-m__route-block">
                   <div className="route-m__route">
-                    <div className="route-m__route-descr">
-                      <div className="route-m__route-descr-picture" />
-                      <div className="route-m__route-descr-text">
-                        Загрузите фото трассы
-                      </div>
-                    </div>
                     {
-                      route.photo
-                        ? (
-                          <RouteView
-                            route={route}
-                            routePhoto={
-                              typeof (route.photo) === 'string'
-                                ? route.photo
-                                : route.photo.url
-                            }
-                            pointers={currentPointers}
-                          />
-                        )
-                        : ''
+                      (!route.photo || !routeImageLoading) && (
+                        <div className="route-m__route-descr">
+                          <div className="route-m__route-descr-picture" />
+                          <div className="route-m__route-descr-text">Загрузите фото трассы</div>
+                        </div>
+                      )
+                    }
+                    {
+                      route.photo && (
+                        <RouteView
+                          route={route}
+                          routePhoto={
+                            typeof (route.photo) === 'string'
+                              ? route.photo
+                              : route.photo.url
+                          }
+                          pointers={currentPointers}
+                          routeImageLoading={routeImageLoading}
+                          onImageLoad={() => this.setState({ routeImageLoading: false })}
+                        />
+                      )
                     }
                   </div>
                   <div className="route-m__route-footer">
                     <div className="route-m__route-footer-container">
                       <div className="route-m__route-footer-toggles">
                         {
-                          route.photo
-                            ? (
-                              <ButtonHandler
-                                onClick={() => this.setState({ showRouteMark: true })}
-                                title="Просмотр трассы"
-                                xlinkHref={`${pointImage}#point`}
-                              />
-                            )
-                            : ''
+                          route.photo && (
+                            <ButtonHandler
+                              onClick={() => this.setState({ showRouteMark: true })}
+                              title="Просмотр трассы"
+                              xlinkHref={`${pointImage}#point`}
+                            />
+                          )
                         }
                       </div>
                       <div className="route-m__route-footer-toggles">
@@ -379,7 +383,7 @@ export default class RoutesEditModal extends Component {
                         {
                           route.photo
                             ? (
-                              <React.Fragment>
+                              <>
                                 <ButtonHandler
                                   onClick={() => this.fileInput.click()}
                                   title="Обновить фото"
@@ -390,7 +394,7 @@ export default class RoutesEditModal extends Component {
                                   title="Удалить фото"
                                   xlinkHref={`${btnHandlerImage}#icon-btn-close`}
                                 />
-                              </React.Fragment>
+                              </>
                             )
                             : (
                               <ButtonHandler
@@ -463,88 +467,74 @@ export default class RoutesEditModal extends Component {
             )
         }
         {
-          showSlider
-            ? (
-              <CategorySlider
-                category={route.category}
-                hide={() => this.setState({ showSlider: false })}
-                changeCategory={category => this.onRouteParamChange(category, 'category')}
-              />
-            )
-            : ''
+          showSlider && (
+            <CategorySlider
+              category={route.category}
+              hide={() => this.setState({ showSlider: false })}
+              changeCategory={category => this.onRouteParamChange(category, 'category')}
+            />
+          )
         }
         {
-          showKindSelect
-            ? (
-              <DropDownList
-                hide={() => this.setState({ showKindSelect: false })}
-                onClick={this.saveKind}
-                items={ROUTE_KINDS}
-                textFieldName="text"
-              />
-            )
-            : ''
+          showKindSelect && (
+            <DropDownList
+              hide={() => this.setState({ showKindSelect: false })}
+              onClick={this.saveKind}
+              items={ROUTE_KINDS}
+              textFieldName="text"
+            />
+          )
         }
         {
-          showAuthorSelect
-            ? (
-              <DropDownPersonList
-                hide={() => this.setState({ showAuthorSelect: false })}
-                onClick={this.saveAuthor}
-                users={users}
-              />
-            )
-            : ''
+          showAuthorSelect && (
+            <DropDownPersonList
+              hide={() => this.setState({ showAuthorSelect: false })}
+              onClick={this.saveAuthor}
+              users={users}
+            />
+          )
         }
         {
-          showRouteHoldsColorPicker
-            ? (
-              <RouteColorPicker
-                hide={() => this.setState({ showRouteHoldsColorPicker: false })}
-                routeMarkColors={routeMarkColors}
-                onClick={this.onHoldsColorSelect}
-              />
-            )
-            : ''
+          showRouteHoldsColorPicker && (
+            <RouteColorPicker
+              hide={() => this.setState({ showRouteHoldsColorPicker: false })}
+              routeMarkColors={routeMarkColors}
+              onClick={this.onHoldsColorSelect}
+            />
+          )
         }
         {
-          showRouteMarksColorPicker
-            ? (
-              <RouteColorPicker
-                hide={() => this.setState({ showRouteMarksColorPicker: false })}
-                routeMarkColors={routeMarkColors}
-                onClick={this.onMarksColorSelect}
-              />
-            )
-            : ''
+          showRouteMarksColorPicker && (
+            <RouteColorPicker
+              hide={() => this.setState({ showRouteMarksColorPicker: false })}
+              routeMarkColors={routeMarkColors}
+              onClick={this.onMarksColorSelect}
+            />
+          )
         }
         {
-          showInstalledAtSelect
-            ? (
-              <DatePicker
-                hide={() => this.setState({ showInstalledAtSelect: false })}
-                date={route.installed_at ? moment(route.installed_at) : null}
-                onSelect={
-                  date => this.onRouteParamChange(date ? date.format() : null, 'installed_at')
-                }
-              />
-            )
-            : ''
+          showInstalledAtSelect && (
+            <DatePicker
+              hide={() => this.setState({ showInstalledAtSelect: false })}
+              date={route.installed_at ? moment(route.installed_at) : null}
+              onSelect={
+                date => this.onRouteParamChange(date ? date.format() : null, 'installed_at')
+              }
+            />
+          )
         }
         {
-          showInstalledUntilSelect
-            ? (
-              <DatePicker
-                hide={() => this.setState({ showInstalledUntilSelect: false })}
-                date={route.installed_until ? moment(route.installed_until) : null}
-                onSelect={
-                  date => this.onRouteParamChange(date ? date.format() : null, 'installed_until')
-                }
-              />
-            )
-            : ''
+          showInstalledUntilSelect && (
+            <DatePicker
+              hide={() => this.setState({ showInstalledUntilSelect: false })}
+              date={route.installed_until ? moment(route.installed_until) : null}
+              onSelect={
+                date => this.onRouteParamChange(date ? date.format() : null, 'installed_until')
+              }
+            />
+          )
         }
-      </React.Fragment>
+      </>
     );
   }
 }
@@ -560,8 +550,4 @@ RoutesEditModal.propTypes = {
   updateRoute: PropTypes.func.isRequired,
   isWaiting: PropTypes.bool.isRequired,
   routeMarkColors: PropTypes.array.isRequired,
-};
-
-RoutesEditModal.defaultProps = {
-  user: null,
 };
