@@ -55,11 +55,3 @@
     justify-content: center;
     margin-top: 24px;
 }
-
-@media screen and (min-width: 720px) {
-    .first-section-m__btn {
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}

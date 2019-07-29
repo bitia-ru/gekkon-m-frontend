@@ -451,7 +451,7 @@ export default class RoutesEditModal extends Component {
                       onClick={cancel}
                     />
                   </div>
-                  <div className="track-m__btn-save">
+                  <div className="route-m__btn-save">
                     <Button
                       size="big"
                       buttonStyle="normal"

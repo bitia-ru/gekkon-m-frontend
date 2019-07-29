@@ -251,27 +251,27 @@ export default class RoutePhotoCropper extends Component {
     const {
       src, left, top, width,
     } = this.state;
-    const cornerClass = 'modal-block-m__crop-corner';
+    const cornerClass = 'cropper__crop-corner';
     return (
       <div className="sticky-bar">
-        <div className="modal-block-m modal-block-m_dark modal-block-m__crop-container">
-          <div className="modal-block-m__inner modal-block-m__crop-inner">
-            <div className="modal-block-m__container">
-              <div className="modal-block-m__header">
-                <div className="modal-block-m__header-btn">
+        <div className="cropper cropper_dark cropper__crop-container">
+          <div className="cropper__inner cropper__crop-inner">
+            <div className="cropper__container">
+              <div className="cropper__header">
+                <div className="cropper__header-btn">
                   <button type="button" className="turn-m" onClick={this.rotate} />
                 </div>
-                <div className="modal-block-m__header-btn">
+                <div className="cropper__header-btn">
                   <CloseButton onClick={this.save} light />
                 </div>
               </div>
             </div>
-            <div className="modal-block-m__img">
+            <div className="cropper__img">
               {
                 src
                   ? (
                     <div
-                      className="modal-block-m__img-inner"
+                      className="cropper__img-inner"
                       ref={(ref) => { this.imageContainerRef = ref; }}
                       onTouchMove={this.onTouchMove}
                       onTouchStart={e => this.startMoveCrop(e, 'all')}
@@ -283,7 +283,7 @@ export default class RoutePhotoCropper extends Component {
                         alt=""
                       />
                       <div
-                        className="modal-block-m__crop"
+                        className="cropper__crop"
                         style={
                           {
                             left: `${left}%`,
@@ -298,7 +298,7 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'left_top')}
-                          className={`${cornerClass} modal-block-m__crop-corner_left-top`}
+                          className={`${cornerClass} cropper__crop-corner_left-top`}
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -306,7 +306,7 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'right_top')}
-                          className={`${cornerClass} modal-block-m__crop-corner_right-top`}
+                          className={`${cornerClass} cropper__crop-corner_right-top`}
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -314,7 +314,7 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'right_bottom')}
-                          className={`${cornerClass} modal-block-m__crop-corner_right-bottom`}
+                          className={`${cornerClass} cropper__crop-corner_right-bottom`}
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -322,7 +322,7 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'left_bottom')}
-                          className={`${cornerClass} modal-block-m__crop-corner_left-bottom`}
+                          className={`${cornerClass} cropper__crop-corner_left-bottom`}
                           onContextMenu={this.onContextMenu}
                         />
                       </div>
@@ -331,7 +331,7 @@ export default class RoutePhotoCropper extends Component {
                   : ''
               }
             </div>
-            <div className="modal-block-m__btn">
+            <div className="cropper__btn">
               <Button
                 size="big"
                 buttonStyle="normal"

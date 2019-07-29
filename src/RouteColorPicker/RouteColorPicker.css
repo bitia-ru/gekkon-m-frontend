@@ -1,16 +1,3 @@
-.mark-color-picker__name {
-    display: inline-block;
-    vertical-align: middle;
-    padding-left: 20px;
-    cursor: pointer;
-}
-
-.mark-color-picker__wrap {
-    display: inline-flex;
-    position: relative;
-    outline: none;
-}
-
 .mark-color-picker__info {
     cursor: pointer;
 }

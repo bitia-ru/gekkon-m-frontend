@@ -1,0 +1,32 @@
+.route-m__route-image-wrapper {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    overflow: hidden;
+    transform: translateX(-50%);
+    left: 50%;
+    display: inline-block;
+}
+
+.route-m__route-image-wrapper img {
+    height: 100%;
+    width: auto;
+    z-index: 2;
+}
+
+.route-editor {
+    overflow: hidden;
+    height: 100%;
+}
+
+.route-editor__img-container {
+    height: 100%;
+    display: inline-block;
+    transform: translateX(-50%);
+    left: 50%;
+    position: relative;
+}
+
+.route-editor__img {
+    height: 100%;
+}

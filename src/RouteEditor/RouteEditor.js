@@ -277,8 +277,8 @@ export default class RouteEditor extends Component {
     } = this.state;
     const mapIndexed = R.addIndex(R.map);
     return (
-      <div className="modal-block-m modal-block-m_dark modal-block-m__image-container">
-        <div className="modal-block-m__inner modal-block-m__image-container-inner">
+      <div className="route-editor-m route-editor-m_dark route-editor-m__image-container">
+        <div className="route-editor-m__inner route-editor-m__image-container-inner">
           <Trash
             setRef={(ref) => { this.topTrashRef = ref; }}
             visible={showTopTrash}
@@ -290,9 +290,9 @@ export default class RouteEditor extends Component {
             active={bottomTrashActive}
             bottom
           />
-          <div className="modal-block-m__container modal-block-m__fixed-top">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__header-btn">
+          <div className="route-editor-m__container route-editor-m__fixed-top">
+            <div className="route-editor-m__header">
+              <div className="route-editor-m__header-btn">
                 <CloseButton onClick={hide} light />
               </div>
             </div>

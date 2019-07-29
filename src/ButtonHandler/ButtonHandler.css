@@ -34,3 +34,8 @@
     fill: #4F4F4F;
     transition: fill .4s ease-out;
 }
+
+.route-m__route-footer-item {
+    margin-left: 6px;
+    margin-right: 6px;
+}

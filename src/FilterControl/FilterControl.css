@@ -1,8 +1,9 @@
-.filter-block__title {
-    color: #1f1f1f;
-    font-size: 20px;
-    margin-bottom: 20px;
+.content-m__nav {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 38px;
+    margin-bottom: 26px;
 }
 
 .content__filter {

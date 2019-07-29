@@ -1,3 +1,10 @@
+.content-m__toggle {
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    margin-left: auto;
+}
+
 .toggle-direction-m {
     width: 30px;
     height: 30px;

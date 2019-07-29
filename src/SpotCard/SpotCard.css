@@ -37,13 +37,6 @@
     background-color: #09BDA7;
 }
 
-.climbing-card-m__container-inner {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: -12px;
-    margin-right: -12px;
-}
-
 .climbing-card-m__col-xs-12 {
     width: 100%;
     max-width: 100%;
