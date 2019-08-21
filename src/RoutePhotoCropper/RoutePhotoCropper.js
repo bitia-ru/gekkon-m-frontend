@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import EXIF from 'exif-js';
 import Button from '../Button/Button';
 import CloseButton from '../CloseButton/CloseButton';
 import { CROP_DEFAULT } from '../Constants/Route';
@@ -23,14 +24,21 @@ export default class RoutePhotoCropper extends Component {
     this.startWidth = null;
     this.startLeft = null;
     this.startTop = null;
+    this.exifAngle = 0;
+    this.exifIsFixed = false;
   }
 
-  rotate = () => {
+  rotate = (angle) => {
     const { rotate } = this.state;
     const image = this.imageRef;
     const canvas = document.createElement('canvas');
-    canvas.width = image.naturalHeight;
-    canvas.height = image.naturalWidth;
+    if (angle % 180 === 90) {
+      canvas.width = image.naturalHeight;
+      canvas.height = image.naturalWidth;
+    } else {
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+    }
 
     const x = canvas.width / 2;
     const y = canvas.height / 2;
@@ -39,14 +47,18 @@ export default class RoutePhotoCropper extends Component {
     const ctx = canvas.getContext('2d');
 
     ctx.translate(x, y);
-    ctx.rotate(90 * Math.PI / 180);
-    ctx.drawImage(image, -height / 2, -width / 2, height, width);
-    ctx.rotate(-90 * Math.PI / 180);
+    ctx.rotate(angle * Math.PI / 180);
+    if (angle % 180 === 90) {
+      ctx.drawImage(image, -height / 2, -width / 2, height, width);
+    } else {
+      ctx.drawImage(image, -width / 2, -height / 2, width, height);
+    }
+    ctx.rotate(-angle * Math.PI / 180);
     ctx.translate(-x, -y);
 
-    const newImageUrl = canvas.toDataURL();
+    const newImageUrl = canvas.toDataURL('image/jpeg');
     this.setState({
-      rotate: (rotate + 90) % 360,
+      rotate: (rotate + angle) % 360,
       src: newImageUrl,
       left: 50,
       top: 50,
@@ -218,7 +230,7 @@ export default class RoutePhotoCropper extends Component {
       realWidth,
       realHeight,
     );
-    return canvas.toDataURL();
+    return canvas.toDataURL('image/jpeg');
   };
 
   save = () => {
@@ -239,12 +251,28 @@ export default class RoutePhotoCropper extends Component {
       },
       rotate,
       image,
+      this.exifAngle,
     );
     close();
   };
 
   onContextMenu = (event) => {
     event.preventDefault();
+  };
+
+  onImageLoaded = () => {
+    if (this.exifIsFixed) { return; }
+    this.exifIsFixed = true;
+    const self = this;
+    EXIF.getData(this.imageRef, function () {
+      const orient = EXIF.getTag(this, 'Orientation');
+      if (orient === undefined) { return; }
+      const lookUp = {
+        1: 0, 3: 180, 6: 90, 8: 270,
+      };
+      self.exifAngle = lookUp[orient];
+      self.rotate(self.exifAngle);
+    });
   };
 
   render() {
@@ -259,7 +287,7 @@ export default class RoutePhotoCropper extends Component {
             <div className="modal-block-m__container">
               <div className="modal-block-m__header">
                 <div className="modal-block-m__header-btn">
-                  <button type="button" className="turn-m" onClick={this.rotate} />
+                  <button type="button" className="turn-m" onClick={() => this.rotate(90)} />
                 </div>
                 <div className="modal-block-m__header-btn">
                   <CloseButton onClick={this.save} light />
@@ -279,6 +307,7 @@ export default class RoutePhotoCropper extends Component {
                     >
                       <img
                         ref={(ref) => { this.imageRef = ref; }}
+                        onLoad={this.onImageLoaded}
                         src={src}
                         alt=""
                       />

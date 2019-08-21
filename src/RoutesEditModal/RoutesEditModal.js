@@ -19,6 +19,7 @@ import DatePicker from '../DatePicker/DatePicker';
 import btnHandlerImage from '../../img/btn-handler/btn-handler-sprite.svg';
 import pointImage from '../../img/route-img/point.svg';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import { isNeeded, fixRoutePhotoUpdateParams } from '../Workarounds/EXIFRotateIsIgnored';
 import './RoutesEditModal.css';
 
 export default class RoutesEditModal extends Component {
@@ -199,19 +200,22 @@ export default class RoutesEditModal extends Component {
     return false;
   };
 
-  saveCropped = (src, crop, rotate, image) => {
+  saveCropped = (src, crop, rotate, image, exifAngle) => {
     const { route, photo } = this.state;
     route.photo = src;
     route.photoFile = photo.file;
     if (this.noCrop(crop, image)) {
-      const photoCopy = R.clone(photo);
+      let photoCopy = R.clone(photo);
       photoCopy.crop = null;
       photoCopy.rotate = (rotate === 0 ? null : rotate);
+      if (isNeeded(exifAngle)) {
+        photoCopy = fixRoutePhotoUpdateParams(exifAngle, photoCopy);
+      }
       this.setState({ route, showCropper: false, photo: photoCopy });
     } else {
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
-      const photoCopy = R.clone(photo);
+      let photoCopy = R.clone(photo);
       photoCopy.crop = {
         x: crop.x * scaleX,
         y: crop.y * scaleY,
@@ -219,6 +223,9 @@ export default class RoutesEditModal extends Component {
         height: crop.height * scaleY,
       };
       photoCopy.rotate = (rotate === 0 ? null : rotate);
+      if (isNeeded(exifAngle)) {
+        photoCopy = fixRoutePhotoUpdateParams(exifAngle, photoCopy);
+      }
       this.setState({ route, showCropper: false, photo: photoCopy });
     }
   };
