@@ -44,6 +44,7 @@ import { NUM_OF_DAYS } from '../Constants/Route';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail, notAvail } from '../Utils';
 import { userStateToUser } from '../Utils/Workarounds';
+import numToStr from '../Constants/NumToStr';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -367,13 +368,22 @@ class SpotsShow extends Authorization {
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         let infoData = [
-          { count: response.data.metadata.num_of_sectors, label: 'Залов' },
-          { count: response.data.metadata.num_of_routes, label: 'Трасс' },
+          {
+            count: response.data.metadata.num_of_sectors,
+            label: numToStr(response.data.metadata.num_of_sectors, ['Зал', 'Зала', 'Залов']),
+          },
+          {
+            count: response.data.metadata.num_of_routes,
+            label: numToStr(response.data.metadata.num_of_routes, ['Трасса', 'Трассы', 'Трасс']),
+          },
         ];
         if (currentUserId !== 0) {
           infoData = R.append({
             count: response.data.metadata.num_of_unfulfilled,
-            label: 'Невыполненных трасс',
+            label: numToStr(
+              response.data.metadata.num_of_unfulfilled,
+              ['Невыполненная трасса', 'Невыполненные трассы', 'Невыполненных трасс'],
+            ),
           }, infoData);
         }
         this.setState({
@@ -408,13 +418,25 @@ class SpotsShow extends Authorization {
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         let infoData = [
-          { count: response.data.metadata.num_of_routes, label: 'Трасс' },
-          { count: response.data.metadata.num_of_new_routes, label: 'Новых трасс' },
+          {
+            count: response.data.metadata.num_of_routes,
+            label: numToStr(response.data.metadata.num_of_routes, ['Трасса', 'Трассы', 'Трасс']),
+          },
+          {
+            count: response.data.metadata.num_of_new_routes,
+            label: numToStr(
+              response.data.metadata.num_of_new_routes,
+              ['Новая трасса', 'Новые трассы', 'Новых трасс'],
+            ),
+          },
         ];
         if (currentUserId !== 0) {
           infoData = R.append({
             count: response.data.metadata.num_of_unfulfilled,
-            label: 'Невыполненных трасс',
+            label: numToStr(
+              response.data.metadata.num_of_unfulfilled,
+              ['Невыполненная трасса', 'Невыполненные трассы', 'Невыполненных трасс'],
+            ),
           }, infoData);
         }
         this.setState({
