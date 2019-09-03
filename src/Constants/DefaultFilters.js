@@ -15,6 +15,7 @@ const resultFilters = R.map(
 );
 
 export const PERSONAL_DEFAULT = false;
+export const OUTDATED_DEFAULT = false;
 
 export const DEFAULT_FILTERS = {
   categoryFrom: CATEGORIES[0],
@@ -22,14 +23,24 @@ export const DEFAULT_FILTERS = {
   period: 0,
   result,
   personal: PERSONAL_DEFAULT,
-  filters: R.append(
-    {
-      clickable: true,
-      id: 'personal',
-      selected: PERSONAL_DEFAULT,
-      text: `Авторские трассы ${PERSONAL_DEFAULT ? ' ✓' : ''}`,
-      value: 'personal',
-    },
+  outdated: OUTDATED_DEFAULT,
+  filters: R.concat(
     resultFilters,
+    [
+      {
+        clickable: true,
+        id: 'personal',
+        selected: PERSONAL_DEFAULT,
+        text: `Авторские трассы ${PERSONAL_DEFAULT ? ' ✓' : ''}`,
+        value: 'personal',
+      },
+      {
+        clickable: true,
+        id: 'outdated',
+        selected: OUTDATED_DEFAULT,
+        text: `Скрученные ${OUTDATED_DEFAULT ? ' ✓' : ''}`,
+        value: 'outdated',
+      },
+    ],
   ),
 };
