@@ -337,7 +337,14 @@ class SpotsShow extends Authorization {
       text: `Авторские трассы ${this.state.personal ? ' ✓' : ''}`,
       value: 'personal',
     };
-    this.setState({ filters: R.append(personal, resultFilters) });
+    const outdated = {
+      clickable: true,
+      id: 'outdated',
+      selected: this.state.outdated,
+      text: `Скрученные ${this.state.outdated ? ' ✓' : ''}`,
+      value: 'outdated',
+    };
+    this.setState({ filters: R.concat(resultFilters, [personal, outdated]) });
   };
 
   reloadSpot = (userId) => {
@@ -534,6 +541,11 @@ class SpotsShow extends Authorization {
         ? selectedFilters[this.state.spotId][currentSectorId].personal
         : filters.personal
     );
+    const currentOutdated = (
+      (filters.outdated === null || filters.outdated === undefined)
+        ? selectedFilters[this.state.spotId][currentSectorId].outdated
+        : filters.outdated
+    );
     const currentPage = (
       (page === null || page === undefined)
         ? selectedPages[this.state.spotId][currentSectorId]
@@ -543,6 +555,7 @@ class SpotsShow extends Authorization {
       filters: {
         category: [[currentCategoryFrom], [currentCategoryTo]],
         personal: currentPersonal,
+        outdated: currentOutdated,
       },
     };
     if (userCurr || avail(user.id)) {
@@ -653,9 +666,12 @@ class SpotsShow extends Authorization {
       this.props.setSelectedFilter(spotId, sectorId, 'categoryTo', categoryTo);
     }
     this.props.setSelectedFilter(spotId, sectorId, 'period', period);
-    const filter = R.find(R.propEq('id', 'personal'))(filters);
+    let filter = R.find(R.propEq('id', 'personal'))(filters);
     const personal = filter.selected;
+    filter = R.find(R.propEq('id', 'outdated'))(filters);
+    const outdated = filter.selected;
     this.props.setSelectedFilter(spotId, sectorId, 'personal', personal);
+    this.props.setSelectedFilter(spotId, sectorId, 'outdated', outdated);
     const resultFilters = R.filter(
       e => R.contains(e.id, R.map(f => f.id, RESULT_FILTERS)),
       filters,
@@ -664,11 +680,11 @@ class SpotsShow extends Authorization {
       const result = R.map(e => e.value, R.filter(e => e.selected, resultFilters));
       this.props.setSelectedFilter(spotId, sectorId, 'result', result);
       this.reloadRoutes({
-        categoryFrom, categoryTo, personal, result,
+        categoryFrom, categoryTo, personal, outdated, result,
       });
     } else {
       this.reloadRoutes({
-        categoryFrom, categoryTo, personal,
+        categoryFrom, categoryTo, personal, outdated,
       });
     }
     const filtersCopy = R.clone(this.props.selectedFilters[spotId][sectorId].filters);
