@@ -28,17 +28,28 @@ export default class RoutePhotoCropper extends Component {
     this.exifIsFixed = false;
   }
 
+  componentDidMount() {
+    loadImage(
+      this.state.src,
+      res => {
+        this.setState({src: res.toDataURL('image/jpeg')});
+      },
+      {
+        maxWidth: this.imageContainerRef.clientWidth/2,
+        canvas: true,
+        pixelRatio: 1,
+        orientation: true,
+      }
+    );
+  }
+
   rotate = (angle) => {
     const { rotate } = this.state;
     const image = this.imageRef;
     const canvas = document.createElement('canvas');
-    if (angle % 180 === 90) {
-      canvas.width = image.naturalHeight;
-      canvas.height = image.naturalWidth;
-    } else {
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
-    }
+    const canvasSize = Math.max(image.naturalWidth, image.naturalHeight)*2;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
 
     const x = canvas.width / 2;
     const y = canvas.height / 2;
@@ -46,15 +57,9 @@ export default class RoutePhotoCropper extends Component {
     const { height } = canvas;
     const ctx = canvas.getContext('2d');
 
-    ctx.translate(x, y);
-    ctx.rotate(angle * Math.PI / 180);
-    if (angle % 180 === 90) {
-      ctx.drawImage(image, -height / 2, -width / 2, height, width);
-    } else {
-      ctx.drawImage(image, -width / 2, -height / 2, width, height);
-    }
-    ctx.rotate(-angle * Math.PI / 180);
-    ctx.translate(-x, -y);
+    ctx.translate(canvasSize/2, canvasSize/2);
+    //ctx.rotate(90 * Math.PI / 180);
+    ctx.drawImage(image, 0, 0);
 
     const newImageUrl = canvas.toDataURL('image/jpeg');
     this.setState({
@@ -260,21 +265,6 @@ export default class RoutePhotoCropper extends Component {
     event.preventDefault();
   };
 
-  onImageLoaded = () => {
-    if (this.exifIsFixed) { return; }
-    this.exifIsFixed = true;
-    const self = this;
-    EXIF.getData(this.imageRef, function () {
-      const orient = EXIF.getTag(this, 'Orientation');
-      if (orient === undefined) { return; }
-      const lookUp = {
-        1: 0, 3: 180, 6: 90, 8: 270,
-      };
-      self.exifAngle = lookUp[orient];
-      self.rotate(self.exifAngle);
-    });
-  };
-
   render() {
     const {
       src, left, top, width,
@@ -307,7 +297,6 @@ export default class RoutePhotoCropper extends Component {
                     >
                       <img
                         ref={(ref) => { this.imageRef = ref; }}
-                        onLoad={this.onImageLoaded}
                         src={src}
                         alt=""
                       />

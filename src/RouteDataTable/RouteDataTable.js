@@ -72,7 +72,12 @@ const RouteDataTable = ({ route, user }) => {
           Тип:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
-          {R.find(R.propEq('title', route.kind), ROUTE_KINDS).text}
+          {
+            (() => {
+              const kind = R.find(R.propEq('title', route.kind), ROUTE_KINDS);
+              return kind ? kind.text : '';
+            })()
+          }
         </div>
       </div>
       <div className="route-m__table-row">
