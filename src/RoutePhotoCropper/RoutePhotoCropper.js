@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import EXIF from 'exif-js';
 import Button from '../Button/Button';
 import CloseButton from '../CloseButton/CloseButton';
 import { CROP_DEFAULT } from '../Constants/Route';
@@ -24,51 +23,43 @@ export default class RoutePhotoCropper extends Component {
     this.startWidth = null;
     this.startLeft = null;
     this.startTop = null;
-    this.exifAngle = 0;
-    this.exifIsFixed = false;
   }
 
   componentDidMount() {
+    const { src } = this.state;
     loadImage(
-      this.state.src,
-      res => {
-        this.setState({src: res.toDataURL('image/jpeg')});
+      src,
+      (res) => {
+        this.setState({ src: res.toDataURL('image/jpeg') });
       },
       {
-        maxWidth: this.imageContainerRef.clientWidth/2,
+        maxWidth: this.imageContainerRef.clientWidth / 2,
         canvas: true,
         pixelRatio: 1,
         orientation: true,
-      }
+      },
     );
   }
 
-  rotate = (angle) => {
-    const { rotate } = this.state;
-    const image = this.imageRef;
-    const canvas = document.createElement('canvas');
-    const canvasSize = Math.max(image.naturalWidth, image.naturalHeight)*2;
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-
-    const x = canvas.width / 2;
-    const y = canvas.height / 2;
-    const { width } = canvas;
-    const { height } = canvas;
-    const ctx = canvas.getContext('2d');
-
-    ctx.translate(canvasSize/2, canvasSize/2);
-    //ctx.rotate(90 * Math.PI / 180);
-    ctx.drawImage(image, 0, 0);
-
-    const newImageUrl = canvas.toDataURL('image/jpeg');
-    this.setState({
-      rotate: (rotate + angle) % 360,
-      src: newImageUrl,
-      left: 50,
-      top: 50,
-      width: CROP_DEFAULT.width,
-    });
+  rotate = () => {
+    const { rotate, src } = this.state;
+    loadImage(
+      src,
+      (res) => {
+        this.setState({
+          rotate: (rotate + 90) % 360,
+          src: res.toDataURL('image/jpeg'),
+          left: 50,
+          top: 50,
+          width: CROP_DEFAULT.width,
+        });
+      },
+      {
+        canvas: true,
+        pixelRatio: 1,
+        orientation: 6,
+      },
+    );
   };
 
   startMoveCrop = (event, moveObjName) => {
@@ -210,7 +201,12 @@ export default class RoutePhotoCropper extends Component {
   };
 
   getCropped = () => {
-    const { width, left, top } = this.state;
+    const {
+      width,
+      left,
+      top,
+      src,
+    } = this.state;
     const height = width / CROP_DEFAULT.aspect;
     const imageContainerRect = this.imageContainerRef.getBoundingClientRect();
     const image = this.imageRef;
@@ -218,27 +214,24 @@ export default class RoutePhotoCropper extends Component {
     const imageHeight = image.naturalHeight;
     const scaleX = imageContainerRect.width / imageWidth;
     const scaleY = imageContainerRect.height / imageHeight;
-    const canvas = document.createElement('canvas');
     const realWidth = width / scaleX;
     const realHeight = height / scaleY;
-    canvas.width = realWidth;
-    canvas.height = realHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(
-      image,
-      left * imageWidth / 100 - realWidth / 2,
-      top * imageHeight / 100 - realHeight / 2,
-      realWidth,
-      realHeight,
-      0,
-      0,
-      realWidth,
-      realHeight,
+    loadImage(
+      src,
+      (res) => {
+        this.save(res.toDataURL('image/jpeg'));
+      },
+      {
+        canvas: true,
+        left: left * imageWidth / 100 - realWidth / 2,
+        top: top * imageHeight / 100 - realHeight / 2,
+        right: imageWidth - left * imageWidth / 100 - realWidth / 2,
+        bottom: imageHeight - top * imageHeight / 100 - realHeight / 2,
+      },
     );
-    return canvas.toDataURL('image/jpeg');
   };
 
-  save = () => {
+  save = (cropped) => {
     const { save, close } = this.props;
     const {
       rotate, width, left, top,
@@ -247,7 +240,7 @@ export default class RoutePhotoCropper extends Component {
     const image = this.imageRef;
     const imageContainerRect = this.imageContainerRef.getBoundingClientRect();
     save(
-      this.getCropped(),
+      cropped,
       {
         x: left / 100 * imageContainerRect.width - width / 2,
         y: top / 100 * imageContainerRect.height - height / 2,
@@ -256,7 +249,6 @@ export default class RoutePhotoCropper extends Component {
       },
       rotate,
       image,
-      this.exifAngle,
     );
     close();
   };
@@ -277,10 +269,10 @@ export default class RoutePhotoCropper extends Component {
             <div className="modal-block-m__container">
               <div className="modal-block-m__header">
                 <div className="modal-block-m__header-btn">
-                  <button type="button" className="turn-m" onClick={() => this.rotate(90)} />
+                  <button type="button" className="turn-m" onClick={() => this.rotate()} />
                 </div>
                 <div className="modal-block-m__header-btn">
-                  <CloseButton onClick={this.save} light />
+                  <CloseButton onClick={this.getCropped} light />
                 </div>
               </div>
             </div>
@@ -355,7 +347,7 @@ export default class RoutePhotoCropper extends Component {
                 buttonStyle="normal"
                 title="Сохранить"
                 smallFont
-                onClick={this.save}
+                onClick={this.getCropped}
               />
             </div>
           </div>

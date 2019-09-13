@@ -164,8 +164,6 @@ export default class Authorization extends React.Component {
           }
         }).catch((error) => {
           decreaseNumOfActiveRequests();
-          console.log(error);
-          console.log(error.response);
           if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
             this.setState({ signUpFormErrors: error.response.data });
           } else {
