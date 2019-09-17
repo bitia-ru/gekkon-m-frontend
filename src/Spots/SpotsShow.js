@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Axios from 'axios';
+import moment from 'moment/moment';
 import Qs from 'qs';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
@@ -45,6 +46,8 @@ import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail, notAvail } from '../Utils';
 import { userStateToUser } from '../Utils/Workarounds';
 import numToStr from '../Constants/NumToStr';
+import { DEFAULT_VIEW_MODE } from '../Constants/ViewModeSwitcher';
+import { BACKEND_DATE_FORMAT } from '../Constants/Date';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -87,7 +90,7 @@ class SpotsShow extends Authorization {
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
-      viewMode: 'table',
+      viewMode: DEFAULT_VIEW_MODE,
     });
     this.loadingRouteId = this.props.match.params.route_id;
     this.loadEditMode = false;
@@ -503,9 +506,10 @@ class SpotsShow extends Authorization {
       });
   };
 
-  reloadRoutes = (filters = {}, page = 1, userCurr) => {
+  reloadRoutes = (filters = {}, page = 1, userCurr, viewModeCurr) => {
     const { user, selectedFilters, selectedPages } = this.props;
-    const { perPage } = this.state;
+    const { perPage, viewMode } = this.state;
+    const currentViewMode = viewModeCurr || viewMode;
     const currentSectorId = parseInt(
       (filters.sectorId === null || filters.sectorId === undefined)
         ? this.state.sectorId
@@ -532,6 +536,12 @@ class SpotsShow extends Authorization {
         ? selectedFilters[this.state.spotId][currentSectorId].period
         : filters.period
     );
+    let currentDate = (
+      (filters.date === null || filters.date === undefined)
+        ? selectedFilters[this.state.spotId][currentSectorId].date
+        : filters.date
+    );
+    currentDate = currentDate || DEFAULT_FILTERS.date;
     const currentResult = (
       (filters.result === null || filters.result === undefined)
         ? selectedFilters[this.state.spotId][currentSectorId].result
@@ -559,7 +569,7 @@ class SpotsShow extends Authorization {
         outdated: currentOutdated,
       },
     };
-    if (userCurr || avail(user.id)) {
+    if ((userCurr && avail(userCurr.id)) || avail(user.id)) {
       params.filters.result = (currentResult.length === 0 ? [null] : currentResult);
     }
     if (currentName !== '') {
@@ -586,8 +596,16 @@ class SpotsShow extends Authorization {
       }
       params.filters.installed_at = [[dFrom], [d]];
     }
-    params.limit = perPage;
-    params.offset = (currentPage - 1) * perPage;
+    if (currentViewMode === 'scheme') {
+      params.filters.installed_at = [[null], [moment(currentDate).format(BACKEND_DATE_FORMAT)]];
+      params.filters.installed_until = [
+        [moment(currentDate).add(1, 'days').format(BACKEND_DATE_FORMAT)],
+        [null],
+      ];
+    } else {
+      params.limit = perPage;
+      params.offset = (currentPage - 1) * perPage;
+    }
     if (this.props.token) params.token = this.props.token;
     if (currentSectorId === 0) {
       this.props.increaseNumOfActiveRequests();
@@ -637,6 +655,7 @@ class SpotsShow extends Authorization {
   };
 
   changeSectorFilter = (id) => {
+    const { user } = this.props;
     if (id !== 0) {
       this.reloadSector(id);
       this.props.history.push(`/spots/${this.state.spotId}/sectors/${id}`);
@@ -644,8 +663,8 @@ class SpotsShow extends Authorization {
       this.reloadSpot();
       this.props.history.push(`/spots/${this.state.spotId}`);
     }
-    this.setState({ sectorId: id, infoData: undefined });
-    this.reloadRoutes({ sectorId: id }, null);
+    this.setState({ sectorId: id, infoData: undefined, viewMode: DEFAULT_VIEW_MODE });
+    this.reloadRoutes({ sectorId: id }, null, user, DEFAULT_VIEW_MODE);
   };
 
   changeNameFilter = (searchString) => {
@@ -658,7 +677,7 @@ class SpotsShow extends Authorization {
     this.reloadRoutes({}, page);
   };
 
-  changeAllFilters = (categoryFrom, categoryTo, period, filters) => {
+  changeAllFilters = (categoryFrom, categoryTo, period, date, filters) => {
     const { spotId, sectorId } = this.state;
     if (categoryFrom !== null) {
       this.props.setSelectedFilter(spotId, sectorId, 'categoryFrom', categoryFrom);
@@ -667,6 +686,7 @@ class SpotsShow extends Authorization {
       this.props.setSelectedFilter(spotId, sectorId, 'categoryTo', categoryTo);
     }
     this.props.setSelectedFilter(spotId, sectorId, 'period', period);
+    this.props.setSelectedFilter(spotId, sectorId, 'date', date);
     let filter = R.find(R.propEq('id', 'personal'))(filters);
     const personal = filter.selected;
     filter = R.find(R.propEq('id', 'outdated'))(filters);
@@ -681,11 +701,21 @@ class SpotsShow extends Authorization {
       const result = R.map(e => e.value, R.filter(e => e.selected, resultFilters));
       this.props.setSelectedFilter(spotId, sectorId, 'result', result);
       this.reloadRoutes({
-        categoryFrom, categoryTo, personal, outdated, result,
+        categoryFrom,
+        categoryTo,
+        period,
+        date: date || DEFAULT_FILTERS.date,
+        personal,
+        outdated,
+        result,
       });
     } else {
-      this.reloadRoutes({
-        categoryFrom, categoryTo, personal, outdated,
+      this.reloadRoutes({categoryFrom,
+        categoryTo,
+        period,
+        date: date || DEFAULT_FILTERS.date,
+        personal,
+        outdated,
       });
     }
     const filtersCopy = R.clone(this.props.selectedFilters[spotId][sectorId].filters);
@@ -1107,13 +1137,27 @@ class SpotsShow extends Authorization {
   };
 
   changeViewMode = (viewMode) => {
+    const {
+      user, setSelectedFilter: setSelectedFilterProp,
+    } = this.props;
+    let date = '';
+    if (viewMode === 'scheme') {
+      date = (
+        (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
+          ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].date
+          : DEFAULT_FILTERS.date
+      );
+      const { spotId, sectorId } = this.state;
+      setSelectedFilterProp(spotId, sectorId, 'date', date);
+    }
+    this.reloadRoutes({ date }, null, user, viewMode);
     this.setState({ viewMode });
   };
 
   content = () => {
-    const { user } = this.props;
+    const { user, sectors } = this.props;
     const {
-      spot, sector, sectorId, infoData, viewMode,
+      spot, sector, sectorId, infoData, viewMode, currentShown,
     } = this.state;
     const {
       likeBtnIsBusy,
@@ -1132,6 +1176,13 @@ class SpotsShow extends Authorization {
     } else {
       data = {};
     }
+    let currentSector;
+    if (sectorId === 0) {
+      currentSector = R.find(
+        s => s.id === currentShown.sector_id,
+        sectors,
+      );
+    }
     if (this.state.routesModalVisible) {
       if (this.state.editMode) {
         return (
@@ -1141,8 +1192,8 @@ class SpotsShow extends Authorization {
               this.state.sectorId === 0
                 ? (
                   R.find(
-                    s => s.id === this.state.currentShown.sector_id,
-                    this.props.sectors,
+                    s => s.id === currentShown.sector_id,
+                    sectors,
                   )
                 )
                 : this.state.sector
@@ -1155,7 +1206,12 @@ class SpotsShow extends Authorization {
             createRoute={this.createRoute}
             updateRoute={this.updateRoute}
             isWaiting={this.state.editRouteIsWaiting}
-            route={this.state.currentShown}
+            route={currentShown}
+            diagram={
+              sectorId === 0
+                ? (currentSector.diagram && currentSector.diagram.url)
+                : (sector.diagram && sector.diagram.url)
+            }
           />
         );
       }
@@ -1180,16 +1236,22 @@ class SpotsShow extends Authorization {
           numOfRedpoints={this.state.numOfRedpoints}
           numOfFlash={this.state.numOfFlash}
           changeAscentResult={this.changeAscentResult}
-          route={this.state.currentShown}
+          route={currentShown}
+          diagram={
+            sectorId === 0
+              ? (currentSector.diagram && currentSector.diagram.url)
+              : (sector.diagram && sector.diagram.url)
+          }
         />
       );
     }
+    const routes = R.pathOr([], [this.state.spotId, this.state.sectorId], this.props.routes);
     return (
       <>
         <div className="sticky-bar">
           <Header
             data={data}
-            sectors={this.props.sectors}
+            sectors={sectors}
             sectorId={sectorId}
             infoData={infoData}
             changeSectorFilter={this.changeSectorFilter}
@@ -1212,11 +1274,12 @@ class SpotsShow extends Authorization {
               : ''
           }
           <Content
-            routes={R.pathOr([], [this.state.spotId, this.state.sectorId], this.props.routes)}
+            routes={routes}
             ascents={this.state.ascents}
             user={userStateToUser(user)}
             addRoute={this.goToNew}
             sectorId={this.state.sectorId}
+            diagram={sector.diagram && sector.diagram.url}
             page={
               (this.props.selectedPages && this.props.selectedPages[this.state.spotId])
                 ? this.props.selectedPages[this.state.spotId][this.state.sectorId]
@@ -1225,9 +1288,10 @@ class SpotsShow extends Authorization {
             numOfPages={this.state.numOfPages}
             onRouteClick={this.onRouteClick}
             changePage={this.changePage}
-            numOfRoutes={numOfRoutes}
+            numOfRoutes={viewMode === 'scheme' ? routes.length : numOfRoutes}
             changeViewMode={this.changeViewMode}
             viewMode={viewMode}
+            withScheme={sectorId !== 0}
             showFilters={() => this.setState({ showFilters: true })}
           />
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
@@ -1244,11 +1308,18 @@ class SpotsShow extends Authorization {
 
   render() {
     const { user } = this.props;
+    const { viewMode } = this.state;
     const period = (
       (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
         ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].period
         : DEFAULT_FILTERS.period
     );
+    let date = (
+      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
+        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].date
+        : DEFAULT_FILTERS.date
+    );
+    date = date || DEFAULT_FILTERS.date;
     const filters = (
       (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
         ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].filters
@@ -1276,6 +1347,8 @@ class SpotsShow extends Authorization {
                 categoryFrom={categoryFrom}
                 categoryTo={categoryTo}
                 period={period}
+                date={date}
+                viewMode={viewMode}
                 filters={
                   avail(user.id)
                     ? filters

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
+import moment from 'moment/moment';
+import { DATE_FORMAT } from '../Constants/Date';
 import CloseButton from '../CloseButton/CloseButton';
 import DropDownList from '../DropDownList/DropDownList';
+import DatePicker from '../DatePicker/DatePicker';
 import Button from '../Button/Button';
 import PERIOD_FILTERS from '../Constants/PeriodFilters';
 import { CATEGORIES, CATEGORIES_ITEMS, getCategoryColor } from '../Constants/Categories';
@@ -10,18 +13,21 @@ import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
 import Category from '../Category/Category';
 import './FilterBlock.css';
 
+
 export default class FilterBlock extends Component {
   constructor(props) {
     super(props);
 
     const {
-      period, filters, categoryFrom, categoryTo,
+      period, date, filters, categoryFrom, categoryTo,
     } = this.props;
     this.state = {
       showCategoryFilter: false,
       showPeriodFilter: false,
+      showDateFilter: false,
       showFilters: false,
       period,
+      date,
       filters: R.clone(filters),
       categoryFrom,
       categoryTo,
@@ -33,10 +39,10 @@ export default class FilterBlock extends Component {
       hideFilters, changeAllFilters,
     } = this.props;
     const {
-      period, filters, categoryFrom, categoryTo,
+      period, date, filters, categoryFrom, categoryTo,
     } = this.state;
     changeAllFilters(
-      categoryFrom, categoryTo, period, filters,
+      categoryFrom, categoryTo, period, date, filters,
     );
     hideFilters();
   };
@@ -49,6 +55,7 @@ export default class FilterBlock extends Component {
     this.setState({
       filters: DEFAULT_FILTERS.filters,
       period: DEFAULT_FILTERS.period,
+      date: undefined,
       categoryFrom: DEFAULT_FILTERS.categoryFrom,
       categoryTo: DEFAULT_FILTERS.categoryTo,
     }, () => this.save());
@@ -56,6 +63,10 @@ export default class FilterBlock extends Component {
 
   changePeriod = (id) => {
     this.setState({ period: id, showPeriodFilter: false });
+  };
+
+  changeDate = (date) => {
+    this.setState({ date: date ? date.format() : undefined, showDateFilter: false });
   };
 
   changeFilters = (filters) => {
@@ -89,10 +100,18 @@ export default class FilterBlock extends Component {
 
   render() {
     const {
-      hideFilters,
+      hideFilters, viewMode,
     } = this.props;
     const {
-      categoryFrom, categoryTo, period, filters, showCategoryFilter, showPeriodFilter, showFilters,
+      categoryFrom,
+      categoryTo,
+      period,
+      date,
+      filters,
+      showCategoryFilter,
+      showPeriodFilter,
+      showDateFilter,
+      showFilters,
     } = this.state;
     return (
       <React.Fragment>
@@ -126,18 +145,41 @@ export default class FilterBlock extends Component {
               </div>
               <div className="modal-block-m__filter-item">
                 <div className="field-select-m">
-                  <span className="field-select-m__title">Период</span>
-                  <div className="field-select-m__container">
-                    <div
-                      role="button"
-                      tabIndex="0"
-                      style={{ outline: 'none' }}
-                      onClick={() => this.setState({ showPeriodFilter: true })}
-                      className="field-select-m__select field-select-m__select_active"
-                    >
-                      {R.find(R.propEq('id', period))(PERIOD_FILTERS).text}
-                    </div>
-                  </div>
+                  {
+                    viewMode === 'scheme'
+                      ? (
+                        <>
+                          <span className="field-select-m__title">Дата</span>
+                          <div className="field-select-m__container">
+                            <div
+                              role="button"
+                              tabIndex="0"
+                              style={{ outline: 'none' }}
+                              onClick={() => this.setState({ showDateFilter: true })}
+                              className="field-select-m__select field-select-m__select_active"
+                            >
+                              {moment(date || DEFAULT_FILTERS.date).format(DATE_FORMAT)}
+                            </div>
+                          </div>
+                        </>
+                      )
+                      : (
+                        <>
+                          <span className="field-select-m__title">Период</span>
+                          <div className="field-select-m__container">
+                            <div
+                              role="button"
+                              tabIndex="0"
+                              style={{ outline: 'none' }}
+                              onClick={() => this.setState({ showPeriodFilter: true })}
+                              className="field-select-m__select field-select-m__select_active"
+                            >
+                              {R.find(R.propEq('id', period))(PERIOD_FILTERS).text}
+                            </div>
+                          </div>
+                        </>
+                      )
+                  }
                 </div>
               </div>
               <div className="modal-block-m__filter-item">
@@ -202,6 +244,16 @@ export default class FilterBlock extends Component {
             ) : ''
         }
         {
+          showDateFilter
+            ? (
+              <DatePicker
+                hide={() => this.setState({ showDateFilter: false })}
+                date={moment(date || DEFAULT_FILTERS.date)}
+                onSelect={this.changeDate}
+              />
+            ) : ''
+        }
+        {
           showFilters
             ? (
               <DropDownList
@@ -220,6 +272,8 @@ export default class FilterBlock extends Component {
 }
 
 FilterBlock.propTypes = {
+  date: PropTypes.string,
+  viewMode: PropTypes.string.isRequired,
   categoryFrom: PropTypes.string.isRequired,
   categoryTo: PropTypes.string.isRequired,
   period: PropTypes.number.isRequired,

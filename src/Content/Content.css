@@ -64,13 +64,6 @@
     width: 100%;
 }
 
-.content-m__toggle {
-    display: flex;
-    align-self: flex-end;
-    align-items: center;
-    margin-left: auto;
-}
-
 .content-m__nav {
     display: flex;
     justify-content: space-between;

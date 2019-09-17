@@ -2,17 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RouteCardTable from '../RouteCardTable/RouteCardTable';
 import RouteCardList from '../RouteCardList/RouteCardList';
-import RouteCardMap from '../RouteCardMap/RouteCardMap';
+import RouteCardScheme from '../RouteCardScheme/RouteCardScheme';
 
 export default class RouteCardView extends Component {
   renderViewMode(viewMode) {
     const {
-      user, routes, ascents, addRoute, sectorId, onRouteClick,
+      user, routes, ascents, addRoute, sectorId, onRouteClick, diagram,
     } = this.props;
     switch (viewMode) {
-    case 'map':
+    case 'scheme':
       return (
-        <RouteCardMap />
+        <RouteCardScheme
+          diagram={diagram}
+          routes={routes}
+          ascents={ascents}
+          sectorId={sectorId}
+          onRouteClick={onRouteClick}
+        />
       );
     case 'table':
       return (
@@ -52,6 +58,7 @@ export default class RouteCardView extends Component {
 
 RouteCardView.propTypes = {
   user: PropTypes.object,
+  diagram: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
   routes: PropTypes.array.isRequired,
   ascents: PropTypes.array.isRequired,
