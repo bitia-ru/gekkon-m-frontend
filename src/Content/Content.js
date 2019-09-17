@@ -8,18 +8,6 @@ import NUM_OF_DISPLAYED_PAGES from '../Constants/Pagination';
 import './Content.css';
 
 export default class Content extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      viewMode: 'table',
-    };
-  }
-
-  changeViewMode = (viewMode) => {
-    this.setState({ viewMode });
-  };
-
   pagesList = () => {
     const { numOfPages, page } = this.props;
     if (NUM_OF_DISPLAYED_PAGES >= numOfPages) {
@@ -37,7 +25,6 @@ export default class Content extends Component {
   };
 
   render() {
-    const { viewMode } = this.state;
     const {
       user,
       page,
@@ -50,13 +37,15 @@ export default class Content extends Component {
       changePage,
       numOfRoutes,
       showFilters,
+      viewMode,
+      changeViewMode,
     } = this.props;
     return (
       <div className="content-m">
         <div className="content-m__container">
           <FilterControl
             viewMode={viewMode}
-            onViewModeChange={this.changeViewMode}
+            onViewModeChange={changeViewMode}
             numOfRoutes={numOfRoutes}
             showFilters={showFilters}
           />
@@ -84,6 +73,8 @@ export default class Content extends Component {
 
 Content.propTypes = {
   user: PropTypes.object,
+  viewMode: PropTypes.string.isRequired,
+  changeViewMode: PropTypes.func.isRequired,
   routes: PropTypes.array.isRequired,
   ascents: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,

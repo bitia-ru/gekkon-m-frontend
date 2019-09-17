@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import * as R from 'ramda';
-import { getCategoryColor } from '../Constants/Categories';
 import { getUserName } from '../Constants/User';
 import { ROUTE_KINDS } from '../Constants/Route';
 import getColorStyle from '../Constants/RouteColorPicker';
+import { getCategoryColor } from '../Constants/Categories';
+import Category from '../Category/Category';
 import './RouteDataTable.css';
 
 const RouteDataTable = ({ route, user }) => {
@@ -27,12 +28,7 @@ const RouteDataTable = ({ route, user }) => {
           Сложность:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
-          <div
-            className="level"
-            style={{ border: `4px solid ${getCategoryColor(route.category)}` }}
-          >
-            {route.category}
-          </div>
+          <Category category={route.category} color={getCategoryColor(route.category)} />
         </div>
       </div>
       <div className="route-m__table-row">

@@ -7,6 +7,7 @@ import Button from '../Button/Button';
 import PERIOD_FILTERS from '../Constants/PeriodFilters';
 import { CATEGORIES, CATEGORIES_ITEMS, getCategoryColor } from '../Constants/Categories';
 import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
+import Category from '../Category/Category';
 import './FilterBlock.css';
 
 export default class FilterBlock extends Component {
@@ -116,19 +117,9 @@ export default class FilterBlock extends Component {
                       style={{ outline: 'none' }}
                     >
                       <span className="field-select-m__placeholder">От</span>
-                      <div
-                        className="level"
-                        style={{ border: `4px solid ${getCategoryColor(categoryFrom)}` }}
-                      >
-                        {categoryFrom}
-                      </div>
+                      <Category category={categoryFrom} color={getCategoryColor(categoryFrom)} />
                       <span className="field-select-m__placeholder">до</span>
-                      <div
-                        className="level"
-                        style={{ border: `4px solid ${getCategoryColor(categoryTo)}` }}
-                      >
-                        {categoryTo}
-                      </div>
+                      <Category category={categoryTo} color={getCategoryColor(categoryTo)} />
                     </div>
                   </div>
                 </div>
