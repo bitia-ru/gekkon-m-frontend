@@ -12,6 +12,8 @@ import RouteView from '../RouteView/RouteView';
 import RouteEditor from '../RouteEditor/RouteEditor';
 import CloseButton from '../CloseButton/CloseButton';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import ShowSchemeButton from '../ShowSchemeButton/ShowSchemeButton';
+import SchemeModal from '../SchemeModal/SchemeModal';
 import './RoutesShowModal.css';
 
 export default class RoutesShowModal extends Component {
@@ -24,6 +26,7 @@ export default class RoutesShowModal extends Component {
       currentPointers: [],
       showRouteMark: false,
       routeImageLoading: true,
+      schemeModalVisible: false,
     };
   }
 
@@ -118,9 +121,15 @@ export default class RoutesShowModal extends Component {
       removeComment,
       comments,
       goToProfile,
+      diagram,
     } = this.props;
     const {
-      currentPointers, quoteComment, commentContent, showRouteMark, routeImageLoading,
+      currentPointers,
+      quoteComment,
+      commentContent,
+      showRouteMark,
+      routeImageLoading,
+      schemeModalVisible,
     } = this.state;
     const showLoadPhotoMsg = (
       (!route.photo || !routeImageLoading) && user && this.canEditRoute(user, route)
@@ -199,6 +208,10 @@ export default class RoutesShowModal extends Component {
                   />
                 )
               }
+              <ShowSchemeButton
+                disabled={route.data.position === undefined}
+                onClick={() => this.setState({ schemeModalVisible: true })}
+              />
             </div>
             <div className="route-m__route-footer">
               <div className="route-m__route-information">
@@ -281,6 +294,13 @@ export default class RoutesShowModal extends Component {
             />
           </div>
         </div>
+        {
+          schemeModalVisible && <SchemeModal
+            currentRoute={route}
+            diagram={diagram}
+            close={() => this.setState({ schemeModalVisible: false })}
+          />
+        }
       </>
     );
   }
@@ -288,6 +308,7 @@ export default class RoutesShowModal extends Component {
 
 RoutesShowModal.propTypes = {
   user: PropTypes.object,
+  diagram: PropTypes.string,
   ascent: PropTypes.object,
   numOfRedpoints: PropTypes.number,
   numOfFlash: PropTypes.number,

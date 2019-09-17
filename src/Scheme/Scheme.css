@@ -1,0 +1,10 @@
+.map {
+    width: 100%;
+    position: relative;
+}
+
+.map__map-img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+}
