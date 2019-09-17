@@ -5,7 +5,7 @@ import filterImage from '../../img/btn-filter-img/filter-icon.svg';
 import './FilterControl.css';
 
 const FilterControl = ({
-  viewMode, onViewModeChange, numOfRoutes, showFilters,
+  viewMode, onViewModeChange, numOfRoutes, showFilters, viewModeData,
 }) => (
   <React.Fragment>
     <button type="button" className="btn-filter" onClick={showFilters}>
@@ -14,16 +14,21 @@ const FilterControl = ({
           <use xlinkHref={`${filterImage}#icon-filter`} />
         </svg>
       </span>
-          Фильтры
+      Фильтры
     </button>
     <div className="content-m__nav">
       <div className="content-m__info-block">{`Всего трасс: ${numOfRoutes}`}</div>
-      <ViewModeSwitcher onViewModeChange={onViewModeChange} viewMode={viewMode} />
+      <ViewModeSwitcher
+        onViewModeChange={onViewModeChange}
+        viewMode={viewMode}
+        viewModeData={viewModeData}
+      />
     </div>
   </React.Fragment>
 );
 
 FilterControl.propTypes = {
+  viewModeData: PropTypes.object,
   viewMode: PropTypes.string.isRequired,
   onViewModeChange: PropTypes.func.isRequired,
   numOfRoutes: PropTypes.number.isRequired,

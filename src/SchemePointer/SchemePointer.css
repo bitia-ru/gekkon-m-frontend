@@ -1,0 +1,23 @@
+.point {
+    width: 6px;
+    height: 6px;
+    font-family: GilroyRegular, sans-serif;
+    font-size: 3px;
+    line-height: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    content: '';
+    background-color: #84888B;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transition: box-shadow .4s ease-out, transform .4s ease-out, background-color .4s ease-out;
+    transform: scale(1) translate(-50%, -50%);
+}
+
+.point_active {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    transform: scale(1.12);
+}
