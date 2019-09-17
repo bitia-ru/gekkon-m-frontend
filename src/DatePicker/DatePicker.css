@@ -112,6 +112,10 @@
     color: #006CEB;
 }
 
+.calendar__month-week-day_active.calendar__month-week-day_current {
+    color: #ffffff;
+}
+
 .calendar__button {
     padding: 0;
     padding-top: 14px;

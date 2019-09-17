@@ -19,6 +19,8 @@ import DatePicker from '../DatePicker/DatePicker';
 import btnHandlerImage from '../../img/btn-handler/btn-handler-sprite.svg';
 import pointImage from '../../img/route-img/point.svg';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
+import ShowSchemeButton from '../ShowSchemeButton/ShowSchemeButton';
+import SchemeModal from '../SchemeModal/SchemeModal';
 import './RoutesEditModal.css';
 
 export default class RoutesEditModal extends Component {
@@ -44,6 +46,7 @@ export default class RoutesEditModal extends Component {
       showInstalledUntilSelect: false,
       showRouteMark: false,
       routeImageLoading: true,
+      schemeModalVisible: false,
     };
   }
 
@@ -254,6 +257,7 @@ export default class RoutesEditModal extends Component {
       routeMarkColors,
       cancel,
       isWaiting,
+      diagram,
     } = this.props;
     const {
       photo,
@@ -271,6 +275,7 @@ export default class RoutesEditModal extends Component {
       showInstalledUntilSelect,
       showRouteMark,
       routeImageLoading,
+      schemeModalVisible,
     } = this.state;
     const routeChanged = JSON.stringify(route) !== JSON.stringify(fieldsOld);
     const pointersChanged = JSON.stringify(currentPointers) !== JSON.stringify(currentPointersOld);
@@ -361,6 +366,10 @@ export default class RoutesEditModal extends Component {
                         />
                       )
                     }
+                    <ShowSchemeButton
+                      disabled={route.data.position === undefined}
+                      onClick={() => this.setState({ schemeModalVisible: true })}
+                    />
                   </div>
                   <div className="route-m__route-footer">
                     <div className="route-m__route-footer-container">
@@ -536,6 +545,13 @@ export default class RoutesEditModal extends Component {
             />
           )
         }
+        {
+          schemeModalVisible && <SchemeModal
+            currentRoute={route}
+            diagram={diagram}
+            close={() => this.setState({ schemeModalVisible: false })}
+          />
+        }
       </>
     );
   }
@@ -543,6 +559,7 @@ export default class RoutesEditModal extends Component {
 
 RoutesEditModal.propTypes = {
   user: PropTypes.object,
+  diagram: PropTypes.string,
   route: PropTypes.object.isRequired,
   sector: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,

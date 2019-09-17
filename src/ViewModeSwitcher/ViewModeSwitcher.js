@@ -1,60 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import toggleDirection from '../../img/view-mode-switcher-sprite/toggle-direction-sprite.svg';
+import * as R from 'ramda';
+import ModeButton from '../ModeButton/ModeButton';
 import './ViewModeSwitcher.css';
 
 const ViewModeSwitcher = ({
-  viewMode, onViewModeChange,
+  viewMode, onViewModeChange, viewModeData,
 }) => (
   <div className="content-m__toggle">
-    <button
-      type="button"
-      style={{ outline: 'none' }}
-      className={`toggle-direction-m${
-        viewMode === 'map'
-          ? ' toggle-direction-m_active'
-          : ''
-      }`}
-      onClick={() => onViewModeChange('map')}
-    >
-      <svg>
-        <use xlinkHref={`${toggleDirection}#toggle-map`} />
-      </svg>
-    </button>
-    <button
-      type="button"
-      style={{ outline: 'none' }}
-      className={`toggle-direction-m${
-        viewMode === 'table'
-          ? ' toggle-direction-m_active'
-          : ''
-      }`}
-      onClick={() => onViewModeChange('table')}
-    >
-      <svg>
-        <use xlinkHref={`${toggleDirection}#toggle-table`} />
-      </svg>
-    </button>
-    <button
-      type="button"
-      style={{ outline: 'none' }}
-      className={`toggle-direction-m${
-        viewMode === 'list'
-          ? ' toggle-direction-m_active'
-          : ''
-      }`}
-      onClick={() => onViewModeChange('list')}
-    >
-      <svg>
-        <use xlinkHref={`${toggleDirection}#toggle-list`} />
-      </svg>
-    </button>
+    {
+      R.map(
+        (e) => {
+          const name = e[0];
+          return (<ModeButton
+            key={name}
+            mode={name}
+            title={viewModeData[name] && viewModeData[name].title}
+            disabled={viewModeData[name] && viewModeData[name].disabled}
+            onClick={() => onViewModeChange(name)}
+            active={viewMode === name}
+          />);
+        },
+        R.toPairs(viewModeData),
+      )
+    }
   </div>
 );
 
 ViewModeSwitcher.propTypes = {
+  viewModeData: PropTypes.object,
   viewMode: PropTypes.string.isRequired,
   onViewModeChange: PropTypes.func.isRequired,
+};
+
+ViewModeSwitcher.defaultProps = {
+  viewModeData: {},
 };
 
 export default ViewModeSwitcher;

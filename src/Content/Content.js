@@ -39,6 +39,7 @@ export default class Content extends Component {
       showFilters,
       viewMode,
       changeViewMode,
+      diagram,
     } = this.props;
     return (
       <div className="content-m">
@@ -48,8 +49,24 @@ export default class Content extends Component {
             onViewModeChange={changeViewMode}
             numOfRoutes={numOfRoutes}
             showFilters={showFilters}
+            viewModeData={
+              sectorId !== 0
+                ? {
+                  scheme: {
+                    title: diagram ? undefined : 'Схема зала ещё не загружена',
+                    disabled: diagram === null,
+                  },
+                  table: {},
+                  list: {},
+                }
+                : {
+                  table: {},
+                  list: {},
+                }
+            }
           />
           <RouteCardView
+            diagram={diagram}
             viewMode={viewMode}
             addRoute={addRoute}
             sectorId={sectorId}
@@ -58,13 +75,15 @@ export default class Content extends Component {
             ascents={ascents}
             onRouteClick={onRouteClick}
           />
-          <Pagination
-            onPageChange={changePage}
-            page={page}
-            pagesList={this.pagesList()}
-            firstPage={1}
-            lastPage={numOfPages}
-          />
+          {
+            viewMode !== 'scheme' && <Pagination
+              onPageChange={changePage}
+              page={page}
+              pagesList={this.pagesList()}
+              firstPage={1}
+              lastPage={numOfPages}
+            />
+          }
         </div>
       </div>
     );
@@ -73,6 +92,7 @@ export default class Content extends Component {
 
 Content.propTypes = {
   user: PropTypes.object,
+  diagram: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
   changeViewMode: PropTypes.func.isRequired,
   routes: PropTypes.array.isRequired,
