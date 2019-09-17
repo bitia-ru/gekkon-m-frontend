@@ -4,6 +4,7 @@ import moment from 'moment';
 import { SOON_END_PERIOD } from '../Constants/Route';
 import RouteStatus from '../RouteStatus/RouteStatus';
 import timeFromNow from '../Constants/DateTimeFormatter';
+import Category from '../Category/Category';
 import clockIcons from '../../img/route-card-sprite/card-sprite.svg';
 import './RouteCard.css';
 
@@ -98,7 +99,7 @@ export default class RouteCard extends Component {
                   }
                 </span>
                 <span className="card-m__complexity">
-                  <div className="card-m__level">{route.category}</div>
+                  <Category category={route.category} size="small" position="right" />
                 </span>
               </div>
             </div>

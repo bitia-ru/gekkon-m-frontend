@@ -2,6 +2,7 @@ import React from 'react';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import RouteCard from '../RouteCard/RouteCard';
+import AddRouteButton from '../AddRouteButton/AddRouteButton';
 import './RouteCardTable.css';
 
 const RouteCardTable = ({
@@ -9,20 +10,7 @@ const RouteCardTable = ({
 }) => (
   <div className="content-m__inner-card">
     {
-      (sectorId !== 0 && user) && (
-        <div className="content-m__col-sm-6 content-m__col-xs-12">
-          <a
-            role="link"
-            tabIndex="0"
-            style={{ outline: 'none' }}
-            className="card-m card-m__edit"
-            onClick={addRoute}
-          >
-            <span className="card-m__edit-icon" />
-            <span className="card-m__edit-title">Добавить новую трассу</span>
-          </a>
-        </div>
-      )
+      (sectorId !== 0 && user) && <AddRouteButton onClick={addRoute} />
     }
     {R.map(route => (
       <RouteCard

@@ -168,32 +168,6 @@
     display: flex;
 }
 
-.card-m__level {
-    font-size: 10px;
-    line-height: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: GilroyBold, sans-serif;
-    color: #1f1f1f;
-    width: 26px;
-    height: 19px;
-    padding-top: 2px;
-    box-sizing: border-box;
-    text-align: center;
-    background-color: #ffffff;
-    border: 3px solid transparent;
-    margin-right: 8px;
-}
-
-.card-m__level_7b {
-    border: 3px solid #6DA8D2;
-}
-
-.card-m__level_5c {
-    border: 3px solid #E24D4D;
-}
-
 .card-m__hook {
     width: 19px;
     height: 19px;
@@ -221,44 +195,6 @@
     .card-m__edit {
         height: 156px;
     }
-}
-
-.card-m__edit-icon {
-    display: flex;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 4px solid #D1D5E2;
-    position: relative;
-    margin-right: 20px;
-}
-
-.card-m__edit-icon::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 4px;
-    background-color: #D1D5E2;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.card-m__edit-icon::after {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 4px;
-    background-color: #D1D5E2;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
-}
-
-.card-m__edit-title {
-    font-family: GilroyBold, sans-serif;
-    font-size: 14px;
-    color: #D1D5E2;
 }
 
 .card-m_done {

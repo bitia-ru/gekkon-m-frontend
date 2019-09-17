@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CloseButton from '../CloseButton/CloseButton';
 import Button from '../Button/Button';
+import Category from '../Category/Category';
+import { getCategoryColor } from '../Constants/Categories';
 import './CategoryFilter.css';
 
 export default class CategoryFilter extends Component {
@@ -27,9 +29,7 @@ export default class CategoryFilter extends Component {
                     От
                   </div>
                   <div className="range__container">
-                    <div className="level level_big level_5c">
-                      5c
-                    </div>
+                    <Category category="5c" size="big" color={getCategoryColor('5c')} />
                   </div>
                 </div>
                 <div className="range__select-item">
@@ -37,9 +37,7 @@ export default class CategoryFilter extends Component {
                     До
                   </div>
                   <div className="range__container">
-                    <div className="level level_big level_7b">
-                      7b
-                    </div>
+                    <Category category="7b" size="big" color={getCategoryColor('7b')} />
                   </div>
                 </div>
               </div>

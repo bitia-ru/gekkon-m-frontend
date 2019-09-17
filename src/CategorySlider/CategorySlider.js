@@ -4,6 +4,7 @@ import * as R from 'ramda';
 import { CATEGORIES, getCategoryColor } from '../Constants/Categories';
 import CloseButton from '../CloseButton/CloseButton';
 import Button from '../Button/Button';
+import Category from '../Category/Category';
 import './CategorySlider.css';
 
 export default class CategorySlider extends Component {
@@ -100,12 +101,11 @@ export default class CategorySlider extends Component {
               <div className="range__top range__top_center">
                 <div className="range__select-item">
                   <div className="range__container">
-                    <div
-                      className="level level_large"
-                      style={{ border: `4px solid ${getCategoryColor(category)}` }}
-                    >
-                      {category}
-                    </div>
+                    <Category
+                      category={category}
+                      size="large"
+                      color={getCategoryColor(category)}
+                    />
                   </div>
                 </div>
               </div>
