@@ -1,0 +1,27 @@
+.table-m__row {
+    display: flex;
+    background-color: #ffffff;
+    border: 2px solid #D1D5E2;
+    border-top: none;
+    padding: 18px 18px;
+}
+
+.table-m__row-item {
+    width: 40%;
+}
+
+.table-m__row-item_number {
+    width: 20%;
+}
+
+.table-m__row-item_level {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+}
+
+.table-m__row-item_hook {
+    display: flex;
+    justify-content: flex-end;
+    width: 30%;
+}

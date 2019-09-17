@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import moment from 'moment';
-import { getCategoryColor } from '../Constants/Categories';
 import { ROUTE_KINDS } from '../Constants/Route';
 import { DATE_FORMAT } from '../Constants/Date';
 import getColorStyle from '../Constants/RouteColorPicker';
 import { getUserName } from '../Constants/User';
+import { getCategoryColor } from '../Constants/Categories';
+import Category from '../Category/Category';
 import './RouteDataEditableTable.css';
 
 const RouteDataEditableTable = ({
@@ -31,15 +32,11 @@ const RouteDataEditableTable = ({
             Сложность:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
-            <div
-              role="button"
-              tabIndex="0"
-              className="level"
+            <Category
+              category={route.category}
+              color={getCategoryColor(route.category)}
               onClick={showCategorySlider}
-              style={{ border: `4px solid ${getCategoryColor(route.category)}`, outline: 'none' }}
-            >
-              {route.category}
-            </div>
+            />
           </div>
         </div>
         <div className="route-m__table-row">

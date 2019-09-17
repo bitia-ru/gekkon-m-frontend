@@ -87,6 +87,7 @@ class SpotsShow extends Authorization {
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
+      viewMode: 'table',
     });
     this.loadingRouteId = this.props.match.params.route_id;
     this.loadEditMode = false;
@@ -1105,10 +1106,14 @@ class SpotsShow extends Authorization {
     this.addRoute();
   };
 
+  changeViewMode = (viewMode) => {
+    this.setState({ viewMode });
+  };
+
   content = () => {
     const { user } = this.props;
     const {
-      spot, sector, sectorId, infoData,
+      spot, sector, sectorId, infoData, viewMode,
     } = this.state;
     const {
       likeBtnIsBusy,
@@ -1221,6 +1226,8 @@ class SpotsShow extends Authorization {
             onRouteClick={this.onRouteClick}
             changePage={this.changePage}
             numOfRoutes={numOfRoutes}
+            changeViewMode={this.changeViewMode}
+            viewMode={viewMode}
             showFilters={() => this.setState({ showFilters: true })}
           />
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
