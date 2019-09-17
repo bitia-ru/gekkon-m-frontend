@@ -27,7 +27,13 @@ export default class RouteCardView extends Component {
       );
     case 'list':
       return (
-        <RouteCardList />
+        <RouteCardList
+          routes={routes}
+          addRoute={addRoute}
+          sectorId={sectorId}
+          onRouteClick={onRouteClick}
+          user={user}
+        />
       );
     default:
       return '';
