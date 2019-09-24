@@ -1,0 +1,31 @@
+.section-news-m {
+    padding-top: 64px;
+    padding-bottom: 34px;
+    background-color: #F0F7FF;
+}
+
+.section-news-m__container {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.section-news-m__header {
+    font-size: 28px;
+    font-family: GilroyMedium, sans-serif;
+    color: #1F1F1F;
+    margin-top: 0;
+    margin-bottom: 40px;
+}
+
+.news-card-m__col-xs-12 {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media screen and (min-width: 576px) {
+    .news-card-m__col-sm-6 {
+        width: 100%;
+        max-width: 420px;
+    }
+}
