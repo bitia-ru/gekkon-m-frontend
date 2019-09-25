@@ -113,6 +113,11 @@ export default class FilterBlock extends Component {
       showDateFilter,
       showFilters,
     } = this.state;
+    const currentFilters = (
+      viewMode === 'scheme'
+        ? R.filter(f => f.id !== 'outdated', filters)
+        : filters
+    );
     return (
       <React.Fragment>
         <div className="modal-block-m">
@@ -196,7 +201,10 @@ export default class FilterBlock extends Component {
                       {
                         R.join(
                           ', ',
-                          R.map(e => R.slice(0, -2, e.text), R.filter(e => e.selected, filters)),
+                          R.map(
+                            e => R.slice(0, -2, e.text),
+                            R.filter(e => e.selected, currentFilters),
+                          ),
                         )
                       }
                     </div>
@@ -260,7 +268,7 @@ export default class FilterBlock extends Component {
                 hide={() => this.setState({ showFilters: false })}
                 save={this.changeFilters}
                 setDefault={this.setDefaultFilters}
-                items={filters}
+                items={currentFilters}
                 textFieldName="text"
                 multipleSelect
               />
