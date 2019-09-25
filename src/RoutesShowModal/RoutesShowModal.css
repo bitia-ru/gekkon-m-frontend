@@ -30,3 +30,25 @@
     line-height: 1.3em;
     margin-bottom: 18px;
 }
+
+.track-m__notice-wrapper {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.track-m__notice {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 14px;
+    top: 14px;
+}
+
+.track-m__notice-tooltip {
+    position: absolute;
+    content: '';
+    right: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+}
