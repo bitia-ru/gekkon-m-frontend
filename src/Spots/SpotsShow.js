@@ -1179,7 +1179,34 @@ class SpotsShow extends Authorization {
       );
       setSelectedFilterProp(spotId, sectorId, 'date', date);
     }
-    this.reloadRoutes({ date }, null, user, viewMode);
+    this.reloadRoutes({date}, null, user, viewMode);
+
+  };
+
+  submitNoticeForm = (msg) => {
+    const { user, selectedFilters } = this.props;
+    const { currentShown, spotId, sectorId } = this.state;
+    Sentry.withScope((scope) => {
+      scope.setExtra('user_id', user.id);
+      scope.setExtra('route_id', currentShown.id);
+      scope.setExtra(
+        'filters',
+        (
+          (selectedFilters && selectedFilters[spotId])
+            ? selectedFilters[spotId][sectorId]
+            : undefined
+        ),
+      );
+      scope.setExtra('url', window.location.href);
+      if (user.login) {
+        scope.setExtra('user_login', user.login);
+      } else if (user.email) {
+        scope.setExtra('user_email', user.email);
+      } else {
+        scope.setExtra('user_phone', user.phone);
+      }
+      Sentry.captureException(msg);
+    });
   };
 
   content = () => {
@@ -1281,6 +1308,7 @@ class SpotsShow extends Authorization {
               ? (currentSector.diagram && currentSector.diagram.url)
               : (sector.diagram && sector.diagram.url)
           }
+          submitNoticeForm={this.submitNoticeForm}
         />
       );
     }
