@@ -7,6 +7,7 @@
     padding-right: 24px;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
 }
 
 .route-m__block {
@@ -81,7 +82,7 @@
 
 .route-m__table {
     margin-bottom: 22px;
-    margin-top: 22px;
+    padding-top: 22px;
 }
 
 .route-m__table-row {

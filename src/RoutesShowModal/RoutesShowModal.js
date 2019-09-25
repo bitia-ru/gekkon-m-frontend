@@ -14,6 +14,10 @@ import CloseButton from '../CloseButton/CloseButton';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import ShowSchemeButton from '../ShowSchemeButton/ShowSchemeButton';
 import SchemeModal from '../SchemeModal/SchemeModal';
+import NoticeButton from '../NoticeButton/NoticeButton';
+import NoticeForm from '../NoticeForm/NoticeForm';
+import Tooltip from '../Tooltip/Tooltip';
+import { avail } from '../Utils';
 import './RoutesShowModal.css';
 
 export default class RoutesShowModal extends Component {
@@ -27,6 +31,8 @@ export default class RoutesShowModal extends Component {
       showRouteMark: false,
       routeImageLoading: true,
       schemeModalVisible: false,
+      showNoticeForm: false,
+      showTooltip: false,
     };
   }
 
@@ -103,6 +109,22 @@ export default class RoutesShowModal extends Component {
     return false;
   };
 
+  showNoticeForm = (event) => {
+    event.stopPropagation();
+    this.setState({ showTooltip: false, showNoticeForm: true });
+  };
+
+  cancelNoticeForm = (event) => {
+    event.stopPropagation();
+    this.setState({ showTooltip: false, showNoticeForm: false });
+  };
+
+  submitNoticeForm = (msg) => {
+    const { submitNoticeForm } = this.props;
+    submitNoticeForm(msg);
+    this.setState({ showTooltip: false, showNoticeForm: false });
+  };
+
   render() {
     const {
       onClose,
@@ -130,6 +152,8 @@ export default class RoutesShowModal extends Component {
       showRouteMark,
       routeImageLoading,
       schemeModalVisible,
+      showNoticeForm,
+      showTooltip,
     } = this.state;
     const showLoadPhotoMsg = (
       (!route.photo || !routeImageLoading) && user && this.canEditRoute(user, route)
@@ -233,6 +257,18 @@ export default class RoutesShowModal extends Component {
             </div>
           </div>
           <div className="route-m__container">
+            {
+              (user && avail(user.id)) && <div className="track-m__notice">
+                <NoticeButton onClick={this.showNoticeForm} />
+                <div className="track-m__notice-tooltip">
+                  {
+                    false && showTooltip && <Tooltip
+                      text="Сообщить об ошибке"
+                    />
+                  }
+                </div>
+              </div>
+            }
             <RouteDataTable route={route} user={user} />
           </div>
           {
@@ -301,6 +337,12 @@ export default class RoutesShowModal extends Component {
             close={() => this.setState({ schemeModalVisible: false })}
           />
         }
+        {
+          showNoticeForm && <NoticeForm
+            submit={this.submitNoticeForm}
+            cancel={this.cancelNoticeForm}
+          />
+        }
       </>
     );
   }
@@ -325,6 +367,7 @@ RoutesShowModal.propTypes = {
   likeBtnIsBusy: PropTypes.bool.isRequired,
   onLikeChange: PropTypes.func.isRequired,
   changeAscentResult: PropTypes.func.isRequired,
+  submitNoticeForm: PropTypes.func.isRequired,
 };
 
 RoutesShowModal.defaultProps = {
