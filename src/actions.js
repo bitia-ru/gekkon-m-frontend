@@ -67,6 +67,13 @@ export const setDefaultSelectedPages = (spotId, sectorIds) => ({
   sectorIds,
 });
 
+export const setSelectedViewMode = (spotId, sectorId, viewMode) => ({
+  type: acts.SET_SELECTED_VIEW_MODE,
+  spotId,
+  sectorId,
+  viewMode,
+});
+
 export const setSelectedFilter = (spotId, sectorId, filterName, filterValue) => ({
   type: acts.SET_SELECTED_FILTER,
   spotId,
