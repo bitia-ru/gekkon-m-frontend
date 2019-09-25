@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastr';
 import { ApiUrl } from '../Environ';
 import {
+  setSelectedViewMode,
   setSelectedPage,
   setDefaultSelectedPages,
   setSelectedFilter,
@@ -46,7 +47,10 @@ import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail, notAvail } from '../Utils';
 import { userStateToUser } from '../Utils/Workarounds';
 import numToStr from '../Constants/NumToStr';
-import { DEFAULT_VIEW_MODE } from '../Constants/ViewModeSwitcher';
+import {
+  DEFAULT_SPOT_VIEW_MODE,
+  DEFAULT_SECTOR_VIEW_MODE_LIST,
+} from '../Constants/ViewModeSwitcher';
 import { BACKEND_DATE_FORMAT } from '../Constants/Date';
 
 Axios.interceptors.request.use((config) => {
@@ -90,7 +94,6 @@ class SpotsShow extends Authorization {
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
-      viewMode: DEFAULT_VIEW_MODE,
     });
     this.loadingRouteId = this.props.match.params.route_id;
     this.loadEditMode = false;
@@ -507,15 +510,33 @@ class SpotsShow extends Authorization {
   };
 
   reloadRoutes = (filters = {}, page = 1, userCurr, viewModeCurr) => {
-    const { user, selectedFilters, selectedPages } = this.props;
-    const { perPage, viewMode } = this.state;
-    const currentViewMode = viewModeCurr || viewMode;
+    const {
+      user,
+      selectedFilters,
+      selectedPages,
+      selectedViewModes,
+      sectors,
+    } = this.props;
+    const { spotId, perPage } = this.state;
     const currentSectorId = parseInt(
       (filters.sectorId === null || filters.sectorId === undefined)
         ? this.state.sectorId
         : filters.sectorId,
       10,
     );
+    let viewMode;
+    const viewModes = selectedViewModes;
+    const currSector = R.find(s => s.id === currentSectorId, sectors);
+    if (viewModes && viewModes[spotId] && viewModes[spotId][currentSectorId]) {
+      viewMode = selectedViewModes[spotId][currentSectorId];
+    } else if (currentSectorId === 0) {
+      viewMode = DEFAULT_SPOT_VIEW_MODE;
+    } else if (currSector && currSector.diagram) {
+      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+    } else {
+      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+    }
+    const currentViewMode = viewModeCurr || viewMode;
     const currentCategoryFrom = (
       (filters.categoryFrom === null || filters.categoryFrom === undefined)
         ? selectedFilters[this.state.spotId][currentSectorId].categoryFrom
@@ -663,8 +684,8 @@ class SpotsShow extends Authorization {
       this.reloadSpot();
       this.props.history.push(`/spots/${this.state.spotId}`);
     }
-    this.setState({ sectorId: id, infoData: undefined, viewMode: DEFAULT_VIEW_MODE });
-    this.reloadRoutes({ sectorId: id }, null, user, DEFAULT_VIEW_MODE);
+    this.setState({ sectorId: id, infoData: undefined });
+    this.reloadRoutes({ sectorId: id }, null, user);
   };
 
   changeNameFilter = (searchString) => {
@@ -1139,26 +1160,29 @@ class SpotsShow extends Authorization {
 
   changeViewMode = (viewMode) => {
     const {
-      user, setSelectedFilter: setSelectedFilterProp,
+      user,
+      selectedFilters,
+      setSelectedFilter: setSelectedFilterProp,
+      setSelectedViewMode: setSelectedViewModeProp,
     } = this.props;
+    const { spotId, sectorId } = this.state;
     let date = '';
+    setSelectedViewModeProp(spotId, sectorId, viewMode);
     if (viewMode === 'scheme') {
       date = (
-        (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-          ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].date
+        (selectedFilters && selectedFilters[spotId])
+          ? selectedFilters[spotId][sectorId].date
           : DEFAULT_FILTERS.date
       );
-      const { spotId, sectorId } = this.state;
       setSelectedFilterProp(spotId, sectorId, 'date', date);
     }
     this.reloadRoutes({ date }, null, user, viewMode);
-    this.setState({ viewMode });
   };
 
   content = () => {
-    const { user, sectors } = this.props;
+    const { user, sectors, selectedViewModes } = this.props;
     const {
-      spot, sector, sectorId, infoData, viewMode, currentShown,
+      spot, sector, spotId, sectorId, infoData, currentShown,
     } = this.state;
     const {
       likeBtnIsBusy,
@@ -1176,6 +1200,17 @@ class SpotsShow extends Authorization {
       data = sector;
     } else {
       data = {};
+    }
+    let viewMode;
+    const currSector = R.find(s => s.id === sectorId, sectors);
+    if (selectedViewModes && selectedViewModes[spotId] && selectedViewModes[spotId][sectorId]) {
+      viewMode = selectedViewModes[spotId][sectorId];
+    } else if (sectorId === 0) {
+      viewMode = DEFAULT_SPOT_VIEW_MODE;
+    } else if (currSector && currSector.diagram) {
+      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+    } else {
+      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
     }
     let currentSector;
     if (sectorId === 0) {
@@ -1308,8 +1343,19 @@ class SpotsShow extends Authorization {
   };
 
   render() {
-    const { user } = this.props;
-    const { viewMode } = this.state;
+    const { user, selectedViewModes, sectors } = this.props;
+    const { spotId, sectorId } = this.state;
+    let viewMode;
+    const currSector = R.find(s => s.id === sectorId, sectors);
+    if (selectedViewModes && selectedViewModes[spotId] && selectedViewModes[spotId][sectorId]) {
+      viewMode = selectedViewModes[spotId][sectorId];
+    } else if (sectorId === 0) {
+      viewMode = DEFAULT_SPOT_VIEW_MODE;
+    } else if (currSector && currSector.diagram) {
+      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+    } else {
+      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+    }
     const period = (
       (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
         ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].period
@@ -1435,6 +1481,7 @@ class SpotsShow extends Authorization {
 }
 
 const mapStateToProps = state => ({
+  selectedViewModes: state.selectedViewModes,
   selectedPages: state.selectedPages,
   selectedFilters: state.selectedFilters,
   routes: state.routes,
@@ -1447,6 +1494,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadRoutes: (spotId, sectorId, routes) => dispatch(loadRoutes(spotId, sectorId, routes)),
+  setSelectedViewMode: (spotId, sectorId, viewMode) => (
+    dispatch(setSelectedViewMode(spotId, sectorId, viewMode))
+  ),
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
   setDefaultSelectedPages: (spotId, sectorIds) => dispatch(
     setDefaultSelectedPages(spotId, sectorIds),
