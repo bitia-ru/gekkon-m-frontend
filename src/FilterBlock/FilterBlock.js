@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import moment from 'moment/moment';
-import { DATE_FORMAT } from '../Constants/Date';
+import { DATE_FORMAT, dateToTextFormatter } from '../Constants/Date';
 import CloseButton from '../CloseButton/CloseButton';
 import DropDownList from '../DropDownList/DropDownList';
 import DatePicker from '../DatePicker/DatePicker';
@@ -113,6 +113,11 @@ export default class FilterBlock extends Component {
       showDateFilter,
       showFilters,
     } = this.state;
+    const formatter = (
+      viewMode === 'scheme'
+        ? dateToTextFormatter
+        : (d => moment(d).format(DATE_FORMAT))
+    );
     const currentFilters = (
       viewMode === 'scheme'
         ? R.filter(f => f.id !== 'outdated', filters)
@@ -163,7 +168,7 @@ export default class FilterBlock extends Component {
                               onClick={() => this.setState({ showDateFilter: true })}
                               className="field-select-m__select field-select-m__select_active"
                             >
-                              {moment(date || DEFAULT_FILTERS.date).format(DATE_FORMAT)}
+                              {formatter(date || DEFAULT_FILTERS.date)}
                             </div>
                           </div>
                         </>
