@@ -171,15 +171,18 @@ export default class RoutesEditModal extends Component {
     this.setState({ route });
   };
 
-  onFileRead = () => {
-    const { photo } = this.state;
-    photo.content = this.fileReader.result;
-    this.setState({ showCropper: true, photo });
-  };
+  onNewPhotoFileSelected = (file) => {
+    const onFileRead = () => {
+      const { photo } = this.state;
+      photo.content = this.fileReader.result;
+      this.setState({ showCropper: true, photo });
+    };
 
-  onFileChosen = (file) => {
+    // TODO: There is a time gap between file had been chosen and had been read. Fill this gap with
+    //       sort of spinner.
+
     this.fileReader = new FileReader();
-    this.fileReader.onloadend = this.onFileRead;
+    this.fileReader.onloadend = onFileRead;
     this.fileReader.readAsDataURL(file);
     const { photo } = this.state;
     photo.file = file;
@@ -203,15 +206,14 @@ export default class RoutesEditModal extends Component {
     const { route, photo } = this.state;
     route.photo = src;
     route.photoFile = photo.file;
+    const photoCopy = R.clone(photo);
     if (this.noCrop(crop, image)) {
-      const photoCopy = R.clone(photo);
       photoCopy.crop = null;
       photoCopy.rotate = (rotate === 0 ? null : rotate);
       this.setState({ route, showCropper: false, photo: photoCopy });
     } else {
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
-      const photoCopy = R.clone(photo);
       photoCopy.crop = {
         x: crop.x * scaleX,
         y: crop.y * scaleY,
@@ -378,7 +380,7 @@ export default class RoutesEditModal extends Component {
                           type="file"
                           hidden
                           ref={(ref) => { this.fileInput = ref; }}
-                          onChange={event => this.onFileChosen(event.target.files[0])}
+                          onChange={event => this.onNewPhotoFileSelected(event.target.files[0])}
                         />
                         {
                           route.photo
