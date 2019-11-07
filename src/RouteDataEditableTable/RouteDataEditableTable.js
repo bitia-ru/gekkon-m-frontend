@@ -29,7 +29,7 @@ const RouteDataEditableTable = ({
       <div className="route-m__table">
         <div className="route-m__table-row">
           <div className="route-m__table-item route-m__table-item_header">
-            Сложность:
+            Категория:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
             <Category
@@ -41,7 +41,7 @@ const RouteDataEditableTable = ({
         </div>
         <div className="route-m__table-row">
           <div className="route-m__table-item route-m__table-item_header">
-            Цвет зацепов:
+            Зацепы:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
             <div className="route-m__field-select">
@@ -62,7 +62,7 @@ const RouteDataEditableTable = ({
         </div>
         <div className="route-m__table-row">
           <div className="route-m__table-item route-m__table-item_header">
-              Цвет маркировки:
+              Маркировка:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
             <div className="route-m__field-select">
@@ -115,7 +115,7 @@ const RouteDataEditableTable = ({
         </div>
         <div className="route-m__table-row">
           <div className="route-m__table-item route-m__table-item_header">
-            Дата накрутки:
+            Накручена:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
             <div className="field-select-m route-m__field-select">
@@ -133,7 +133,7 @@ const RouteDataEditableTable = ({
         </div>
         <div className="route-m__table-row">
           <div className="route-m__table-item route-m__table-item_header">
-            Дата cкрутки:
+            Скручена:
           </div>
           <div className="route-m__table-item route-m__table-item-right">
             <div className="field-select-m route-m__field-select">
