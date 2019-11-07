@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 
 module.exports = () => ({
@@ -42,6 +43,21 @@ module.exports = () => ({
       API_URL: '',
       SENTRY_DSN: '',
       CLIENT_ID: '',
+    }),
+    new FaviconsWebpackPlugin({
+      logo: './img/logo-img/logo-75x75-blacked.png',
+      favicons: {
+        appName: 'Roving Climbers',
+        appShortName: 'RC',
+        appDescription: 'Climbing club',
+        developerName: 'Bitia',
+        developerURL: 'http://bitia.ru',
+        appleStatusBarStyle: 'black',
+        background: '#000',
+        theme_color: '#000',
+        orientation: 'portrait',
+        start_url: '/',
+      },
     }),
   ],
 });
