@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import arrowImage from '../../img/info-block-img/arrow.svg';
 import './Slider.css';
 
 export default class Slider extends Component {
@@ -20,7 +19,7 @@ export default class Slider extends Component {
       <button type="button" className="header-m__items-container-button" onClick={this.onClick}>
         <span className="header-m__info-icon">
           <svg aria-hidden="true">
-            <use xlinkHref={`${arrowImage}#arrow`} />
+            <use xlinkHref={`${require('./images/arrow.svg')}#arrow`} />
           </svg>
         </span>
       </button>

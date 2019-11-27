@@ -9,7 +9,6 @@ import CloseButton from '../CloseButton/CloseButton';
 import SALT_ROUNDS from '../Constants/Bcrypt';
 import { PASSWORD_MIN_LENGTH } from '../Constants/User';
 import RE_EMAIL from '../Constants/Constraints';
-import socialLinks from '../../img/social-links-sprite/social-links-sprite.svg';
 import './Profile.css';
 
 export default class Profile extends Component {
@@ -312,6 +311,9 @@ export default class Profile extends Component {
       avatar, name, email, phone, login, password, repeatPassword,
     } = this.state;
     const { user, enterWithVk, isWaiting } = this.props;
+    const socialLinks = require(
+      '../../img/social-links-sprite/social-links-sprite.svg',
+    );
     return (
       <div className="modal-block-m">
         <div className="modal-block-m__inner">

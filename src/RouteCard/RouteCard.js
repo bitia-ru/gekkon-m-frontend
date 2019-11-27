@@ -5,7 +5,6 @@ import { SOON_END_PERIOD } from '../Constants/Route';
 import RouteStatus from '../RouteStatus/RouteStatus';
 import timeFromNow from '../Constants/DateTimeFormatter';
 import Category from '../Category/Category';
-import clockIcons from '../../img/route-card-sprite/card-sprite.svg';
 import './RouteCard.css';
 
 export default class RouteCard extends Component {
@@ -25,6 +24,7 @@ export default class RouteCard extends Component {
     moment.locale('ru');
     const date = moment().add(SOON_END_PERIOD, 'days');
     const installedUntil = route.installed_until ? moment(route.installed_until) : null;
+    const clockIcons = require('./images/card-sprite.svg');
     return (
       <a
         className={`card-m${

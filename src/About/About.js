@@ -20,7 +20,6 @@ import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
 import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
-import aboutImage from '../../img/header-img/about.jpg';
 import { TITLE, TITLES, ABOUT_DATA } from '../Constants/About';
 import { avail } from '../Utils';
 import { userStateToUser } from '../Utils/Workarounds';
@@ -138,7 +137,7 @@ class About extends Authorization {
         <div className="sticky-bar">
           <InfoPageHeader
             title={TITLE}
-            image={aboutImage}
+            image={require('./images/about.jpg')}
             showMenu={() => this.setState({ showMenu: true })}
           />
           {

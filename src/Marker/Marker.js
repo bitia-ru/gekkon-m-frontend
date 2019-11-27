@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import markerImage from '../../img/marker-img/hold-mark.png';
 import './Marker.css';
 
 export default class Marker extends Component {
@@ -47,7 +46,7 @@ export default class Marker extends Component {
           >
             <img
               draggable={false}
-              src={markerImage}
+              src={require('./images/hold-mark.png')}
               style={{
                 touchAction: editable ? 'none' : 'auto',
                 width: `${radius * 2}px`,
