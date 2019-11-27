@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import trashImage from '../../img/trash-img/trash-can.svg';
 import './Trash.css';
 
 const Trash = ({
@@ -21,7 +20,7 @@ const Trash = ({
       }
     >
       <svg aria-hidden="true">
-        <use xlinkHref={`${trashImage}#trash-can`} />
+        <use xlinkHref={`${require('./images/trash-can.svg')}#trash-can`} />
       </svg>
     </div>
   );

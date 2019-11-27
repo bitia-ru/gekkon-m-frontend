@@ -22,11 +22,6 @@ WORKDIR /app
 
 COPY --from=builder /app/dist /app
 
-# TODO: GKN-113: Remove this after refactoring:
-RUN mkdir public
-COPY public/img ./public/img
-COPY public/fonts ./public/fonts
-
 COPY docker/configs/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
