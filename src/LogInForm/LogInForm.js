@@ -7,7 +7,6 @@ import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
 import CloseButton from '../CloseButton/CloseButton';
 import CheckBox from '../CheckBox/CheckBox';
-import socialLinks from '../../img/social-links-sprite/social-links-sprite.svg';
 import './LogInForm.css';
 
 export default class LogInForm extends Component {
@@ -256,6 +255,9 @@ export default class LogInForm extends Component {
 
   render() {
     const { enterWithVk } = this.props;
+    const socialLinks = require(
+      '../../img/social-links-sprite/social-links-sprite.svg',
+    );
     return (
       <div className="modal-block-m">
         <div className="modal-block-m__inner">

@@ -25,7 +25,7 @@ module.exports = () => ({
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(pdf|jpg|png|gif|svg|ico)$/,
+        test: /\.(pdf|jpg|png|gif|svg|ico|woff2)$/,
         use: {
           loader: 'file-loader',
           options: {
@@ -45,7 +45,7 @@ module.exports = () => ({
       CLIENT_ID: '',
     }),
     new FaviconsWebpackPlugin({
-      logo: './img/logo-img/logo-75x75-blacked.png',
+      logo: './src/Logo/images/logo-75x75-blacked.png',
       favicons: {
         appName: 'Roving Climbers',
         appShortName: 'RC',

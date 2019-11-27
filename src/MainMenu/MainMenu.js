@@ -5,7 +5,6 @@ import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
 import UserIcon from '../UserIcon/UserIcon';
 import MenuList from '../MenuList/MenuList';
 import { USER_ITEMS_DATA, GUEST_ITEMS_DATA } from '../Constants/User';
-import socialLinks from '../../img/social-links-sprite/social-links-sprite.svg';
 import './MainMenu.css';
 
 export default class MainMenu extends Component {
@@ -54,6 +53,9 @@ export default class MainMenu extends Component {
 
   render() {
     const { user, hideMenu, enterWithVk } = this.props;
+    const socialLinks = require(
+      '../../img/social-links-sprite/social-links-sprite.svg',
+    );
     return (
       <div className="m-menu">
         <div className="m-menu__inner">
