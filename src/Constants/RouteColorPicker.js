@@ -1,5 +1,3 @@
-import noColorImage from '../../img/route-img/no_color.png';
-
 const getColorStyle = (routeMarkColor) => {
   if (routeMarkColor && routeMarkColor.photo) {
     return {
@@ -13,7 +11,7 @@ const getColorStyle = (routeMarkColor) => {
     return { backgroundColor: routeMarkColor.color };
   }
   return {
-    backgroundImage: `url(${noColorImage})`,
+    backgroundImage: `url(${require('../../img/route-img/no_color.png')})`,
     backgroundPosition: 'center',
     backgroundSize: 'contain',
     backgroundRepeat: 'no-repeat',

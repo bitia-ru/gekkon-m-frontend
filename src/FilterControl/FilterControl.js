@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ViewModeSwitcher from '../ViewModeSwitcher/ViewModeSwitcher';
-import filterImage from '../../img/btn-filter-img/filter-icon.svg';
 import './FilterControl.css';
 
 const FilterControl = ({
@@ -11,7 +10,7 @@ const FilterControl = ({
     <button type="button" className="btn-filter" onClick={showFilters}>
       <span className="btn-filter__icon">
         <svg aria-hidden="true">
-          <use xlinkHref={`${filterImage}#icon-filter`} />
+          <use xlinkHref={`${require('./images/filter-icon.svg')}#icon-filter`} />
         </svg>
       </span>
       Фильтры

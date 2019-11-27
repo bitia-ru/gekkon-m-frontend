@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { notAvail } from '../Utils';
-import likeImage from '../../img/like-sprite/like.svg';
 import './LikeButton.css';
 
 const LikeButton = ({
@@ -15,7 +14,7 @@ const LikeButton = ({
   >
     <span className="like-button__icon">
       <svg>
-        <use xlinkHref={`${likeImage}#icon-like`} />
+        <use xlinkHref={`${require('./images/like.svg')}#icon-like`} />
       </svg>
     </span>
     <span className="like-button__count">{notAvail(numOfLikes) ? <>&nbsp;</> : numOfLikes}</span>

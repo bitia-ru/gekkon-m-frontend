@@ -6,7 +6,7 @@ const NEWS = [
     user: {
       name: 'User 1',
       avatar: {
-        url: '/public/img/user-icon/avatar.jpg',
+        url: require('../../img/user-icon/avatar.jpg'),
       },
     },
     message: 'Message about User 1',

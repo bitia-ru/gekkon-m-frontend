@@ -1,31 +1,26 @@
-import gravityImage from '../../img/spot-card-img/gravity.jpg';
-import limestoneImage from '../../img/spot-card-img/limestone.jpg';
-import bigwallImage from '../../img/spot-card-img/bigwall.jpg';
-import tokyoImage from '../../img/spot-card-img/tokyo.jpg';
-
 const SPOTS_DATA = [
   {
     id: 1,
     name: 'Гравитация',
-    imgSrc: gravityImage,
+    imgSrc: require('../../img/spot-card-img/gravity.jpg'),
     className: 'climbing-card-m_gravity',
   },
   {
     id: 2,
     name: 'Лаймстоун',
-    imgSrc: limestoneImage,
+    imgSrc: require('../../img/spot-card-img/limestone.jpg'),
     className: 'climbing-card-m_limestone',
   },
   {
     id: 10,
     name: 'BigWall ВДНХ',
-    imgSrc: bigwallImage,
+    imgSrc: require('../../img/spot-card-img/bigwall.jpg'),
     className: 'climbing-card-m_bigwall',
   },
   {
     id: 4,
     name: 'Токио',
-    imgSrc: tokyoImage,
+    imgSrc: require('../../img/spot-card-img/tokyo.jpg'),
     className: 'climbing-card-m_tokyo',
   },
 ];

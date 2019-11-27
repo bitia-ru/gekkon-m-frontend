@@ -20,7 +20,6 @@ import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
 import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
-import faqImage from '../../img/header-img/faq.jpg';
 import { TITLE, TITLES, FAQ_DATA } from '../Constants/Faq';
 import { avail } from '../Utils';
 import { userStateToUser } from '../Utils/Workarounds';
@@ -138,7 +137,7 @@ class Faq extends Authorization {
         <div className="sticky-bar">
           <InfoPageHeader
             title={TITLE}
-            image={faqImage}
+            image={require('./images/faq.jpg')}
             showMenu={() => this.setState({ showMenu: true })}
           />
           {
