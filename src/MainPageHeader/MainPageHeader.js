@@ -4,12 +4,9 @@ import MainNav from '../MainNav/MainNav';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 import { notReady, notExist } from '../Utils';
-import climberImage from '../../img/main-page-header-img/first-section-m-img.png';
-import climberImage15X from '../../img/main-page-header-img/first-section-m-img.png@1.5x.png';
-import climberImage2X from '../../img/main-page-header-img/first-section-m-img.png@2x.png';
 import './MainPageHeader.css';
 
-const bgImage = '/public/img/main-page-header-img/main-page-header.jpg';
+const bgImage = require('./images/main-page-header.jpg');
 
 export default class MainPageHeader extends Component {
   constructor(props) {
@@ -66,8 +63,15 @@ export default class MainPageHeader extends Component {
             <div className="first-section-m__image">
               <picture>
                 <img
-                  src={climberImage}
-                  srcSet={`${climberImage15X} 1.5x, ${climberImage2X} 2x`}
+                  src={require('./images/first-section-m-img.png')}
+                  srcSet={
+                    (() => {
+                      const img_1_5x = require('./images/first-section-m-img.png@1.5x.png');
+                      const img_2x = require('./images/first-section-m-img.png@2x.png');
+
+                      return `${img_1_5x} 1.5x, ${img_2x} 2x`;
+                    })()
+                  }
                   alt="Скалолаз"
                   onLoad={() => this.setState({ posterPhotoLoaded: true })}
                   style={{ visibility: posterPhotoLoaded ? 'visible' : 'hidden' }}

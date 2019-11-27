@@ -16,8 +16,6 @@ import { ROUTE_KINDS } from '../Constants/Route';
 import RoutePhotoCropper from '../RoutePhotoCropper/RoutePhotoCropper';
 import RouteColorPicker from '../RouteColorPicker/RouteColorPicker';
 import DatePicker from '../DatePicker/DatePicker';
-import btnHandlerImage from '../../img/btn-handler/btn-handler-sprite.svg';
-import pointImage from '../../img/route-img/point.svg';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import ShowSchemeButton from '../ShowSchemeButton/ShowSchemeButton';
 import SchemeModal from '../SchemeModal/SchemeModal';
@@ -280,6 +278,7 @@ export default class RoutesEditModal extends Component {
     const routeChanged = JSON.stringify(route) !== JSON.stringify(fieldsOld);
     const pointersChanged = JSON.stringify(currentPointers) !== JSON.stringify(currentPointersOld);
     const saveDisabled = (!routeChanged && !pointersChanged);
+    const btnHandlerImage = require('../../img/btn-handler/btn-handler-sprite.svg');
     return (
       <>
         <ScrollToTopOnMount />
@@ -379,7 +378,7 @@ export default class RoutesEditModal extends Component {
                             <ButtonHandler
                               onClick={() => this.setState({ showRouteMark: true })}
                               title="Просмотр трассы"
-                              xlinkHref={`${pointImage}#point`}
+                              xlinkHref={`${require('./images/point.svg')}#point`}
                             />
                           )
                         }

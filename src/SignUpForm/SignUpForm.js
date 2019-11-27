@@ -8,7 +8,6 @@ import FormField from '../FormField/FormField';
 import CloseButton from '../CloseButton/CloseButton';
 import { PASSWORD_MIN_LENGTH } from '../Constants/User';
 import RE_EMAIL from '../Constants/Constraints';
-import socialLinks from '../../img/social-links-sprite/social-links-sprite.svg';
 import './SignUpForm.css';
 
 export default class SignUpForm extends Component {
@@ -231,6 +230,9 @@ export default class SignUpForm extends Component {
 
   render() {
     const { enterWithVk } = this.props;
+    const socialLinks = require(
+      '../../img/social-links-sprite/social-links-sprite.svg',
+    );
     return (
       <div className="modal-block-m">
         <div className="modal-block-m__inner">
