@@ -6,15 +6,12 @@ Sentry.init({ dsn: SentryDsn }); // eslint-disable-line no-undef
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import rootReducer from './reducers';
 import Main from './Main';
+import store from '../v1/store';
 import './index.css';
 import './fonts.css';
 /* eslint-enable import/first */
-
-const store = createStore(rootReducer);
 
 const EVENTS_TO_MODIFY = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel'];
 

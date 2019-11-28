@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as R from 'ramda';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import RouteCard from '../RouteCard/RouteCard';
 import Scheme from '../Scheme/Scheme';
+import getArrayByIds from '../../v1/utils/getArrayByIds';
 import './RouteCardScheme.css';
 
-export default class RouteCardScheme extends Component {
+class RouteCardScheme extends Component {
   constructor(props) {
     super(props);
 
@@ -22,17 +24,17 @@ export default class RouteCardScheme extends Component {
     const {
       diagram,
       routes,
-      ascents,
+      routeIds,
       onRouteClick,
     } = this.props;
     const { selectedRouteId } = this.state;
-    const route = R.find(r => r.id === selectedRouteId, routes);
+    const route = routes[selectedRouteId];
     return (
       <div className="content-m__inner-map" style={{ display: 'flex' }}>
         <div className="content-m__col-xs-12">
           <div className="content-m__map">
             <Scheme
-              routes={routes}
+              currentRoutes={getArrayByIds(routeIds, routes)}
               diagram={diagram}
               onClick={this.selectRoute}
             />
@@ -52,7 +54,6 @@ export default class RouteCardScheme extends Component {
             >
               <RouteCard
                 route={route}
-                ascent={R.find(ascent => ascent.route_id === route.id, ascents)}
               />
             </div>
           }
@@ -64,8 +65,14 @@ export default class RouteCardScheme extends Component {
 
 RouteCardScheme.propTypes = {
   diagram: PropTypes.string,
-  routes: PropTypes.array.isRequired,
-  ascents: PropTypes.array.isRequired,
-  sectorId: PropTypes.number.isRequired,
+  routeIds: PropTypes.array.isRequired,
+  routes: PropTypes.object.isRequired,
   onRouteClick: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  routeIds: state.routeIds,
+  routes: state.routes,
+});
+
+export default withRouter(connect(mapStateToProps)(RouteCardScheme));
