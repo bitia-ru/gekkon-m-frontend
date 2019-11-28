@@ -9,6 +9,7 @@ import {
   MARKER_SEARCH_RADIUS,
   SHOW_TRASH_DELAY,
 } from '../Constants/Route';
+import RouteContext from '../contexts/RouteContext';
 import Trash from '../Trash/Trash';
 import CloseButton from '../CloseButton/CloseButton';
 import './RouteEditor.css';
@@ -270,81 +271,97 @@ export default class RouteEditor extends Component {
 
   render() {
     const {
-      editable, route, routePhoto, pointers, hide, onImageLoad, routeImageLoading,
+      editable, routePhoto, pointers, hide, onImageLoad, routeImageLoading,
     } = this.props;
     const {
       topTrashActive, bottomTrashActive, showTopTrash, showBottomTrash,
     } = this.state;
     const mapIndexed = R.addIndex(R.map);
     return (
-      <div className="modal-block-m modal-block-m_dark modal-block-m__image-container">
-        <div className="modal-block-m__inner modal-block-m__image-container-inner">
-          <Trash
-            setRef={(ref) => { this.topTrashRef = ref; }}
-            visible={showTopTrash}
-            active={topTrashActive}
-          />
-          <Trash
-            setRef={(ref) => { this.bottomTrashRef = ref; }}
-            visible={showBottomTrash}
-            active={bottomTrashActive}
-            bottom
-          />
-          <div className="modal-block-m__container modal-block-m__fixed-top">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__header-btn">
-                <CloseButton onClick={hide} light />
+      <RouteContext.Consumer>
+        {
+          ({ route }) => (
+            <div className="modal-block-m modal-block-m_dark modal-block-m__image-container">
+              <div className="modal-block-m__inner modal-block-m__image-container-inner">
+                <Trash
+                  setRef={(ref) => {
+                    this.topTrashRef = ref;
+                  }}
+                  visible={showTopTrash}
+                  active={topTrashActive}
+                />
+                <Trash
+                  setRef={(ref) => {
+                    this.bottomTrashRef = ref;
+                  }}
+                  visible={showBottomTrash}
+                  active={bottomTrashActive}
+                  bottom
+                />
+                <div className="modal-block-m__container modal-block-m__fixed-top">
+                  <div className="modal-block-m__header">
+                    <div className="modal-block-m__header-btn">
+                      <CloseButton onClick={hide} light />
+                    </div>
+                  </div>
+                </div>
+                <div className="route-editor">
+                  <div
+                    role="button"
+                    tabIndex="0"
+                    className="route-editor__img-container"
+                    ref={(ref) => {
+                      this.imageContainerRef = ref;
+                      return true;
+                    }}
+                    onTouchStart={editable ? this.onTouchStart : null}
+                    onTouchEnd={editable ? this.onTouchEnd : null}
+                    onTouchMove={editable ? this.onTouchMove : null}
+                    onContextMenu={this.onContextMenu}
+                    style={{
+                      touchAction: editable ? 'none' : 'auto',
+                      outline: 'none'
+                    }}
+                  >
+                    <img
+                      className="route-editor__img"
+                      src={routePhoto}
+                      alt={route.name}
+                      onLoad={onImageLoad}
+                      style={{ visibility: routeImageLoading ? 'hidden' : 'visible' }}
+                    />
+                    {
+                      !routeImageLoading && (
+                        <>
+                          {
+                            mapIndexed((pointer, index) => (
+                              <Marker
+                                key={index}
+                                editable={editable}
+                                removePointer={editable ? (() => this.removePointer(index)) : null}
+                                onStartMoving={
+                                  editable
+                                    ? ((x, y) => this.onStartMoving(index, x, y))
+                                    : null
+                                }
+                                angle={pointer.angle}
+                                radius={MARKER_RADIUS}
+                                dx={pointer.dx}
+                                dy={pointer.dy}
+                                left={pointer.x}
+                                top={pointer.y}
+                              />
+                            ), pointers)}
+                        </>
+                      )
+                    }
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="route-editor">
-            <div
-              role="button"
-              tabIndex="0"
-              className="route-editor__img-container"
-              ref={(ref) => { this.imageContainerRef = ref; return true; }}
-              onTouchStart={editable ? this.onTouchStart : null}
-              onTouchEnd={editable ? this.onTouchEnd : null}
-              onTouchMove={editable ? this.onTouchMove : null}
-              onContextMenu={this.onContextMenu}
-              style={{ touchAction: editable ? 'none' : 'auto', outline: 'none' }}
-            >
-              <img
-                className="route-editor__img"
-                src={routePhoto}
-                alt={route.name}
-                onLoad={onImageLoad}
-                style={{ visibility: routeImageLoading ? 'hidden' : 'visible' }}
-              />
-              {
-                !routeImageLoading && (
-                  <>
-                    {
-                      mapIndexed((pointer, index) => (
-                        <Marker
-                          key={index}
-                          editable={editable}
-                          removePointer={editable ? (() => this.removePointer(index)) : null}
-                          onStartMoving={
-                            editable
-                              ? ((x, y) => this.onStartMoving(index, x, y))
-                              : null
-                          }
-                          angle={pointer.angle}
-                          radius={MARKER_RADIUS}
-                          dx={pointer.dx}
-                          dy={pointer.dy}
-                          left={pointer.x}
-                          top={pointer.y}
-                        />
-                      ), pointers)}
-                  </>
-                )
-              }
-            </div>
-          </div>
-        </div>
-      </div>
+          )
+        }
+      </RouteContext.Consumer>
     );
   }
 }
@@ -353,7 +370,6 @@ RouteEditor.propTypes = {
   routeImageLoading: PropTypes.bool,
   updatePointers: PropTypes.func,
   routePhoto: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
   pointers: PropTypes.array.isRequired,
   editable: PropTypes.bool.isRequired,
   hide: PropTypes.func.isRequired,

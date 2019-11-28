@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import InfoBlock from '../InfoBlock/InfoBlock';
 import MainNav from '../MainNav/MainNav';
 import Logo from '../Logo/Logo';
 import Slider from '../Slider/Slider';
+import getArrayByIds from '../../v1/utils/getArrayByIds';
+import SectorContext from '../contexts/SectorContext';
 import './Header.css';
 
-export default class Header extends Component {
+class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,36 +35,48 @@ export default class Header extends Component {
     this.photosInternal[newProps.data.photo.url].src = newProps.data.photo.url;
   }
 
+  onSliderClick = (sectorId) => {
+    const { sectorIds, sectors, changeSectorFilter } = this.props;
+    const currentSectors = getArrayByIds(sectorIds, sectors);
+    const index = R.findIndex(R.propEq('id', sectorId))(currentSectors) + 1;
+    if (index < currentSectors.length) {
+      changeSectorFilter(currentSectors[index].id);
+    } else {
+      changeSectorFilter(0);
+    }
+  };
+
   render() {
     const {
-      showMenu, data, infoData, changeSectorFilter, sectors, sectorId,
+      showMenu, data, infoData,
     } = this.props;
     const { bgImageLoaded } = this.state;
-
     return (
-      <header className="header-m">
-        <div className="header-m__top">
-          <Logo />
-          <MainNav showMenu={showMenu} />
-        </div>
-        <div
-          className="header-m__items-container"
-          style={
-            (data.photo && bgImageLoaded)
-              ? { backgroundImage: `url(${this.photosInternal[data.photo.url].src})` }
-              : {}
-          }
-        >
-          <h1 className="header-m__header">{data.name}</h1>
-          <p className="header-m__descr">{data.description}</p>
-          <InfoBlock infoData={infoData} />
-        </div>
-        <Slider
-          changeSectorFilter={changeSectorFilter}
-          sectors={sectors}
-          sectorId={sectorId}
-        />
-      </header>
+      <SectorContext.Consumer>
+        {
+          ({ sector }) => (
+            <header className="header-m">
+              <div className="header-m__top">
+                <Logo />
+                <MainNav showMenu={showMenu} />
+              </div>
+              <div
+                className="header-m__items-container"
+                style={
+                  (data.photo && bgImageLoaded)
+                    ? { backgroundImage: `url(${this.photosInternal[data.photo.url].src})` }
+                    : {}
+                }
+              >
+                <h1 className="header-m__header">{data.name}</h1>
+                <p className="header-m__descr">{data.description}</p>
+                <InfoBlock infoData={infoData} />
+              </div>
+              <Slider onClick={() => this.onSliderClick(sector ? sector.id : 0)} />
+            </header>
+          )
+        }
+      </SectorContext.Consumer>
     );
   }
 }
@@ -68,7 +85,14 @@ Header.propTypes = {
   infoData: PropTypes.array,
   showMenu: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
-  sectors: PropTypes.array.isRequired,
   changeSectorFilter: PropTypes.func.isRequired,
-  sectorId: PropTypes.number.isRequired,
+  sectors: PropTypes.object.isRequired,
+  sectorIds: PropTypes.array.isRequired,
 };
+
+const mapStateToProps = state => ({
+  sectors: state.sectors,
+  sectorIds: state.sectorIds,
+});
+
+export default withRouter(connect(mapStateToProps)(Header));

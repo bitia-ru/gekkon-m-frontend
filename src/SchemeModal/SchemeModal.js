@@ -4,7 +4,7 @@ import Scheme from '../Scheme/Scheme';
 import CloseButton from '../CloseButton/CloseButton';
 import './SchemeModal.css';
 
-const SchemeModal = ({ close, diagram, currentRoute }) => (
+const SchemeModal = ({ close, currentRoute }) => (
   <div className="modal-block-m modal-block-m_dark">
     <div className="modal-block-m__inner modal-block-m__inner_no-pb">
       <div className="modal-block-m__container">
@@ -16,9 +16,8 @@ const SchemeModal = ({ close, diagram, currentRoute }) => (
       </div>
       <div className="modal-block-m__map">
         <Scheme
-          routes={[currentRoute]}
+          currentRoutes={[currentRoute]}
           showCards={false}
-          diagram={diagram}
         />
       </div>
     </div>
@@ -26,7 +25,6 @@ const SchemeModal = ({ close, diagram, currentRoute }) => (
 );
 
 SchemeModal.propTypes = {
-  diagram: PropTypes.string,
   currentRoute: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
 };

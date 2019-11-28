@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment/moment';
 import * as R from 'ramda';
@@ -19,17 +21,25 @@ import DatePicker from '../DatePicker/DatePicker';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import ShowSchemeButton from '../ShowSchemeButton/ShowSchemeButton';
 import SchemeModal from '../SchemeModal/SchemeModal';
+import RouteContext from '../contexts/RouteContext';
+import NewRoute from '../Constants/NewRoute';
+import {
+  loadRoute,
+} from '../../v1/utils/RouteFinder';
+import { avail } from '../Utils';
+import {
+  reloadSector,
+} from '../../v1/utils/SectorFinder';
 import './RoutesEditModal.css';
 
-export default class RoutesEditModal extends Component {
+class RoutesEditModal extends Component {
   constructor(props) {
     super(props);
 
-    const { route } = this.props;
     this.state = {
       currentPointers: [],
       currentPointersOld: [],
-      route: R.clone(route),
+      route: undefined,
       fieldsOld: {},
       showCropper: false,
       photo: {
@@ -49,17 +59,71 @@ export default class RoutesEditModal extends Component {
   }
 
   componentDidMount() {
-    const { route } = this.state;
-    const routeCurr = R.clone(route);
-    if (route.photo) {
-      routeCurr.photo = routeCurr.photo.url;
+    const {
+      sectors, match, loadUsers, displayError,
+    } = this.props;
+    const sectorId = match.params.sector_id ? parseInt(match.params.sector_id, 10) : null;
+    const routeId = this.getRouteId();
+    if (routeId === null && !sectors[sectorId]) {
+      reloadSector(
+        sectorId,
+        null,
+        (response) => {
+          this.afterSectorIsLoaded(response.data.payload);
+        },
+        (error) => {
+          displayError(error);
+        },
+      );
     }
-    if (route.category === null) {
-      routeCurr.category = DEFAULT_CATEGORY;
+    if (routeId === null && sectors[sectorId]) {
+      this.afterSectorIsLoaded(sectors[sectorId]);
     }
-    this.setState({ fieldsOld: routeCurr, route: R.clone(routeCurr) });
-    this.loadPointers();
+    if (routeId) {
+      loadRoute(
+        this.getRouteId(),
+        (response) => {
+          const route = response.data.payload;
+          const routeCopy = R.clone(route);
+          if (route.photo) {
+            routeCopy.photo = routeCopy.photo.url;
+          }
+          if (route.category === null) {
+            routeCopy.category = DEFAULT_CATEGORY;
+          }
+          this.setState({ fieldsOld: routeCopy, route: R.clone(routeCopy) });
+          this.loadPointers(route);
+        },
+        (error) => {
+          displayError(error);
+        },
+      );
+    }
+    loadUsers();
   }
+
+  afterSectorIsLoaded = (sector) => {
+    const {
+      user,
+    } = this.props;
+    this.newRoute = R.clone(NewRoute);
+    this.newRoute.sector_id = sector.id;
+    if (sector.kind !== 'mixed') {
+      this.newRoute.kind = sector.kind;
+    }
+    this.newRoute.category = DEFAULT_CATEGORY;
+    if (user.role === 'user') this.newRoute.data.personal = true;
+    this.setState({ route: R.clone(this.newRoute) });
+  };
+
+  getRouteId = () => {
+    const { match } = this.props;
+    return (
+      match.params.route_id
+        ? parseInt(match.params.route_id, 10)
+        : null
+    );
+  };
 
   changed = (newValue, oldValue) => JSON.stringify(newValue) !== JSON.stringify(oldValue);
 
@@ -68,8 +132,11 @@ export default class RoutesEditModal extends Component {
       route, photo, currentPointers, currentPointersOld,
     } = this.state;
     const {
-      route: routeProp, sector, user, updateRoute, createRoute,
+      routes, sectors, user, updateRoute, createRoute,
     } = this.props;
+    const sector = sectors[route.sector_id];
+    const routeId = this.getRouteId();
+    const routeProp = routeId ? routes[routeId] : this.newRoute;
     const paramList = [
       'number',
       'name',
@@ -111,6 +178,7 @@ export default class RoutesEditModal extends Component {
       if (sector.kind !== 'mixed') {
         formData.append('route[kind]', route.kind);
       }
+      formData.append('route[category]', route.category);
     }
     if (route.photo !== (routeProp.photo ? routeProp.photo.url : null)) {
       formData.append('route[photo]', route.photoFile);
@@ -128,14 +196,21 @@ export default class RoutesEditModal extends Component {
       formData.append('data[personal]', true);
     }
     if (routeProp.id !== null) {
-      updateRoute(formData);
+      updateRoute(routeId, formData);
     } else {
       createRoute(formData);
     }
   };
 
-  loadPointers = () => {
-    const { route } = this.props;
+  loadPointers = (currentRoute) => {
+    let route;
+    if (currentRoute) {
+      route = currentRoute;
+    } else {
+      const { routes } = this.props;
+      const routeId = this.getRouteId();
+      route = routeId ? routes[routeId] : this.newRoute;
+    }
     let pointers = (
       (route.mark && route.mark.pointers)
         ? route.mark.pointers
@@ -162,14 +237,15 @@ export default class RoutesEditModal extends Component {
 
   onRouteParamChange = (value, paramName) => {
     const { route } = this.state;
-    route[paramName] = value;
+    const newRoute = R.clone(route);
+    newRoute[paramName] = value;
     if (paramName === 'author') {
-      route.author_id = value ? value.id : null;
+      newRoute.author_id = value ? value.id : null;
     }
     if (paramName === 'photo' && value === null) {
-      route.photoFile = null;
+      newRoute.photoFile = null;
     }
-    this.setState({ route });
+    this.setState({ route: newRoute });
   };
 
   onNewPhotoFileSelected = (file) => {
@@ -250,12 +326,10 @@ export default class RoutesEditModal extends Component {
     const {
       onClose,
       user,
-      sector,
       users,
       routeMarkColors,
       cancel,
       isWaiting,
-      diagram,
     } = this.props;
     const {
       photo,
@@ -279,288 +353,294 @@ export default class RoutesEditModal extends Component {
     const pointersChanged = JSON.stringify(currentPointers) !== JSON.stringify(currentPointersOld);
     const saveDisabled = (!routeChanged && !pointersChanged);
     const btnHandlerImage = require('../../img/btn-handler/btn-handler-sprite.svg');
+    const routeId = this.getRouteId();
     return (
-      <>
-        <ScrollToTopOnMount />
+      <RouteContext.Provider value={{ route }}>
         {
-          showRouteMark
-            ? (
-              <RouteEditor
-                route={route}
-                routePhoto={
-                  typeof (route.photo) === 'string'
-                    ? route.photo
-                    : route.photo.url
-                }
-                pointers={currentPointers}
-                editable
-                updatePointers={this.updatePointers}
-                hide={() => this.setState({ showRouteMark: false })}
-                routeImageLoading={routeImageLoading}
-                onImageLoad={() => this.setState({ routeImageLoading: false })}
-              />
-            )
-            : ''
-        }
-        {
-          showCropper
-            ? (
-              <RoutePhotoCropper
-                src={photo.content}
-                close={() => this.setState({ showCropper: false })}
-                save={this.saveCropped}
-              />
-            )
-            : (
-              <div className="route-m">
-                <div className="route-m__container">
-                  <div className="route-m__block">
-                    <div className="route-m__close">
-                      <CloseButton onClick={() => onClose()} />
-                    </div>
-                  </div>
-                  <h1 className="route-m__title" style={{ marginTop: '0px' }}>
-                    №
-                    {' '}
-                    <input
-                      type="text"
-                      onChange={event => this.onRouteParamChange(event.target.value, 'number')}
-                      className="route-m__title-input route-m__title-input_dark"
-                      value={route.number === null ? '' : route.number}
-                    />
-                    <span className="route-m__title-place-wrapper">
-                      <span className="route-m__title-place-edit">(“</span>
-                      <input
-                        type="text"
-                        onChange={event => this.onRouteParamChange(event.target.value, 'name')}
-                        className="route-m__title-input"
-                        value={route.name === null ? '' : route.name}
-                      />
-                      <span className="route-m__title-place-edit">”)</span>
-                    </span>
-                  </h1>
-                </div>
-                <div className="route-m__route-block">
-                  <div className="route-m__route">
-                    {
-                      (!route.photo || !routeImageLoading) && (
-                        <div className="route-m__route-descr">
-                          <div className="route-m__route-descr-picture" />
-                          <div className="route-m__route-descr-text">Загрузите фото трассы</div>
+          avail(route) && <>
+            <ScrollToTopOnMount />
+            {
+              showRouteMark
+                ? (
+                  <RouteEditor
+                    routePhoto={
+                      typeof (route.photo) === 'string'
+                        ? route.photo
+                        : route.photo.url
+                    }
+                    pointers={currentPointers}
+                    editable
+                    updatePointers={this.updatePointers}
+                    hide={() => this.setState({ showRouteMark: false })}
+                    routeImageLoading={routeImageLoading}
+                    onImageLoad={() => this.setState({ routeImageLoading: false })}
+                  />
+                )
+                : ''
+            }
+            {
+              showCropper
+                ? (
+                  <RoutePhotoCropper
+                    src={photo.content}
+                    close={() => this.setState({ showCropper: false })}
+                    save={this.saveCropped}
+                  />
+                )
+                : (
+                  <div className="route-m">
+                    <div className="route-m__container">
+                      <div className="route-m__block">
+                        <div className="route-m__close">
+                          <CloseButton onClick={() => onClose()} />
                         </div>
-                      )
-                    }
-                    {
-                      route.photo && (
-                        <RouteView
-                          route={route}
-                          routePhoto={
-                            typeof (route.photo) === 'string'
-                              ? route.photo
-                              : route.photo.url
-                          }
-                          pointers={currentPointers}
-                          routeImageLoading={routeImageLoading}
-                          onImageLoad={() => this.setState({ routeImageLoading: false })}
+                      </div>
+                      <h1 className="route-m__title" style={{ marginTop: '0px' }}>
+                        №
+                        {' '}
+                        <input
+                          type="text"
+                          onChange={event => this.onRouteParamChange(event.target.value, 'number')}
+                          className="route-m__title-input route-m__title-input_dark"
+                          value={route.number === null ? '' : route.number}
                         />
-                      )
-                    }
-                    <ShowSchemeButton
-                      disabled={route.data.position === undefined}
-                      onClick={() => this.setState({ schemeModalVisible: true })}
-                    />
-                  </div>
-                  <div className="route-m__route-footer">
-                    <div className="route-m__route-footer-container">
-                      <div className="route-m__route-footer-toggles">
+                        <span className="route-m__title-place-wrapper">
+                          <span className="route-m__title-place-edit">(“</span>
+                          <input
+                            type="text"
+                            onChange={event => this.onRouteParamChange(event.target.value, 'name')}
+                            className="route-m__title-input"
+                            value={route.name === null ? '' : route.name}
+                          />
+                          <span className="route-m__title-place-edit">”)</span>
+                        </span>
+                      </h1>
+                    </div>
+                    <div className="route-m__route-block">
+                      <div className="route-m__route">
+                        {
+                          (!route.photo || !routeImageLoading) && (
+                            <div className="route-m__route-descr">
+                              <div className="route-m__route-descr-picture" />
+                              <div className="route-m__route-descr-text">Загрузите фото трассы</div>
+                            </div>
+                          )
+                        }
                         {
                           route.photo && (
-                            <ButtonHandler
-                              onClick={() => this.setState({ showRouteMark: true })}
-                              title="Просмотр трассы"
-                              xlinkHref={`${require('./images/point.svg')}#point`}
+                            <RouteView
+                              route={route}
+                              routePhoto={
+                                typeof (route.photo) === 'string'
+                                  ? route.photo
+                                  : route.photo.url
+                              }
+                              pointers={currentPointers}
+                              routeImageLoading={routeImageLoading}
+                              onImageLoad={() => this.setState({ routeImageLoading: false })}
                             />
                           )
                         }
-                      </div>
-                      <div className="route-m__route-footer-toggles">
-                        <input
-                          type="file"
-                          hidden
-                          ref={(ref) => { this.fileInput = ref; }}
-                          onChange={event => this.onNewPhotoFileSelected(event.target.files[0])}
+                        <ShowSchemeButton
+                          disabled={route.data.position === undefined}
+                          onClick={() => this.setState({ schemeModalVisible: true })}
                         />
-                        {
-                          route.photo
-                            ? (
-                              <>
+                      </div>
+                      <div className="route-m__route-footer">
+                        <div className="route-m__route-footer-container">
+                          <div className="route-m__route-footer-toggles">
+                            {
+                              route.photo && (
                                 <ButtonHandler
-                                  onClick={() => this.fileInput.click()}
-                                  title="Обновить фото"
-                                  xlinkHref={`${btnHandlerImage}#icon-btn-reload`}
+                                  onClick={() => this.setState({ showRouteMark: true })}
+                                  title="Просмотр трассы"
+                                  xlinkHref={`${require('./images/point.svg')}#point`}
                                 />
-                                <ButtonHandler
-                                  onClick={() => this.onRouteParamChange(null, 'photo')}
-                                  title="Удалить фото"
-                                  xlinkHref={`${btnHandlerImage}#icon-btn-close`}
-                                />
-                              </>
-                            )
-                            : (
-                              <ButtonHandler
-                                onClick={() => this.fileInput.click()}
-                                title="Загрузить фото"
-                                xlinkHref={`${btnHandlerImage}#icon-btn-download`}
-                              />
-                            )
+                              )
+                            }
+                          </div>
+                          <div className="route-m__route-footer-toggles">
+                            <input
+                              type="file"
+                              hidden
+                              ref={(ref) => {
+                                this.fileInput = ref;
+                              }}
+                              onChange={event => this.onNewPhotoFileSelected(event.target.files[0])}
+                            />
+                            {
+                              route.photo
+                                ? (
+                                  <>
+                                    <ButtonHandler
+                                      onClick={() => this.fileInput.click()}
+                                      title="Обновить фото"
+                                      xlinkHref={`${btnHandlerImage}#icon-btn-reload`}
+                                    />
+                                    <ButtonHandler
+                                      onClick={() => this.onRouteParamChange(null, 'photo')}
+                                      title="Удалить фото"
+                                      xlinkHref={`${btnHandlerImage}#icon-btn-close`}
+                                    />
+                                  </>
+                                )
+                                : (
+                                  <ButtonHandler
+                                    onClick={() => this.fileInput.click()}
+                                    title="Загрузить фото"
+                                    xlinkHref={`${btnHandlerImage}#icon-btn-download`}
+                                  />
+                                )
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="route-m__container">
+                      <RouteDataEditableTable
+                        onRouteParamChange={this.onRouteParamChange}
+                        user={user}
+                        showKindSelect={() => this.setState({ showKindSelect: true })}
+                        showCategorySlider={() => this.setState({ showSlider: true })}
+                        showAuthorSelect={() => this.setState({ showAuthorSelect: true })}
+                        showRouteHoldsColorPicker={
+                          () => this.setState({ showRouteHoldsColorPicker: true })
                         }
+                        showRouteMarksColorPicker={
+                          () => this.setState({ showRouteMarksColorPicker: true })
+                        }
+                        showInstalledAtSelect={
+                          () => this.setState({ showInstalledAtSelect: true })
+                        }
+                        showInstalledUntilSelect={
+                          () => this.setState({ showInstalledUntilSelect: true })
+                        }
+                      />
+                    </div>
+                    <div className="route-m__item">
+                      <div className="collapsable-block-m">
+                        <button type="button" className="collapsable-block-m__header">
+                          Описание
+                        </button>
+                        <textarea
+                          className="route-m__descr-edit"
+                          onChange={
+                            event => this.onRouteParamChange(event.target.value, 'description')
+                          }
+                          value={route.description ? route.description : ''}
+                        />
+                      </div>
+                    </div>
+                    <div className="route-m__route-controls">
+                      <div className="route-m__btn-delete">
+                        <Button
+                          size="big"
+                          buttonStyle="gray"
+                          title="Отмена"
+                          smallFont
+                          onClick={() => cancel(routeId)}
+                        />
+                      </div>
+                      <div className="track-m__btn-save">
+                        <Button
+                          size="big"
+                          buttonStyle="normal"
+                          title="Сохранить"
+                          smallFont
+                          isWaiting={isWaiting}
+                          disabled={saveDisabled}
+                          onClick={this.save}
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="route-m__container">
-                  <RouteDataEditableTable
-                    route={route}
-                    sector={sector}
-                    onRouteParamChange={this.onRouteParamChange}
-                    user={user}
-                    showKindSelect={() => this.setState({ showKindSelect: true })}
-                    showCategorySlider={() => this.setState({ showSlider: true })}
-                    showAuthorSelect={() => this.setState({ showAuthorSelect: true })}
-                    showRouteHoldsColorPicker={
-                      () => this.setState({ showRouteHoldsColorPicker: true })
-                    }
-                    showRouteMarksColorPicker={
-                      () => this.setState({ showRouteMarksColorPicker: true })
-                    }
-                    showInstalledAtSelect={() => this.setState({ showInstalledAtSelect: true })}
-                    showInstalledUntilSelect={
-                      () => this.setState({ showInstalledUntilSelect: true })
-                    }
-                  />
-                </div>
-                <div className="route-m__item">
-                  <div className="collapsable-block-m">
-                    <button type="button" className="collapsable-block-m__header">
-                      Описание
-                    </button>
-                    <textarea
-                      className="route-m__descr-edit"
-                      onChange={event => this.onRouteParamChange(event.target.value, 'description')}
-                      value={route.description ? route.description : ''}
-                    />
-                  </div>
-                </div>
-                <div className="route-m__route-controls">
-                  <div className="route-m__btn-delete">
-                    <Button
-                      size="big"
-                      buttonStyle="gray"
-                      title="Отмена"
-                      smallFont
-                      onClick={cancel}
-                    />
-                  </div>
-                  <div className="track-m__btn-save">
-                    <Button
-                      size="big"
-                      buttonStyle="normal"
-                      title="Сохранить"
-                      smallFont
-                      isWaiting={isWaiting}
-                      disabled={saveDisabled}
-                      onClick={this.save}
-                    />
-                  </div>
-                </div>
-              </div>
-            )
+                )
+            }
+            {
+              showSlider && (
+                <CategorySlider
+                  category={route.category}
+                  hide={() => this.setState({ showSlider: false })}
+                  changeCategory={category => this.onRouteParamChange(category, 'category')}
+                />
+              )
+            }
+            {
+              showKindSelect && (
+                <DropDownList
+                  hide={() => this.setState({ showKindSelect: false })}
+                  onClick={this.saveKind}
+                  items={ROUTE_KINDS}
+                  textFieldName="text"
+                />
+              )
+            }
+            {
+              showAuthorSelect && (
+                <DropDownPersonList
+                  hide={() => this.setState({ showAuthorSelect: false })}
+                  onClick={this.saveAuthor}
+                  users={users}
+                />
+              )
+            }
+            {
+              showRouteHoldsColorPicker && (
+                <RouteColorPicker
+                  hide={() => this.setState({ showRouteHoldsColorPicker: false })}
+                  routeMarkColors={routeMarkColors}
+                  onClick={this.onHoldsColorSelect}
+                />
+              )
+            }
+            {
+              showRouteMarksColorPicker && (
+                <RouteColorPicker
+                  hide={() => this.setState({ showRouteMarksColorPicker: false })}
+                  routeMarkColors={routeMarkColors}
+                  onClick={this.onMarksColorSelect}
+                />
+              )
+            }
+            {
+              showInstalledAtSelect && (
+                <DatePicker
+                  hide={() => this.setState({ showInstalledAtSelect: false })}
+                  date={route.installed_at ? moment(route.installed_at) : null}
+                  onSelect={
+                    date => this.onRouteParamChange(date ? date.format() : null, 'installed_at')
+                  }
+                />
+              )
+            }
+            {
+              showInstalledUntilSelect && (
+                <DatePicker
+                  hide={() => this.setState({ showInstalledUntilSelect: false })}
+                  date={route.installed_until ? moment(route.installed_until) : null}
+                  onSelect={
+                    date => this.onRouteParamChange(date ? date.format() : null, 'installed_until')
+                  }
+                />
+              )
+            }
+            {
+              schemeModalVisible && <SchemeModal
+                currentRoute={route}
+                close={() => this.setState({ schemeModalVisible: false })}
+              />
+            }
+          </>
         }
-        {
-          showSlider && (
-            <CategorySlider
-              category={route.category}
-              hide={() => this.setState({ showSlider: false })}
-              changeCategory={category => this.onRouteParamChange(category, 'category')}
-            />
-          )
-        }
-        {
-          showKindSelect && (
-            <DropDownList
-              hide={() => this.setState({ showKindSelect: false })}
-              onClick={this.saveKind}
-              items={ROUTE_KINDS}
-              textFieldName="text"
-            />
-          )
-        }
-        {
-          showAuthorSelect && (
-            <DropDownPersonList
-              hide={() => this.setState({ showAuthorSelect: false })}
-              onClick={this.saveAuthor}
-              users={users}
-            />
-          )
-        }
-        {
-          showRouteHoldsColorPicker && (
-            <RouteColorPicker
-              hide={() => this.setState({ showRouteHoldsColorPicker: false })}
-              routeMarkColors={routeMarkColors}
-              onClick={this.onHoldsColorSelect}
-            />
-          )
-        }
-        {
-          showRouteMarksColorPicker && (
-            <RouteColorPicker
-              hide={() => this.setState({ showRouteMarksColorPicker: false })}
-              routeMarkColors={routeMarkColors}
-              onClick={this.onMarksColorSelect}
-            />
-          )
-        }
-        {
-          showInstalledAtSelect && (
-            <DatePicker
-              hide={() => this.setState({ showInstalledAtSelect: false })}
-              date={route.installed_at ? moment(route.installed_at) : null}
-              onSelect={
-                date => this.onRouteParamChange(date ? date.format() : null, 'installed_at')
-              }
-            />
-          )
-        }
-        {
-          showInstalledUntilSelect && (
-            <DatePicker
-              hide={() => this.setState({ showInstalledUntilSelect: false })}
-              date={route.installed_until ? moment(route.installed_until) : null}
-              onSelect={
-                date => this.onRouteParamChange(date ? date.format() : null, 'installed_until')
-              }
-            />
-          )
-        }
-        {
-          schemeModalVisible && <SchemeModal
-            currentRoute={route}
-            diagram={diagram}
-            close={() => this.setState({ schemeModalVisible: false })}
-          />
-        }
-      </>
+      </RouteContext.Provider>
     );
   }
 }
 
 RoutesEditModal.propTypes = {
   user: PropTypes.object,
-  diagram: PropTypes.string,
-  route: PropTypes.object.isRequired,
-  sector: PropTypes.object.isRequired,
+  routes: PropTypes.object.isRequired,
+  sectors: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   cancel: PropTypes.func.isRequired,
   users: PropTypes.array.isRequired,
@@ -568,4 +648,15 @@ RoutesEditModal.propTypes = {
   updateRoute: PropTypes.func.isRequired,
   isWaiting: PropTypes.bool.isRequired,
   routeMarkColors: PropTypes.array.isRequired,
+  loadUsers: PropTypes.func.isRequired,
+  displayError: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  sectors: state.sectors,
+  routes: state.routes,
+  user: state.user,
+  users: state.users,
+});
+
+export default withRouter(connect(mapStateToProps)(RoutesEditModal));
