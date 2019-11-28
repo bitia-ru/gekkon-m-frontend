@@ -5,6 +5,7 @@ import RouteCardView from '../RouteCardView/RouteCardView';
 import FilterControl from '../FilterControl/FilterControl';
 import Pagination from '../Pagination/Pagination';
 import NUM_OF_DISPLAYED_PAGES from '../Constants/Pagination';
+import SectorContext from '../contexts/SectorContext';
 import './Content.css';
 
 export default class Content extends Component {
@@ -29,9 +30,6 @@ export default class Content extends Component {
       user,
       page,
       numOfPages,
-      routes,
-      ascents,
-      sectorId,
       addRoute,
       onRouteClick,
       changePage,
@@ -39,69 +37,70 @@ export default class Content extends Component {
       showFilters,
       viewMode,
       changeViewMode,
-      diagram,
     } = this.props;
     return (
-      <div className="content-m">
-        <div className="content-m__container">
-          <FilterControl
-            viewMode={viewMode}
-            onViewModeChange={changeViewMode}
-            numOfRoutes={numOfRoutes}
-            showFilters={showFilters}
-            viewModeData={
-              sectorId !== 0
-                ? {
-                  scheme: {
-                    title: diagram ? undefined : 'Схема зала ещё не загружена',
-                    disabled: diagram === null,
-                  },
-                  table: {},
-                  list: {},
-                }
-                : {
-                  table: {},
-                  list: {},
-                }
-            }
-          />
-          <RouteCardView
-            diagram={diagram}
-            viewMode={viewMode}
-            addRoute={addRoute}
-            sectorId={sectorId}
-            user={user}
-            routes={routes}
-            ascents={ascents}
-            onRouteClick={onRouteClick}
-          />
-          {
-            viewMode !== 'scheme' && <Pagination
-              onPageChange={changePage}
-              page={page}
-              pagesList={this.pagesList()}
-              firstPage={1}
-              lastPage={numOfPages}
-            />
+      <SectorContext.Consumer>
+        {
+          ({ sector }) => {
+            const diagram = sector && sector.diagram && sector.diagram.url;
+            return (
+              <div className="content-m">
+                <div className="content-m__container">
+                  <FilterControl
+                    viewMode={viewMode}
+                    onViewModeChange={changeViewMode}
+                    numOfRoutes={numOfRoutes}
+                    showFilters={showFilters}
+                    viewModeData={
+                      sector
+                        ? {
+                          scheme: {
+                            title: diagram ? undefined : 'Схема зала ещё не загружена',
+                            disabled: diagram === null,
+                          },
+                          table: {},
+                          list: {},
+                        }
+                        : {
+                          table: {},
+                          list: {},
+                        }
+                    }
+                  />
+                  <RouteCardView
+                    diagram={diagram}
+                    viewMode={viewMode}
+                    addRoute={addRoute}
+                    user={user}
+                    onRouteClick={onRouteClick}
+                  />
+                  {
+                    viewMode !== 'scheme' && <Pagination
+                      onPageChange={changePage}
+                      page={page}
+                      pagesList={this.pagesList()}
+                      firstPage={1}
+                      lastPage={numOfPages}
+                    />
+                  }
+                </div>
+              </div>
+            );
           }
-        </div>
-      </div>
+        }
+      </SectorContext.Consumer>
     );
   }
 }
 
 Content.propTypes = {
   user: PropTypes.object,
-  diagram: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
   changeViewMode: PropTypes.func.isRequired,
-  routes: PropTypes.array.isRequired,
-  ascents: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,
   numOfPages: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   addRoute: PropTypes.func.isRequired,
-  sectorId: PropTypes.number.isRequired,
   onRouteClick: PropTypes.func.isRequired,
   numOfRoutes: PropTypes.number.isRequired,
   showFilters: PropTypes.func.isRequired,

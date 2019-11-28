@@ -13,14 +13,14 @@ const RouteDataTable = ({ route, user }) => {
   const isCurrentUserRoute = user && route.author_id === user.id;
   let name = route.author ? getUserName(route.author) : null;
   if (!isCurrentUserRoute && name === null && route.author_id !== null) {
-    if (user.role === 'admin') {
+    if (user && user.role === 'admin') {
       name = getUserName(route.author, true);
     }
-    if (user.role === 'creator') {
+    if (user && user.role === 'creator') {
       name = `Пользователь #${route.author.id}`;
     }
   } else if (isCurrentUserRoute) {
-    name = 'Вы'
+    name = 'Вы';
   }
 
   return (

@@ -13,12 +13,9 @@ const Main = () => (
       <Route exact path="/crags" component={CragsIndex} />
       <Route exact path="/about" component={About} />
       <Route exact path="/faq" component={Faq} />
-      <Route path="/spots/:id/sectors/:sector_id/routes/new" component={SpotsShow} />
-      <Route path="/spots/:id/sectors/:sector_id/routes/:route_id" component={SpotsShow} />
-      <Route path="/spots/:id/sectors/:sector_id/routes/:route_id/edit" component={SpotsShow} />
+      <Route path="/spots/:id/sectors/:sector_id/routes" component={SpotsShow} />
       <Route path="/spots/:id/sectors/:sector_id" component={SpotsShow} />
-      <Route path="/spots/:id/routes/:route_id" component={SpotsShow} />
-      <Route path="/spots/:id/routes/:route_id/edit" component={SpotsShow} />
+      <Route path="/spots/:id/routes" component={SpotsShow} />
       <Route path="/spots/:id" component={SpotsShow} />
     </Switch>
   </main>

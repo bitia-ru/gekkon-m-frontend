@@ -1,6 +1,7 @@
 export const PASSWORD_MIN_LENGTH = 6;
 
 export const getUserName = (user, selfDisplayed) => {
+  if (!user) { return null; }
   if (user.name) { return user.name; }
   if (user.login) { return user.login; }
   if (user.email && selfDisplayed) { return user.email; }
