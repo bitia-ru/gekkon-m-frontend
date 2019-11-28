@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Switch, Route } from 'react-router-dom';
 import Axios from 'axios';
 import moment from 'moment/moment';
 import Qs from 'qs';
@@ -14,17 +14,25 @@ import {
   setDefaultSelectedPages,
   setSelectedFilter,
   setDefaultSelectedFilters,
-  loadRoutes,
-  loadSectors,
+  setRoutes,
+  setRoutesData,
+  setRouteIds,
+  removeRoute,
+  setSectorIds,
+  setSector,
+  setSectors,
   loadRouteMarkColors,
+  setUsers,
   saveUser,
   saveToken,
   removeToken,
   increaseNumOfActiveRequests,
   decreaseNumOfActiveRequests,
-  updateRoute,
-  addRoute,
+  setRoute,
+  setRouteData,
   loadFromLocalStorageSelectedFilters,
+  removeRoutePropertyById,
+  setRouteProperty,
 } from '../actions';
 import Content from '../Content/Content';
 import Header from '../Header/Header';
@@ -35,7 +43,6 @@ import RoutesEditModal from '../RoutesEditModal/RoutesEditModal';
 import FilterBlock from '../FilterBlock/FilterBlock';
 import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
-import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
 import Authorization from '../Authorization';
 import StickyBar from '../StickyBar/StickyBar';
@@ -52,6 +59,12 @@ import {
   DEFAULT_SECTOR_VIEW_MODE_LIST,
 } from '../Constants/ViewModeSwitcher';
 import { BACKEND_DATE_FORMAT } from '../Constants/Date';
+import SectorContext from '../contexts/SectorContext';
+import getArrayFromObject from '../../v1/utils/getArrayFromObject';
+import {
+  reloadComments,
+} from '../../v1/utils/RouteFinder';
+import { reloadSector } from '../../v1/utils/SectorFinder';
 
 Axios.interceptors.request.use((config) => {
   const configCopy = R.clone(config);
@@ -64,121 +77,26 @@ class SpotsShow extends Authorization {
     super(props);
 
     this.state = Object.assign(this.state, {
-      spotId: parseInt(this.props.match.params.id, 10),
-      sectorId: (
-        this.props.match.params.sector_id
-          ? parseInt(this.props.match.params.sector_id, 10)
-          : 0
-      ),
-      sector: {},
       name: '',
       numOfPages: 1,
-      perPage: CARDS_PER_PAGE,
       spot: {},
       infoData: undefined,
-      routesModalVisible: false,
-      currentShown: {},
-      editMode: false,
-      ascents: [],
-      ctrlPressed: false,
-      comments: [],
-      numOfComments: 0,
-      numOfLikes: undefined,
-      isLiked: false,
-      likeId: 0,
-      likeBtnIsBusy: false,
-      ascent: null,
-      numOfRedpoints: undefined,
-      numOfFlash: undefined,
-      users: [],
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
     });
-    this.loadingRouteId = this.props.match.params.route_id;
-    this.loadEditMode = false;
   }
 
   componentDidMount() {
     const {
       history,
-      user,
       saveToken: saveTokenProp,
       saveUser: saveUserProp,
     } = this.props;
+    const sectorId = this.getSectorId();
     history.listen((location, action) => {
       if (action === 'POP') {
-        const data = location.pathname.split('/');
-        if (data.length > 3 && data[3] === 'sectors') {
-          const sectorId = parseInt(data[4], 10);
-          if (data.length > 5 && data[5] === 'routes') {
-            if (data[6] === 'new') {
-              if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
-                this.addRoute();
-              } else {
-                window.location = '/';
-              }
-            } else {
-              const routeIndex = 6;
-              this.loadingRouteId = data[routeIndex];
-              if (data.length > 7 && data[7] === 'edit') {
-                if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
-                  this.loadUsers();
-                  this.loadEditMode = true;
-                  this.setState({ sectorId });
-                } else {
-                  window.location = '/';
-                }
-              } else {
-                this.loadEditMode = false;
-                this.setState({ sectorId });
-              }
-            }
-          } else {
-            this.setState({
-              sectorId,
-              profileFormVisible: (location.hash === '#profile'),
-              routesModalVisible: false,
-            });
-          }
-          this.reloadSector(sectorId);
-          this.reloadSectors(sectorId);
-          this.reloadUserAscents();
-        } else {
-          if (data.length > 3 && data[3] === 'routes') {
-            if (data[4] === 'new') {
-              if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
-                this.addRoute();
-              } else {
-                window.location = '/';
-              }
-            } else {
-              const routeIndex = 4;
-              this.loadingRouteId = data[routeIndex];
-              if (data.length > 5 && data[5] === 'edit') {
-                if (avail(user.id) && (user.role === 'admin' || user.role === 'creator')) {
-                  this.loadUsers();
-                  this.loadEditMode = true;
-                  this.setState({ sectorId: 0 });
-                } else {
-                  window.location = '/';
-                }
-              } else {
-                this.loadEditMode = false;
-                this.setState({ sectorId: 0 });
-              }
-            }
-          } else {
-            this.setState({
-              sectorId: 0,
-              profileFormVisible: (location.hash === '#profile'),
-              routesModalVisible: false,
-            });
-          }
-          this.reloadSpot();
-          this.reloadSectors(0);
-          this.reloadUserAscents();
-        }
+        this.setState({ profileFormVisible: (location.hash === '#profile') });
       }
     });
 
@@ -187,33 +105,20 @@ class SpotsShow extends Authorization {
       saveTokenProp(token);
       this.signIn(token, (currentUser) => {
         this.reloadUserAscents(currentUser.id);
-        const data = window.location.pathname.split('/');
-        if (currentUser.role === 'admin' || currentUser.role === 'creator') {
-          if (R.find(e => e === 'new', data)) {
-            this.addRoute();
-          }
-          if (R.find(e => e === 'edit', data)) {
-            this.loadUsers();
-            this.loadEditMode = true;
-            this.loadRoute(data[3] === 'routes' ? data[4] : data[6], this.openModal);
-          }
-        } else if (R.find(e => (e === 'new' || e === 'edit'), data)) {
-          window.location = '/';
-        }
-        this.reloadSectors(this.state.sectorId, currentUser);
-        if (this.state.sectorId === 0) {
+        this.reloadSectors(sectorId, currentUser);
+        if (sectorId === 0) {
           this.reloadSpot(currentUser.id);
         } else {
-          this.reloadSector(this.state.sectorId, currentUser.id);
+          this.reloadSector(sectorId, currentUser.id);
         }
       });
     } else {
       this.reloadUserAscents();
-      this.reloadSectors(this.state.sectorId);
-      if (this.state.sectorId === 0) {
+      this.reloadSectors(sectorId);
+      if (sectorId === 0) {
         this.reloadSpot();
       } else {
-        this.reloadSector(this.state.sectorId);
+        this.reloadSector(sectorId);
       }
       saveUserProp({ id: null });
     }
@@ -230,30 +135,37 @@ class SpotsShow extends Authorization {
     window.removeEventListener('keyup', this.onKeyUp);
   }
 
-  onKeyDown = (event) => {
-    if (event.key === 'Control') {
-      this.setState({ ctrlPressed: true });
-    }
+  getSpotId = () => {
+    const { match } = this.props;
+    return parseInt(match.params.id, 10);
   };
 
-  onKeyUp = (event) => {
-    if (event.key === 'Control') {
-      this.setState({ ctrlPressed: false });
-    }
+  getSectorId = () => {
+    const { match } = this.props;
+    return match.params.sector_id ? parseInt(match.params.sector_id, 10) : 0;
   };
 
   reloadUserAscents = (userId) => {
-    const { user } = this.props;
+    const { user, setRoutesData: setRoutesDataProp } = this.props;
     const id = (userId || (avail(user.id) ? user.id : null));
     if (!id) {
-      this.setState({ ascents: [] });
       return;
     }
     this.props.increaseNumOfActiveRequests();
     Axios.get(`${ApiUrl}/v1/users/${id}/ascents`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
-        this.setState({ ascents: response.data.payload });
+        setRoutesDataProp(
+          R.map(
+            ascent => (
+              {
+                routeId: ascent.route_id,
+                content: { ascents: R.fromPairs([[ascent.id, ascent]]) },
+              }
+            ),
+            response.data.payload,
+          ),
+        );
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
         this.displayError(error);
@@ -261,80 +173,39 @@ class SpotsShow extends Authorization {
   };
 
   onRouteClick = (id) => {
-    const { spotId, sectorId } = this.state;
+    const { history } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}/routes/${id}`);
+      history.push(`/spots/${spotId}/routes/${id}`);
     } else {
-      this.props.history.push(
+      history.push(
         `/spots/${spotId}/sectors/${sectorId}/routes/${id}`,
       );
     }
-    this.reloadComments(id);
-    this.reloadLikes(id);
-    this.reloadAscents(id);
-    const route = R.find(
-      R.propEq('id', id),
-      R.pathOr({}, [spotId, sectorId], this.props.routes),
-    );
-    this.loadRoute(id, route ? null : this.openModal);
-    this.setState({
-      editMode: false,
-      currentShown: route || {},
-      routesModalVisible: route,
-    });
-  };
-
-  openModal = () => {
-    this.setState({ routesModalVisible: true });
-  };
-
-  loadRoute = (id, afterLoadRoute) => {
-    this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${id}`, { withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.setState({
-          currentShown: response.data.payload,
-        });
-        if (afterLoadRoute) {
-          afterLoadRoute();
-        }
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.displayError(error);
-      });
   };
 
   closeRoutesModal = () => {
-    this.setState({
-      routesModalVisible: false,
-      comments: [],
-      numOfComments: 0,
-      numOfLikes: undefined,
-      isLiked: false,
-      likeId: 0,
-      likeBtnIsBusy: false,
-      ascent: null,
-      numOfRedpoints: undefined,
-      numOfFlash: undefined,
-    });
-    if (this.state.sectorId === 0) {
+    const { history } = this.props;
+    const sectorId = this.getSectorId();
+    if (sectorId === 0) {
       this.reloadSpot();
     } else {
-      this.reloadSector(this.state.sectorId);
+      this.reloadSector(sectorId);
     }
-    this.props.history.goBack();
+    history.goBack();
     this.reloadUserAscents();
     this.reloadRoutes({}, null);
   };
 
   afterLogOut = () => {
+    const sectorId = this.getSectorId();
     this.setState({ ascents: [] });
     this.reloadRoutes();
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       this.reloadSpot(0);
     } else {
-      this.reloadSector(this.state.sectorId, 0);
+      this.reloadSector(sectorId, 0);
     }
     const resultFilters = [];
     const personal = {
@@ -357,6 +228,7 @@ class SpotsShow extends Authorization {
 
   reloadSpot = (userId) => {
     const { user } = this.props;
+    const spotId = this.getSpotId();
     let currentUserId;
     if (userId === null || userId === undefined) {
       if (notAvail(user.id)) {
@@ -372,7 +244,7 @@ class SpotsShow extends Authorization {
       params.user_id = currentUserId;
     }
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}`, { params, withCredentials: true })
+    Axios.get(`${ApiUrl}/v1/spots/${spotId}`, { params, withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         let infoData = [
@@ -418,61 +290,64 @@ class SpotsShow extends Authorization {
     }
     const params = {};
     if (currentUserId !== 0) {
-      params.user_id = currentUserId;
+      reloadSector(
+        id,
+        currentUserId,
+        (response) => {
+          let infoData = [
+            {
+              count: response.data.metadata.num_of_routes,
+              label: numToStr(response.data.metadata.num_of_routes, ['Трасса', 'Трассы', 'Трасс']),
+            },
+            {
+              count: response.data.metadata.num_of_new_routes,
+              label: numToStr(
+                response.data.metadata.num_of_new_routes,
+                ['Новая трасса', 'Новые трассы', 'Новых трасс'],
+              ),
+            },
+          ];
+          if (currentUserId !== 0) {
+            infoData = R.append({
+              count: response.data.metadata.num_of_unfulfilled,
+              label: numToStr(
+                response.data.metadata.num_of_unfulfilled,
+                ['Невыполненная трасса', 'Невыполненные трассы', 'Невыполненных трасс'],
+              ),
+            }, infoData);
+          }
+          this.setState({ infoData });
+        },
+        (error) => {
+          this.displayError(error);
+        },
+      );
     }
-    params.numOfDays = NUM_OF_DAYS;
-    this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/sectors/${id}`, { params, withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        let infoData = [
-          {
-            count: response.data.metadata.num_of_routes,
-            label: numToStr(response.data.metadata.num_of_routes, ['Трасса', 'Трассы', 'Трасс']),
-          },
-          {
-            count: response.data.metadata.num_of_new_routes,
-            label: numToStr(
-              response.data.metadata.num_of_new_routes,
-              ['Новая трасса', 'Новые трассы', 'Новых трасс'],
-            ),
-          },
-        ];
-        if (currentUserId !== 0) {
-          infoData = R.append({
-            count: response.data.metadata.num_of_unfulfilled,
-            label: numToStr(
-              response.data.metadata.num_of_unfulfilled,
-              ['Невыполненная трасса', 'Невыполненные трассы', 'Невыполненных трасс'],
-            ),
-          }, infoData);
-        }
-        this.setState({
-          sector: response.data.payload,
-          infoData,
-        });
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.displayError(error);
-      });
   };
 
   reloadSectors = (currentSectorId, user) => {
-    const { selectedFilters, selectedPages } = this.props;
+    const {
+      selectedFilters,
+      selectedPages,
+      setSectors: setSectorsProp,
+      setSectorIds: setSectorIdsProp,
+    } = this.props;
+    const spotId = this.getSpotId();
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/sectors`, { withCredentials: true })
+    Axios.get(`${ApiUrl}/v1/spots/${spotId}/sectors`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
-        this.props.loadSectors(response.data.payload);
-        if (!selectedFilters || selectedFilters[this.state.spotId] === undefined) {
+        setSectorsProp(response.data.payload);
+        setSectorIdsProp(R.map(sector => sector.id, response.data.payload));
+        if (!selectedFilters || selectedFilters[spotId] === undefined) {
           this.props.setDefaultSelectedFilters(
-            this.state.spotId,
+            spotId,
             R.map(sector => sector.id, response.data.payload),
           );
         }
-        if (!selectedPages || selectedPages[this.state.spotId] === undefined) {
+        if (!selectedPages || selectedPages[spotId] === undefined) {
           this.props.setDefaultSelectedPages(
-            this.state.spotId,
+            spotId,
             R.map(sector => sector.id, response.data.payload),
           );
           const routeFilters = localStorage.getItem('routeFilters');
@@ -483,9 +358,9 @@ class SpotsShow extends Authorization {
           const filters = R.merge(
             { sectorId: currentSectorId },
             (
-              selectedFiltersCurr[this.state.spotId] === undefined
+              selectedFiltersCurr[spotId] === undefined
                 ? DEFAULT_FILTERS
-                : selectedFiltersCurr[this.state.spotId][currentSectorId]
+                : selectedFiltersCurr[spotId][currentSectorId]
             ),
           );
           this.reloadRoutes(filters, 1, user);
@@ -517,11 +392,15 @@ class SpotsShow extends Authorization {
       selectedPages,
       selectedViewModes,
       sectors,
+      setRoutes: setRoutesProp,
+      setRouteIds: setRouteIdsProp,
     } = this.props;
-    const { spotId, perPage } = this.state;
+    const { perPage } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     const currentSectorId = parseInt(
       (filters.sectorId === null || filters.sectorId === undefined)
-        ? this.state.sectorId
+        ? sectorId
         : filters.sectorId,
       10,
     );
@@ -542,12 +421,12 @@ class SpotsShow extends Authorization {
     const currentViewMode = viewModeCurr || viewMode;
     const currentCategoryFrom = (
       (filters.categoryFrom === null || filters.categoryFrom === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].categoryFrom
+        ? selectedFilters[spotId][currentSectorId].categoryFrom
         : filters.categoryFrom
     );
     const currentCategoryTo = (
       (filters.categoryTo === null || filters.categoryTo === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].categoryTo
+        ? selectedFilters[spotId][currentSectorId].categoryTo
         : filters.categoryTo
     );
     const currentName = (
@@ -557,28 +436,28 @@ class SpotsShow extends Authorization {
     );
     const currentPeriod = (
       (filters.period === null || filters.period === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].period
+        ? selectedFilters[spotId][currentSectorId].period
         : filters.period
     );
     let currentDate = (
       (filters.date === null || filters.date === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].date
+        ? selectedFilters[spotId][currentSectorId].date
         : filters.date
     );
     currentDate = currentDate || DEFAULT_FILTERS.date;
     const currentResult = (
       (filters.result === null || filters.result === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].result
+        ? selectedFilters[spotId][currentSectorId].result
         : filters.result
     );
     const currentPersonal = (
       (filters.personal === null || filters.personal === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].personal
+        ? selectedFilters[spotId][currentSectorId].personal
         : filters.personal
     );
     const currentOutdated = (
       (filters.outdated === null || filters.outdated === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].outdated
+        ? selectedFilters[spotId][currentSectorId].outdated
         : filters.outdated
     );
     const currentLiked = (
@@ -588,7 +467,7 @@ class SpotsShow extends Authorization {
     );
     const currentPage = (
       (page === null || page === undefined)
-        ? selectedPages[this.state.spotId][currentSectorId]
+        ? selectedPages[spotId][currentSectorId]
         : page
     );
     const params = {
@@ -598,7 +477,7 @@ class SpotsShow extends Authorization {
         outdated: currentViewMode === 'scheme' ? true : currentOutdated,
       },
     };
-    if ((userCurr && avail(userCurr.id)) || avail(user.id)) {
+    if ((userCurr && avail(userCurr.id)) || (user && avail(user.id))) {
       params.filters.result = (currentResult.length === 0 ? [null] : currentResult);
       if (currentLiked) {
         params.filters.liked_by = 'self';
@@ -635,28 +514,20 @@ class SpotsShow extends Authorization {
         [null],
       ];
     } else {
-      params.limit = perPage;
-      params.offset = (currentPage - 1) * perPage;
+      params.limit = CARDS_PER_PAGE;
+      params.offset = (currentPage - 1) * CARDS_PER_PAGE;
     }
     if (this.props.token) params.token = this.props.token;
     if (currentSectorId === 0) {
       this.props.increaseNumOfActiveRequests();
-      Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/routes`, { params, withCredentials: true })
+      Axios.get(`${ApiUrl}/v1/spots/${spotId}/routes`, { params, withCredentials: true })
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
           this.setState({
-            numOfPages: Math.max(1, Math.ceil(response.data.metadata.all / perPage)),
+            numOfPages: Math.max(1, Math.ceil(response.data.metadata.all / CARDS_PER_PAGE)),
           });
-          this.props.loadRoutes(this.state.spotId, 0, response.data.payload);
-          if (this.loadingRouteId) {
-            const routeId = parseInt(this.loadingRouteId, 10);
-            this.loadingRouteId = null;
-            this.reloadComments(routeId);
-            this.reloadLikes(routeId);
-            this.reloadAscents(routeId);
-            this.loadRoute(routeId, this.openModal);
-            this.setState({ editMode: this.loadEditMode });
-          }
+          setRoutesProp(response.data.payload);
+          setRouteIdsProp(R.map(route => route.id, response.data.payload));
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
@@ -667,18 +538,10 @@ class SpotsShow extends Authorization {
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
           this.setState({
-            numOfPages: Math.max(1, Math.ceil(response.data.metadata.all / perPage)),
+            numOfPages: Math.max(1, Math.ceil(response.data.metadata.all / CARDS_PER_PAGE)),
           });
-          this.props.loadRoutes(this.state.spotId, currentSectorId, response.data.payload);
-          if (this.loadingRouteId) {
-            const routeId = parseInt(this.loadingRouteId, 10);
-            this.loadingRouteId = null;
-            this.reloadComments(routeId);
-            this.reloadLikes(routeId);
-            this.reloadAscents(routeId);
-            this.loadRoute(routeId, this.openModal);
-            this.setState({ editMode: this.loadEditMode });
-          }
+          setRoutesProp(response.data.payload);
+          setRouteIdsProp(R.map(route => route.id, response.data.payload));
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
@@ -688,14 +551,14 @@ class SpotsShow extends Authorization {
 
   changeSectorFilter = (id) => {
     const { user } = this.props;
+    const spotId = this.getSpotId();
     if (id !== 0) {
       this.reloadSector(id);
-      this.props.history.push(`/spots/${this.state.spotId}/sectors/${id}`);
+      this.props.history.push(`/spots/${spotId}/sectors/${id}`);
     } else {
       this.reloadSpot();
-      this.props.history.push(`/spots/${this.state.spotId}`);
+      this.props.history.push(`/spots/${spotId}`);
     }
-    this.setState({ sectorId: id, infoData: undefined });
     this.reloadRoutes({ sectorId: id }, null, user);
   };
 
@@ -705,12 +568,15 @@ class SpotsShow extends Authorization {
   };
 
   changePage = (page) => {
-    this.props.setSelectedPage(this.state.spotId, this.state.sectorId, page);
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
+    this.props.setSelectedPage(spotId, sectorId, page);
     this.reloadRoutes({}, page);
   };
 
   changeAllFilters = (categoryFrom, categoryTo, period, date, filters) => {
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     if (categoryFrom !== null) {
       this.props.setSelectedFilter(spotId, sectorId, 'categoryFrom', categoryFrom);
     }
@@ -775,78 +641,64 @@ class SpotsShow extends Authorization {
   };
 
   afterSubmitLogInForm = (userId) => {
+    const sectorId = this.getSectorId();
     this.reloadRoutes();
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       this.reloadSpot(userId);
     } else {
-      this.reloadSector(this.state.sectorId, userId);
+      this.reloadSector(sectorId, userId);
     }
     this.reloadUserAscents(userId);
   };
 
   afterSubmitSignUpForm = (userId) => {
+    const sectorId = this.getSectorId();
     this.reloadRoutes();
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       this.reloadSpot(userId);
     } else {
-      this.reloadSector(this.state.sectorId, userId);
+      this.reloadSector(sectorId, userId);
     }
     this.reloadUserAscents(userId);
   };
 
-  removeRoute = () => {
+  removeRoute = (routeId) => {
+    const { removeRoute: removeRouteProp } = this.props;
     if (window.confirm('Удалить трассу?')) {
       this.props.increaseNumOfActiveRequests();
       Axios({
-        url: `${ApiUrl}/v1/routes/${this.state.currentShown.id}`,
+        url: `${ApiUrl}/v1/routes/${routeId}`,
         method: 'delete',
         headers: { TOKEN: this.props.token },
       })
         .then(() => {
           this.props.decreaseNumOfActiveRequests();
           this.reloadRoutes();
+          removeRouteProp(routeId);
           this.closeRoutesModal();
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
         });
     }
-    this.setState({ ctrlPressed: false });
-  };
-
-  addRoute = () => {
-    this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/new`, { headers: { TOKEN: this.props.token }, withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        const newRoute = R.clone(response.data.payload);
-        newRoute.sector_id = this.state.sectorId;
-        if (this.state.sector.kind !== 'mixed') {
-          newRoute.kind = this.state.sector.kind;
-        }
-        this.loadUsers();
-        if (this.props.user.role === 'user') newRoute.data.personal = true;
-        this.setState({ currentShown: newRoute, routesModalVisible: true, editMode: true });
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.displayError(error);
-      });
   };
 
   goToProfile = () => {
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     if (sectorId === 0) {
       this.props.history.push(`/spots/${spotId}#profile`);
     } else {
       this.props.history.push(`/spots/${spotId}/sectors/${sectorId}#profile`);
     }
-    this.setState({ routesModalVisible: false, profileFormVisible: true });
+    this.setState({ profileFormVisible: true });
   };
 
   openProfileForm = () => {
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     this.setState({ profileFormVisible: true });
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       this.props.history.push(`/spots/${spotId}#profile`);
     } else {
       this.props.history.push(`/spots/${spotId}/sectors/${sectorId}#profile`);
@@ -854,47 +706,17 @@ class SpotsShow extends Authorization {
   };
 
   closeProfileForm = () => {
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     this.setState({ profileFormVisible: false });
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       this.props.history.push(`/spots/${spotId}`);
     } else {
       this.props.history.push(`/spots/${spotId}/sectors/${sectorId}`);
     }
   };
 
-  flatten = (arr) => {
-    if (arr.length === 0) {
-      return [];
-    }
-    return R.map(e => R.concat([e], this.flatten(e.route_comments)), arr);
-  };
-
-  formattedCommentsData = (data) => {
-    const self = this;
-    return R.map((comment) => {
-      const c = R.clone(comment);
-      c.route_comments = R.flatten(self.flatten(c.route_comments));
-      return c;
-    }, data);
-  };
-
-  reloadComments = (routeId) => {
-    this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/route_comments`, { withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.setState({
-          comments: this.formattedCommentsData(response.data.payload),
-          numOfComments: response.data.metadata.all,
-        });
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.displayError(error);
-      });
-  };
-
-  removeComment = (comment) => {
+  removeComment = (routeId, comment) => {
     if (!window.confirm('Удалить комментарий?')) {
       return;
     }
@@ -906,19 +728,31 @@ class SpotsShow extends Authorization {
     })
       .then(() => {
         this.props.decreaseNumOfActiveRequests();
-        this.reloadComments(this.state.currentShown.id);
+        reloadComments(
+          routeId,
+          null,
+          (error) => {
+            this.displayError(error);
+          },
+        );
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
         this.displayError(error);
       });
   };
 
-  saveComment = (params, afterSuccess) => {
+  saveComment = (routeId, params, afterSuccess) => {
     this.props.increaseNumOfActiveRequests();
     Axios.post(`${ApiUrl}/v1/route_comments`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
       .then(() => {
         this.props.decreaseNumOfActiveRequests();
-        this.reloadComments(this.state.currentShown.id);
+        reloadComments(
+          routeId,
+          null,
+          (error) => {
+            this.displayError(error);
+          },
+        );
         if (afterSuccess) {
           afterSuccess();
         }
@@ -928,110 +762,91 @@ class SpotsShow extends Authorization {
       });
   };
 
-  reloadLikes = (routeId) => {
-    const { user } = this.props;
+  onLikeChange = (routeId, afterChange) => {
+    const {
+      user,
+      routes,
+      setRouteProperty: setRoutePropertyProp,
+      removeRoutePropertyById: removeRoutePropertyByIdProp,
+    } = this.props;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/likes`, { withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        const like = (
-          notAvail(user.id)
-            ? 0
-            : (R.find(R.propEq('user_id', user.id))(response.data.payload))
-        );
-        const isLiked = notAvail(user.id) ? false : (like !== undefined);
-        this.setState({
-          numOfLikes: response.data.metadata.all,
-          isLiked,
-          likeBtnIsBusy: false,
-          likeId: like === undefined ? 0 : like.id,
-        });
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.setState({ likeBtnIsBusy: false });
-        this.displayError(error);
-      });
-  };
-
-  onLikeChange = () => {
-    this.props.increaseNumOfActiveRequests();
-    this.setState({ likeBtnIsBusy: true });
-    if (this.state.isLiked) {
+    const route = routes[routeId];
+    const like = R.find(R.propEq('user_id', user.id))(getArrayFromObject(route.likes));
+    if (like) {
       Axios({
-        url: `${ApiUrl}/v1/likes/${this.state.likeId}`,
+        url: `${ApiUrl}/v1/likes/${like.id}`,
         method: 'delete',
         headers: { TOKEN: this.props.token },
       })
         .then(() => {
           this.props.decreaseNumOfActiveRequests();
-          this.reloadLikes(this.state.currentShown.id);
+          removeRoutePropertyByIdProp(
+            routeId,
+            'likes',
+            like.id,
+          );
+          afterChange();
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
-          this.setState({ likeBtnIsBusy: false });
+          afterChange();
         });
     } else {
       const params = {
         like: {
-          user_id: this.props.user.id,
-          route_id: this.state.currentShown.id,
+          user_id: user.id,
+          route_id: routeId,
         },
       };
       Axios.post(`${ApiUrl}/v1/likes`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
-        .then(() => {
+        .then((response) => {
           this.props.decreaseNumOfActiveRequests();
-          this.reloadLikes(this.state.currentShown.id);
+          setRoutePropertyProp(
+            routeId,
+            'likes',
+            response.data.payload,
+          );
+          afterChange();
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
-          this.setState({ likeBtnIsBusy: false });
+          afterChange();
         });
     }
   };
 
-  reloadAscents = (routeId) => {
-    const { user } = this.props;
+  changeAscentResult = (routeId) => {
+    const {
+      user,
+      routes,
+      setRouteProperty: setRoutePropertyProp,
+    } = this.props;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/ascents`, { withCredentials: true })
-      .then((response) => {
-        this.props.decreaseNumOfActiveRequests();
-        const ascent = (
-          notAvail(user.id)
-            ? null
-            : (R.find(R.propEq('user_id', user.id))(response.data.payload))
-        );
-        this.setState({
-          ascent: ascent === undefined ? null : ascent,
-          numOfRedpoints: R.filter(R.propEq('result', 'red_point'), response.data.payload).length,
-          numOfFlash: R.filter(R.propEq('result', 'flash'), response.data.payload).length,
-        });
-      }).catch((error) => {
-        this.props.decreaseNumOfActiveRequests();
-        this.displayError(error);
-      });
-  };
-
-  changeAscentResult = () => {
-    this.props.increaseNumOfActiveRequests();
-    if (this.state.ascent) {
+    const route = routes[routeId];
+    const ascent = R.find(R.propEq('user_id', user.id))(getArrayFromObject(route.ascents));
+    if (ascent) {
       let result;
-      if (this.state.ascent.result === 'red_point') {
+      if (ascent.result === 'red_point') {
         result = 'flash';
-      } else if (this.state.ascent.result === 'flash') {
+      } else if (ascent.result === 'flash') {
         result = 'unsuccessful';
       } else {
         result = 'red_point';
       }
       const params = { ascent: { result } };
       Axios({
-        url: `${ApiUrl}/v1/ascents/${this.state.ascent.id}`,
+        url: `${ApiUrl}/v1/ascents/${ascent.id}`,
         method: 'patch',
         params,
         headers: { TOKEN: this.props.token },
       })
-        .then(() => {
+        .then((response) => {
           this.props.decreaseNumOfActiveRequests();
-          this.reloadAscents(this.state.currentShown.id);
+          setRoutePropertyProp(
+            routeId,
+            'ascents',
+            response.data.payload,
+          );
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
@@ -1041,14 +856,18 @@ class SpotsShow extends Authorization {
       const params = {
         ascent: {
           result,
-          user_id: this.props.user.id,
-          route_id: this.state.currentShown.id,
+          user_id: user.id,
+          route_id: routeId,
         },
       };
       Axios.post(`${ApiUrl}/v1/ascents`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
-        .then(() => {
+        .then((response) => {
           this.props.decreaseNumOfActiveRequests();
-          this.reloadAscents(this.state.currentShown.id);
+          setRoutePropertyProp(
+            routeId,
+            'ascents',
+            response.data.payload,
+          );
         }).catch((error) => {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
@@ -1057,6 +876,9 @@ class SpotsShow extends Authorization {
   };
 
   loadUsers = () => {
+    const {
+      setUsers: setUsersProp,
+    } = this.props;
     this.props.increaseNumOfActiveRequests();
     Axios.get(`${ApiUrl}/v1/users`, { headers: { TOKEN: this.props.token }, withCredentials: true })
       .then((response) => {
@@ -1065,7 +887,7 @@ class SpotsShow extends Authorization {
           (u1, u2) => u2.statistics.numOfCreatedRoutes - u1.statistics.numOfCreatedRoutes,
           response.data.payload,
         );
-        this.setState({ users });
+        setUsersProp(users);
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
         this.displayError(error);
@@ -1073,7 +895,11 @@ class SpotsShow extends Authorization {
   };
 
   createRoute = (params) => {
-    const { spotId, sectorId } = this.state;
+    const {
+      setRoute: setRouteProp,
+    } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     this.props.increaseNumOfActiveRequests();
     this.setState({ editRouteIsWaiting: true });
     Axios({
@@ -1085,26 +911,12 @@ class SpotsShow extends Authorization {
     })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
+        setRouteProp(response.data.payload);
         this.props.history.replace(
           `/spots/${spotId}/sectors/${sectorId}/routes/${response.data.payload.id}`,
         );
         this.setState({
           editRouteIsWaiting: false,
-          editMode: false,
-          currentShown: R.clone(response.data.payload),
-        });
-        this.props.addRoute(spotId, sectorId, response.data.payload);
-        this.setState({
-          comments: [],
-          ascents: [],
-          ascent: null,
-          numOfComments: 0,
-          numOfLikes: 0,
-          isLiked: false,
-          likeId: 0,
-          likeBtnIsBusy: false,
-          numOfRedpoints: 0,
-          numOfFlash: 0,
         });
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
@@ -1113,12 +925,16 @@ class SpotsShow extends Authorization {
       });
   };
 
-  updateRoute = (params) => {
-    const { spotId, sectorId, currentShown } = this.state;
+  updateRoute = (routeId, params) => {
+    const {
+      setRoute: setRouteProp,
+    } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     this.props.increaseNumOfActiveRequests();
     this.setState({ editRouteIsWaiting: true });
     Axios({
-      url: `${ApiUrl}/v1/routes/${currentShown.id}`,
+      url: `${ApiUrl}/v1/routes/${routeId}`,
       method: 'patch',
       data: params,
       headers: { TOKEN: this.props.token },
@@ -1126,18 +942,11 @@ class SpotsShow extends Authorization {
     })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
+        setRouteProp(response.data.payload);
         this.props.history.goBack();
         this.setState({
           editRouteIsWaiting: false,
-          editMode: false,
-          currentShown: response.data.payload,
         });
-        this.props.updateRoute(
-          spotId,
-          sectorId,
-          currentShown.id,
-          response.data.payload,
-        );
       }).catch((error) => {
         this.props.decreaseNumOfActiveRequests();
         this.displayError(error);
@@ -1145,34 +954,30 @@ class SpotsShow extends Authorization {
       });
   };
 
-  openEdit = () => {
-    const { spotId, sectorId, currentShown } = this.state;
-    this.loadUsers();
-    this.setState({ editMode: true });
+  openEdit = (routeId) => {
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}/routes/${currentShown.id}/edit`);
+      this.props.history.push(`/spots/${spotId}/routes/${routeId}/edit`);
     } else {
       this.props.history.push(
-        `/spots/${spotId}/sectors/${sectorId}/routes/${currentShown.id}/edit`,
+        `/spots/${spotId}/sectors/${sectorId}/routes/${routeId}/edit`,
       );
     }
   };
 
-  cancelEdit = () => {
-    const { currentShown } = this.state;
-    if (currentShown.id === null) {
-      this.setState({ routesModalVisible: false });
+  cancelEdit = (routeId) => {
+    if (routeId === null) {
       this.props.history.goBack();
     } else {
-      this.setState({ editMode: false });
       this.props.history.goBack();
     }
   };
 
   goToNew = () => {
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     this.props.history.push(`/spots/${spotId}/sectors/${sectorId}/routes/new`);
-    this.addRoute();
   };
 
   changeViewMode = (viewMode) => {
@@ -1182,7 +987,8 @@ class SpotsShow extends Authorization {
       setSelectedFilter: setSelectedFilterProp,
       setSelectedViewMode: setSelectedViewModeProp,
     } = this.props;
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     let date = '';
     setSelectedViewModeProp(spotId, sectorId, viewMode);
     if (viewMode === 'scheme') {
@@ -1198,12 +1004,13 @@ class SpotsShow extends Authorization {
     this.setState({viewMode});
   };
 
-  submitNoticeForm = (msg) => {
+  submitNoticeForm = (routeId, msg) => {
     const { user, selectedFilters } = this.props;
-    const { currentShown, spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     Sentry.withScope((scope) => {
       scope.setExtra('user_id', user.id);
-      scope.setExtra('route_id', currentShown.id);
+      scope.setExtra('route_id', routeId);
       scope.setExtra(
         'filters',
         (
@@ -1225,23 +1032,25 @@ class SpotsShow extends Authorization {
   };
 
   content = () => {
-    const { user, sectors, selectedViewModes } = this.props;
     const {
-      spot, sector, spotId, sectorId, infoData, currentShown,
-    } = this.state;
+      user, sectors, selectedViewModes, match,
+    } = this.props;
     const {
-      likeBtnIsBusy,
+      spot, infoData,
     } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     let numOfRoutes;
-    if (this.state.sectorId === 0) {
+    if (sectorId === 0) {
       numOfRoutes = infoData ? infoData[1].count : 0;
     } else {
       numOfRoutes = infoData ? infoData[0].count : 0;
     }
     let data;
+    const sector = sectors[sectorId];
     if (sectorId === 0) {
       data = spot;
-    } else if (sector.id === sectorId) {
+    } else if (sector && sector.id === sectorId) {
       data = sector;
     } else {
       data = {};
@@ -1259,140 +1068,107 @@ class SpotsShow extends Authorization {
         viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
       }
     }
-    let currentSector;
-    if (sectorId === 0) {
-      currentSector = R.find(
-        s => s.id === currentShown.sector_id,
-        sectors,
-      );
-    }
-    if (this.state.routesModalVisible) {
-      if (this.state.editMode) {
-        return (
-          <RoutesEditModal
-            onClose={this.closeRoutesModal}
-            sector={
-              this.state.sectorId === 0
-                ? (
-                  R.find(
-                    s => s.id === currentShown.sector_id,
-                    sectors,
-                  )
-                )
-                : this.state.sector
-            }
-            cancel={this.cancelEdit}
-            users={this.state.users}
-            routeMarkColors={this.props.routeMarkColors}
-            user={userStateToUser(user)}
-            numOfActiveRequests={this.props.numOfActiveRequests}
-            createRoute={this.createRoute}
-            updateRoute={this.updateRoute}
-            isWaiting={this.state.editRouteIsWaiting}
-            route={currentShown}
-            diagram={
-              sectorId === 0
-                ? (currentSector.diagram && currentSector.diagram.url)
-                : (sector.diagram && sector.diagram.url)
-            }
-          />
-        );
-      }
-      return (
-        <RoutesShowModal
-          onClose={this.closeRoutesModal}
-          openEdit={this.openEdit}
-          removeRoute={this.removeRoute}
-          ctrlPressed={this.state.ctrlPressed}
-          goToProfile={this.goToProfile}
-          comments={this.state.comments}
-          removeComment={this.removeComment}
-          saveComment={this.saveComment}
-          numOfComments={this.state.numOfComments}
-          numOfLikes={this.state.numOfLikes}
-          isLiked={this.state.isLiked}
-          likeBtnIsBusy={likeBtnIsBusy}
-          onLikeChange={this.onLikeChange}
-          user={userStateToUser(user)}
-          numOfActiveRequests={this.props.numOfActiveRequests}
-          ascent={this.state.ascent}
-          numOfRedpoints={this.state.numOfRedpoints}
-          numOfFlash={this.state.numOfFlash}
-          changeAscentResult={this.changeAscentResult}
-          route={currentShown}
-          diagram={
-            sectorId === 0
-              ? (currentSector.diagram && currentSector.diagram.url)
-              : (sector.diagram && sector.diagram.url)
-          }
-          submitNoticeForm={this.submitNoticeForm}
-        />
-      );
-    }
-    const routes = R.pathOr([], [this.state.spotId, this.state.sectorId], this.props.routes);
+    const routes = R.pathOr([], [spotId, sectorId], this.props.routes);
     return (
-      <>
-        <div className="sticky-bar">
-          <Header
-            data={data}
-            sectors={sectors}
-            sectorId={sectorId}
-            infoData={infoData}
-            changeSectorFilter={this.changeSectorFilter}
-            showMenu={() => this.setState({ showMenu: true })}
-          />
-          {
-            this.state.showMenu
-              ? (
-                <MainMenu
-                  user={userStateToUser(user)}
-                  hideMenu={() => this.setState({ showMenu: false })}
-                  changeNameFilter={this.changeNameFilter}
-                  logIn={this.logIn}
-                  signUp={this.signUp}
-                  logOut={this.logOut}
-                  openProfile={this.openProfileForm}
-                  enterWithVk={this.enterWithVk}
-                />
-              )
-              : ''
-          }
-          <Content
-            routes={routes}
-            ascents={this.state.ascents}
-            user={userStateToUser(user)}
-            addRoute={this.goToNew}
-            sectorId={this.state.sectorId}
-            diagram={sector.diagram && sector.diagram.url}
-            page={
-              (this.props.selectedPages && this.props.selectedPages[this.state.spotId])
-                ? this.props.selectedPages[this.state.spotId][this.state.sectorId]
-                : 1
-            }
-            numOfPages={this.state.numOfPages}
-            onRouteClick={this.onRouteClick}
-            changePage={this.changePage}
-            numOfRoutes={viewMode === 'scheme' ? routes.length : numOfRoutes}
-            changeViewMode={this.changeViewMode}
-            viewMode={viewMode}
-            withScheme={sectorId !== 0}
-            showFilters={() => this.setState({ showFilters: true })}
-          />
-          <StickyBar loading={this.props.numOfActiveRequests > 0} />
-        </div>
-        <Footer
-          user={userStateToUser(user)}
-          logIn={this.logIn}
-          signUp={this.signUp}
-          logOut={this.logOut}
+      <Switch>
+        <Route
+          path={[`${match.path}/:route_id/edit`, `${match.path}/new`]}
+          render={() => (
+            <RoutesEditModal
+              displayError={this.displayError}
+              onClose={this.closeRoutesModal}
+              cancel={this.cancelEdit}
+              routeMarkColors={this.props.routeMarkColors}
+              numOfActiveRequests={this.props.numOfActiveRequests}
+              createRoute={this.createRoute}
+              updateRoute={this.updateRoute}
+              isWaiting={this.state.editRouteIsWaiting}
+              loadUsers={this.loadUsers}
+            />
+          )}
         />
-      </>
+        <Route
+          path={`${match.path}/:route_id`}
+          render={() => (
+            <RoutesShowModal
+              displayError={this.displayError}
+              onClose={this.closeRoutesModal}
+              openEdit={this.openEdit}
+              removeRoute={this.removeRoute}
+              goToProfile={this.goToProfile}
+              removeComment={this.removeComment}
+              saveComment={this.saveComment}
+              onLikeChange={this.onLikeChange}
+              numOfActiveRequests={this.props.numOfActiveRequests}
+              changeAscentResult={this.changeAscentResult}
+              submitNoticeForm={this.submitNoticeForm}
+            />
+          )}
+        />
+        <Route
+          path={match.path}
+          render={() => (
+            <>
+              <div className="sticky-bar">
+                <Header
+                  data={data}
+                  infoData={infoData}
+                  changeSectorFilter={this.changeSectorFilter}
+                  showMenu={() => this.setState({ showMenu: true })}
+                />
+                {
+                  this.state.showMenu
+                    ? (
+                      <MainMenu
+                        user={userStateToUser(user)}
+                        hideMenu={() => this.setState({ showMenu: false })}
+                        changeNameFilter={this.changeNameFilter}
+                        logIn={this.logIn}
+                        signUp={this.signUp}
+                        logOut={this.logOut}
+                        openProfile={this.openProfileForm}
+                        enterWithVk={this.enterWithVk}
+                      />
+                    )
+                    : ''
+                }
+                <Content
+                  user={userStateToUser(user)}
+                  addRoute={this.goToNew}
+                  page={
+                    (this.props.selectedPages && this.props.selectedPages[spotId])
+                      ? this.props.selectedPages[spotId][sectorId]
+                      : 1
+                  }
+                  numOfPages={this.state.numOfPages}
+                  onRouteClick={this.onRouteClick}
+                  changePage={this.changePage}
+                  numOfRoutes={viewMode === 'scheme' ? routes.length : numOfRoutes}
+                  changeViewMode={this.changeViewMode}
+                  viewMode={viewMode}
+                  withScheme={sectorId !== 0}
+                  showFilters={() => this.setState({ showFilters: true })}
+                />
+                <StickyBar loading={this.props.numOfActiveRequests > 0} />
+              </div>
+              <Footer
+                user={userStateToUser(user)}
+                logIn={this.logIn}
+                signUp={this.signUp}
+                logOut={this.logOut}
+              />
+            </>
+          )}
+        />
+      </Switch>
     );
   };
 
   render() {
     const { user, selectedViewModes, sectors } = this.props;
-    const { spotId, sectorId } = this.state;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
+    const sector = sectorId !== 0 ? sectors[sectorId] : undefined;
     let viewMode;
     if (selectedViewModes && selectedViewModes[spotId] && selectedViewModes[spotId][sectorId]) {
       viewMode = selectedViewModes[spotId][sectorId];
@@ -1407,29 +1183,29 @@ class SpotsShow extends Authorization {
       }
     }
     const period = (
-      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].period
+      (this.props.selectedFilters && this.props.selectedFilters[spotId])
+        ? this.props.selectedFilters[spotId][sectorId].period
         : DEFAULT_FILTERS.period
     );
     let date = (
-      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].date
+      (this.props.selectedFilters && this.props.selectedFilters[spotId])
+        ? this.props.selectedFilters[spotId][sectorId].date
         : DEFAULT_FILTERS.date
     );
     date = date || DEFAULT_FILTERS.date;
     const filters = (
-      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].filters
+      (this.props.selectedFilters && this.props.selectedFilters[spotId])
+        ? this.props.selectedFilters[spotId][sectorId].filters
         : DEFAULT_FILTERS.filters
     );
     const categoryFrom = (
-      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].categoryFrom
+      (this.props.selectedFilters && this.props.selectedFilters[spotId])
+        ? this.props.selectedFilters[spotId][sectorId].categoryFrom
         : DEFAULT_FILTERS.categoryFrom
     );
     const categoryTo = (
-      (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])
-        ? this.props.selectedFilters[this.state.spotId][this.state.sectorId].categoryTo
+      (this.props.selectedFilters && this.props.selectedFilters[spotId])
+        ? this.props.selectedFilters[spotId][sectorId].categoryTo
         : DEFAULT_FILTERS.categoryTo
     );
     return (
@@ -1477,20 +1253,6 @@ class SpotsShow extends Authorization {
             : ''
         }
         {
-          this.state.resetPasswordFormVisible
-            ? (
-              <ResetPasswordForm
-                onFormSubmit={this.submitResetPasswordForm}
-                closeForm={this.closeResetPasswordForm}
-                isWaiting={this.state.resetPasswordIsWaiting}
-                formErrors={this.state.resetPasswordFormErrors}
-                email={this.state.email}
-                resetErrors={this.resetPasswordResetErrors}
-              />
-            )
-            : ''
-        }
-        {
           this.state.logInFormVisible
             ? (
               <LogInForm
@@ -1526,17 +1288,19 @@ class SpotsShow extends Authorization {
           onClick={() => this.container.clear()}
           className="toast-top-right"
         />
-        {this.content()}
+        <SectorContext.Provider value={{ sector }}>
+          {this.content()}
+        </SectorContext.Provider>
       </>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  routes: state.routes,
   selectedViewModes: state.selectedViewModes,
   selectedPages: state.selectedPages,
   selectedFilters: state.selectedFilters,
-  routes: state.routes,
   sectors: state.sectors,
   user: state.user,
   token: state.token,
@@ -1545,7 +1309,17 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadRoutes: (spotId, sectorId, routes) => dispatch(loadRoutes(spotId, sectorId, routes)),
+  setRoutes: routes => dispatch(setRoutes(routes)),
+  setRoutesData: routesData => dispatch(setRoutesData(routesData)),
+  setRouteProperty: (routeId, routePropertyName, routePropertyData) => dispatch(
+    setRouteProperty(routeId, routePropertyName, routePropertyData),
+  ),
+  removeRoutePropertyById: (routeId, routePropertyName, routePropertyId) => dispatch(
+    removeRoutePropertyById(routeId, routePropertyName, routePropertyId),
+  ),
+  setRouteIds: routeIds => dispatch(setRouteIds(routeIds)),
+  setSectorIds: sectorIds => dispatch(setSectorIds(sectorIds)),
+  removeRoute: routeId => dispatch(removeRoute(routeId)),
   setSelectedViewMode: (spotId, sectorId, viewMode) => (
     dispatch(setSelectedViewMode(spotId, sectorId, viewMode))
   ),
@@ -1560,13 +1334,17 @@ const mapDispatchToProps = dispatch => ({
     setDefaultSelectedFilters(spotId, sectorIds),
   ),
   loadFromLocalStorageSelectedFilters: () => dispatch(loadFromLocalStorageSelectedFilters()),
-  loadSectors: sectors => dispatch(loadSectors(sectors)),
+  setSectors: sectors => dispatch(setSectors(sectors)),
+  setSector: sector => dispatch(setSector(sector)),
   loadRouteMarkColors: routeMarkColors => dispatch(loadRouteMarkColors(routeMarkColors)),
   saveUser: user => dispatch(saveUser(user)),
+  setUsers: users => dispatch(setUsers(users)),
   saveToken: token => dispatch(saveToken(token)),
   removeToken: () => dispatch(removeToken()),
-  updateRoute: (spotId, sectorId, id, route) => dispatch(updateRoute(spotId, sectorId, id, route)),
-  addRoute: (spotId, sectorId, route) => dispatch(addRoute(spotId, sectorId, route)),
+  setRoute: route => dispatch(setRoute(route)),
+  setRouteData: (routeId, routeData) => (
+    dispatch(setRouteData(routeId, routeData))
+  ),
   increaseNumOfActiveRequests: () => dispatch(increaseNumOfActiveRequests()),
   decreaseNumOfActiveRequests: () => dispatch(decreaseNumOfActiveRequests()),
 });

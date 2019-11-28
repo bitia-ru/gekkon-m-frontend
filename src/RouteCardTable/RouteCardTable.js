@@ -1,43 +1,54 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import RouteCard from '../RouteCard/RouteCard';
+import getArrayByIds from '../../v1/utils/getArrayByIds';
+import SectorContext from '../contexts/SectorContext';
 import AddRouteButton from '../AddRouteButton/AddRouteButton';
 import './RouteCardTable.css';
 
 const RouteCardTable = ({
-  user, routes, ascents, sectorId, addRoute, onRouteClick,
+  user, routes, addRoute, onRouteClick, routeIds,
 }) => (
-  <div className="content-m__inner-card">
+  <SectorContext.Consumer>
     {
-      (sectorId !== 0 && user) && <AddRouteButton onClick={addRoute} />
+      ({ sector }) => (
+        <div className="content-m__inner-card">
+          {
+            (sector && user) && <AddRouteButton onClick={addRoute} />
+          }
+          {R.map(route => (
+            <div
+              key={route.id}
+              role="button"
+              tabIndex="0"
+              style={{ outline: 'none' }}
+              className="content-m__col-sm-6 content-m__col-xs-12"
+              onClick={() => onRouteClick(route.id)}
+            >
+              <RouteCard route={route} />
+            </div>
+          ), getArrayByIds(routeIds, routes))}
+        </div>
+      )
     }
-    {R.map(route => (
-      <div
-        key={route.id}
-        role="button"
-        tabIndex="0"
-        style={{ outline: 'none' }}
-        className="content-m__col-sm-6 content-m__col-xs-12"
-        onClick={() => onRouteClick(route.id)}
-      >
-        <RouteCard
-          route={route}
-          ascent={R.find(ascent => ascent.route_id === route.id, ascents)}
-        />
-      </div>
-    ), routes)}
-  </div>
+  </SectorContext.Consumer>
 );
 
 
 RouteCardTable.propTypes = {
   user: PropTypes.object,
-  routes: PropTypes.array.isRequired,
-  ascents: PropTypes.array.isRequired,
+  routes: PropTypes.object.isRequired,
+  routeIds: PropTypes.array.isRequired,
   addRoute: PropTypes.func.isRequired,
-  sectorId: PropTypes.number.isRequired,
   onRouteClick: PropTypes.func.isRequired,
 };
 
-export default RouteCardTable;
+const mapStateToProps = state => ({
+  routes: state.routes,
+  routeIds: state.routeIds,
+});
+
+export default withRouter(connect(mapStateToProps)(RouteCardTable));

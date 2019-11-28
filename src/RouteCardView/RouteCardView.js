@@ -7,26 +7,20 @@ import RouteCardScheme from '../RouteCardScheme/RouteCardScheme';
 export default class RouteCardView extends Component {
   renderViewMode(viewMode) {
     const {
-      user, routes, ascents, addRoute, sectorId, onRouteClick, diagram,
+      user, addRoute, onRouteClick, diagram,
     } = this.props;
     switch (viewMode) {
     case 'scheme':
       return (
         <RouteCardScheme
           diagram={diagram}
-          routes={routes}
-          ascents={ascents}
-          sectorId={sectorId}
           onRouteClick={onRouteClick}
         />
       );
     case 'table':
       return (
         <RouteCardTable
-          routes={routes}
-          ascents={ascents}
           addRoute={addRoute}
-          sectorId={sectorId}
           onRouteClick={onRouteClick}
           user={user}
         />
@@ -34,9 +28,7 @@ export default class RouteCardView extends Component {
     case 'list':
       return (
         <RouteCardList
-          routes={routes}
           addRoute={addRoute}
-          sectorId={sectorId}
           onRouteClick={onRouteClick}
           user={user}
         />
@@ -60,9 +52,6 @@ RouteCardView.propTypes = {
   user: PropTypes.object,
   diagram: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
-  routes: PropTypes.array.isRequired,
-  ascents: PropTypes.array.isRequired,
   addRoute: PropTypes.func.isRequired,
-  sectorId: PropTypes.number.isRequired,
   onRouteClick: PropTypes.func.isRequired,
 };
