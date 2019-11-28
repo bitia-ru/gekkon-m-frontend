@@ -4,36 +4,93 @@ import * as acts from './Constants/Actions';
 import { DEFAULT_FILTERS } from './Constants/DefaultFilters';
 
 const routesReducer = (state = {}, action) => {
-  let routes;
-  let index;
   switch (action.type) {
-  case acts.LOAD_ROUTES:
-    routes = R.clone(state);
-    routes[action.spotId] = routes[action.spotId] || {};
-    routes[action.spotId][action.sectorId] = action.routes;
-    return routes;
-  case acts.ADD_ROUTE:
-    routes = R.clone(state);
-    routes[action.spotId] = routes[action.spotId] || {};
-    routes[action.spotId][action.sectorId] = R.append(
-      action.route,
-      routes[action.spotId][action.sectorId],
+  case acts.SET_ROUTES:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs(R.map(route => [route.id, route], action.routes)),
     );
-    return routes;
-  case acts.UPDATE_ROUTE:
-    routes = R.clone(state);
-    index = R.findIndex(R.propEq('id', action.id))(routes[action.spotId][action.sectorId]);
-    routes[action.spotId][action.sectorId][index] = action.route;
-    return routes;
+  case acts.SET_ROUTES_DATA:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs(R.map(data => [data.routeId, data.content], action.routesData)),
+    );
+  case acts.SET_ROUTE:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs([[action.route.id, action.route]]),
+    );
+  case acts.SET_ROUTE_DATA:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs([[action.routeId, action.routeData]]),
+    );
+  case acts.SET_ROUTE_PROPERTY:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs(
+        [[
+          action.routeId,
+          R.fromPairs(
+            [[
+              action.routePropertyName,
+              R.fromPairs([[action.routePropertyData.id, action.routePropertyData]]),
+            ]],
+          ),
+        ]],
+      ),
+    );
+  case acts.REMOVE_ROUTE_PROPERTY_BY_ID:
+    return R.dissocPath(
+      [`${action.routeId}`, action.routePropertyName, `${action.routePropertyId}`],
+      state,
+    );
+  case acts.REMOVE_ROUTE:
+    return R.dissoc(action.routeId, state);
   default:
     return state;
   }
 };
 
-const sectorsReducer = (state = [], action) => {
+const routeIdsReducer = (state = [], action) => {
   switch (action.type) {
-  case acts.LOAD_SECTORS:
-    return action.sectors;
+  case acts.SET_ROUTE_IDS:
+    return action.routeIds;
+  default:
+    return state;
+  }
+};
+
+const sectorsReducer = (state = {}, action) => {
+  switch (action.type) {
+  case acts.SET_SECTORS:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs(R.map(sector => [sector.id, sector], action.sectors)),
+    );
+  case acts.SET_SECTOR:
+    return R.mergeDeepRight(
+      state,
+      R.fromPairs([[action.sector.id, action.sector]]),
+    );
+  default:
+    return state;
+  }
+};
+
+const sectorIdsReducer = (state = [], action) => {
+  switch (action.type) {
+  case acts.SET_SECTOR_IDS:
+    return action.sectorIds;
+  default:
+    return state;
+  }
+};
+
+const usersReducer = (state = [], action) => {
+  switch (action.type) {
+  case acts.SET_USERS:
+    return action.users;
   default:
     return state;
   }
@@ -182,8 +239,11 @@ const routeMarkColorsReducer = (state = [], action) => {
 
 export default combineReducers({
   routes: routesReducer,
+  routeIds: routeIdsReducer,
   sectors: sectorsReducer,
+  sectorIds: sectorIdsReducer,
   user: userReducer,
+  users: usersReducer,
   tab: tabReducer,
   token: tokenReducer,
   numOfActiveRequests: numOfActiveRequestsReducer,

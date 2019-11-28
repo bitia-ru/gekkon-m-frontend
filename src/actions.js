@@ -1,30 +1,68 @@
 import * as acts from './Constants/Actions';
 
-export const loadRoutes = (spotId, sectorId, routes) => ({
-  type: acts.LOAD_ROUTES,
-  spotId,
-  sectorId,
+export const setRoutes = routes => ({
+  type: acts.SET_ROUTES,
   routes,
 });
 
-export const updateRoute = (spotId, sectorId, id, route) => ({
-  type: acts.UPDATE_ROUTE,
-  spotId,
-  sectorId,
-  id,
+export const setRoutesData = routesData => ({
+  type: acts.SET_ROUTES_DATA,
+  routesData,
+});
+
+export const setRoute = route => ({
+  type: acts.SET_ROUTE,
   route,
 });
 
-export const addRoute = (spotId, sectorId, route) => ({
-  type: acts.ADD_ROUTE,
-  spotId,
-  sectorId,
-  route,
+export const setRouteData = (routeId, routeData) => ({
+  type: acts.SET_ROUTE_DATA,
+  routeId,
+  routeData,
 });
 
-export const loadSectors = sectors => ({
-  type: acts.LOAD_SECTORS,
+export const setRouteProperty = (routeId, routePropertyName, routePropertyData) => ({
+  type: acts.SET_ROUTE_PROPERTY,
+  routeId,
+  routePropertyName,
+  routePropertyData,
+});
+
+export const removeRoutePropertyById = (routeId, routePropertyName, routePropertyId) => ({
+  type: acts.REMOVE_ROUTE_PROPERTY_BY_ID,
+  routeId,
+  routePropertyName,
+  routePropertyId,
+});
+
+export const removeRoute = routeId => ({
+  type: acts.REMOVE_ROUTE,
+  routeId,
+});
+
+export const setRouteIds = routeIds => ({
+  type: acts.SET_ROUTE_IDS,
+  routeIds,
+});
+
+export const setSectorIds = sectorIds => ({
+  type: acts.SET_SECTOR_IDS,
+  sectorIds,
+});
+
+export const setSectors = sectors => ({
+  type: acts.SET_SECTORS,
   sectors,
+});
+
+export const setSector = sector => ({
+  type: acts.SET_SECTOR,
+  sector,
+});
+
+export const setUsers = users => ({
+  type: acts.SET_USERS,
+  users,
 });
 
 export const saveUser = user => ({

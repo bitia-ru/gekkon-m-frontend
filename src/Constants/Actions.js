@@ -1,9 +1,17 @@
-export const LOAD_ROUTES = 'LOAD_ROUTES';
-export const UPDATE_ROUTE = 'UPDATE_ROUTE';
-export const ADD_ROUTE = 'ADD_ROUTE';
+export const SET_ROUTES = 'SET_ROUTES';
+export const SET_ROUTE = 'SET_ROUTE';
+export const SET_ROUTE_DATA = 'SET_ROUTE_DATA';
+export const SET_ROUTE_PROPERTY = 'SET_ROUTE_PROPERTY';
+export const REMOVE_ROUTE_PROPERTY_BY_ID = 'REMOVE_ROUTE_PROPERTY_BY_ID';
+export const SET_ROUTES_DATA = 'SET_ROUTES_DATA';
+export const REMOVE_ROUTE = 'REMOVE_ROUTE';
+export const SET_ROUTE_IDS = 'SET_ROUTE_IDS';
 
-export const LOAD_SECTORS = 'LOAD_SECTORS';
+export const SET_SECTORS = 'SET_SECTORS';
+export const SET_SECTOR = 'SET_SECTOR';
+export const SET_SECTOR_IDS = 'SET_SECTOR_IDS';
 
+export const SET_USERS = 'SET_USERS';
 export const SAVE_USER = 'SAVE_USER';
 
 export const CHANGE_TAB = 'CHANGE_TAB';

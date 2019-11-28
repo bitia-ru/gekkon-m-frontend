@@ -37,7 +37,7 @@ const News = ({ data }) => {
           {user && user.avatar && <img src={user.avatar.url} alt={getUserName(user)} />}
         </div>
         <div className="news-card-m__author-info">
-          <div className="news-card-m__author-name">{getUserName(user)}</div>
+          <div className="news-card-m__author-name">{user && getUserName(user)}</div>
           <div className="news-card-m__author-data">{message}</div>
           <div className="news-card-m__author-date">{timeFromNow(moment(time))}</div>
         </div>
