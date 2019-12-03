@@ -324,6 +324,18 @@ export default class Authorization extends React.Component {
     this.setState({ resetPasswordFormVisible: false });
   };
 
+  openProfileForm = () => {
+    const { history } = this.props;
+    history.push('#profile');
+    this.setState({ profileFormVisible: true });
+  };
+
+  closeProfileForm = () => {
+    const { history, match } = this.props;
+    history.push(match.url);
+    this.setState({ profileFormVisible: false });
+  };
+
   enterWithVk = (type) => {
     const { token } = this.props;
     this.w = window.open(`https://oauth.vk.com/authorize?client_id=${CLIENT_ID}&scope=email%2Cphotos&redirect_uri=${REDIRECT_URI}&response_type=code&v=5.74&state=${JSON.stringify({
