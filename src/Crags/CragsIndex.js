@@ -28,14 +28,6 @@ class CragsIndex extends Authorization {
   changeNameFilter = () => {
   };
 
-  openProfileForm = () => {
-    this.setState({ profileFormVisible: true });
-  };
-
-  closeProfileForm = () => {
-    this.setState({ profileFormVisible: false });
-  };
-
   render() {
     const { user } = this.props;
     return (
