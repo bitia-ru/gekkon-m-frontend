@@ -173,16 +173,8 @@ class SpotsShow extends Authorization {
   };
 
   onRouteClick = (id) => {
-    const { history } = this.props;
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    if (sectorId === 0) {
-      history.push(`/spots/${spotId}/routes/${id}`);
-    } else {
-      history.push(
-        `/spots/${spotId}/sectors/${sectorId}/routes/${id}`,
-      );
-    }
+    const { history, match } = this.props;
+    history.push(`${match.url}/routes/${id}`);
   };
 
   closeRoutesModal = () => {
@@ -553,14 +545,13 @@ class SpotsShow extends Authorization {
   };
 
   changeSectorFilter = (id) => {
-    const { user } = this.props;
-    const spotId = this.getSpotId();
+    const { user, history, match } = this.props;
     if (id !== 0) {
       this.reloadSector(id);
-      this.props.history.push(`/spots/${spotId}/sectors/${id}`);
+      history.push(`${R.replace(/\/sectors\/[0-9]*/, '', match.url)}/sectors/${id}`);
     } else {
       this.reloadSpot();
-      this.props.history.push(`/spots/${spotId}`);
+      history.push(R.replace(/\/sectors\/[0-9]*/, '', match.url));
     }
     this.reloadRoutes({ sectorId: id }, null, user);
   };
@@ -684,39 +675,6 @@ class SpotsShow extends Authorization {
           this.props.decreaseNumOfActiveRequests();
           this.displayError(error);
         });
-    }
-  };
-
-  goToProfile = () => {
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}#profile`);
-    } else {
-      this.props.history.push(`/spots/${spotId}/sectors/${sectorId}#profile`);
-    }
-    this.setState({ profileFormVisible: true });
-  };
-
-  openProfileForm = () => {
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    this.setState({ profileFormVisible: true });
-    if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}#profile`);
-    } else {
-      this.props.history.push(`/spots/${spotId}/sectors/${sectorId}#profile`);
-    }
-  };
-
-  closeProfileForm = () => {
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    this.setState({ profileFormVisible: false });
-    if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}`);
-    } else {
-      this.props.history.push(`/spots/${spotId}/sectors/${sectorId}`);
     }
   };
 
@@ -900,10 +858,10 @@ class SpotsShow extends Authorization {
 
   createRoute = (params) => {
     const {
+      history,
+      match,
       setRoute: setRouteProp,
     } = this.props;
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
     this.props.increaseNumOfActiveRequests();
     this.setState({ editRouteIsWaiting: true });
     Axios({
@@ -916,8 +874,8 @@ class SpotsShow extends Authorization {
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         setRouteProp(response.data.payload);
-        this.props.history.replace(
-          `/spots/${spotId}/sectors/${sectorId}/routes/${response.data.payload.id}`,
+        history.replace(
+          `${match.url}/${response.data.payload.id}`,
         );
         this.setState({
           editRouteIsWaiting: false,
@@ -959,29 +917,17 @@ class SpotsShow extends Authorization {
   };
 
   openEdit = (routeId) => {
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    if (sectorId === 0) {
-      this.props.history.push(`/spots/${spotId}/routes/${routeId}/edit`);
-    } else {
-      this.props.history.push(
-        `/spots/${spotId}/sectors/${sectorId}/routes/${routeId}/edit`,
-      );
-    }
+    const { history, match } = this.props;
+    history.push(`${match.url}/${routeId}/edit`);
   };
 
   cancelEdit = (routeId) => {
-    if (routeId === null) {
-      this.props.history.goBack();
-    } else {
-      this.props.history.goBack();
-    }
+    this.props.history.goBack();
   };
 
   goToNew = () => {
-    const spotId = this.getSpotId();
-    const sectorId = this.getSectorId();
-    this.props.history.push(`/spots/${spotId}/sectors/${sectorId}/routes/new`);
+    const { history, match } = this.props;
+    history.push(`${match.url}/routes/new`);
   };
 
   changeViewMode = (viewMode) => {
@@ -1101,7 +1047,7 @@ class SpotsShow extends Authorization {
               onClose={this.closeRoutesModal}
               openEdit={this.openEdit}
               removeRoute={this.removeRoute}
-              goToProfile={this.goToProfile}
+              goToProfile={this.openProfileForm}
               removeComment={this.removeComment}
               saveComment={this.saveComment}
               onLikeChange={this.onLikeChange}
