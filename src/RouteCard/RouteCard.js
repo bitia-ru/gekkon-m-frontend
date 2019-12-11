@@ -33,7 +33,7 @@ class RouteCard extends Component {
     const clockIcons = require('./images/card-sprite.svg');
     const ascents = avail(route.ascents) && getArrayFromObject(route.ascents);
     const ascent = (
-      notAvail(user.id) || notAvail(ascents)
+      notAvail(user) || notAvail(ascents)
         ? null
         : (R.find(R.propEq('user_id', user.id))(ascents))
     );
@@ -121,7 +121,7 @@ RouteCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  user: state.user,
+  user: state.usersStore.users[state.usersStore.currentUserId],
 });
 
 export default withRouter(connect(mapStateToProps)(RouteCard));

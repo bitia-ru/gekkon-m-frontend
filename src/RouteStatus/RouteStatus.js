@@ -16,7 +16,7 @@ const RouteStatus = ({
       ({ route }) => {
         const ascents = avail(route.ascents) && getArrayFromObject(route.ascents);
         const ascent = (
-          notAvail(user.id) || notAvail(ascents)
+          notAvail(user) || notAvail(ascents)
             ? null
             : (R.find(R.propEq('user_id', user.id))(ascents))
         );
@@ -58,7 +58,7 @@ RouteStatus.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  user: state.user,
+  user: state.usersStore.users[state.usersStore.currentUserId],
 });
 
 export default withRouter(connect(mapStateToProps)(RouteStatus));
