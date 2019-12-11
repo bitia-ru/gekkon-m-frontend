@@ -5,17 +5,19 @@ import { ToastContainer } from 'react-toastr';
 import MainPageHeader from '../MainPageHeader/MainPageHeader';
 import MainMenu from '../MainMenu/MainMenu';
 import Footer from '../Footer/Footer';
-import { saveUser, changeTab } from '../actions';
-import Authorization from '../Authorization';
+import { changeTab } from '../actions';
+import BaseComponent from '../BaseComponent';
 import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
 import Profile from '../Profile/Profile';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../Utils';
-import { userStateToUser } from '../Utils/Workarounds';
+import { loadToken, logOutUser } from '../../v1/stores/users/actions';
+import { signIn } from '../../v1/stores/users/utils';
+import getState from '../../v1/utils/getState';
 
-class CragsIndex extends Authorization {
+class CragsIndex extends BaseComponent {
   componentDidMount() {
     window.history.back();
   }
@@ -29,7 +31,7 @@ class CragsIndex extends Authorization {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, loading } = this.props;
     return (
       <React.Fragment>
         {
@@ -62,7 +64,7 @@ class CragsIndex extends Authorization {
             : ''
         }
         {
-          (avail(user.id) && this.state.profileFormVisible) && (
+          (avail(user) && this.state.profileFormVisible) && (
             <Profile
               user={user}
               onFormSubmit={this.submitProfileForm}
@@ -86,7 +88,7 @@ class CragsIndex extends Authorization {
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}
-            user={userStateToUser(user)}
+            user={user}
             logIn={this.logIn}
             signUp={this.signUp}
           />
@@ -94,7 +96,7 @@ class CragsIndex extends Authorization {
             this.state.showMenu
               ? (
                 <MainMenu
-                  user={userStateToUser(user)}
+                  user={user}
                   hideMenu={() => this.setState({ showMenu: false })}
                   changeNameFilter={this.changeNameFilter}
                   logIn={this.logIn}
@@ -106,10 +108,10 @@ class CragsIndex extends Authorization {
               )
               : ''
           }
-          <StickyBar loading={this.props.numOfActiveRequests > 0} />
+          <StickyBar loading={loading} />
         </div>
         <Footer
-          user={userStateToUser(user)}
+          user={user}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}
@@ -120,12 +122,15 @@ class CragsIndex extends Authorization {
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
+  user: state.usersStore.users[state.usersStore.currentUserId],
   tab: state.tab,
+  loading: getState(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveUser: user => dispatch(saveUser(user)),
+  loadToken: token => dispatch(loadToken(token)),
+  signIn: (token, afterSignIn) => dispatch(signIn(token, afterSignIn)),
+  logOutUser: () => dispatch(logOutUser()),
   changeTab: tab => dispatch(changeTab(tab)),
 });
 

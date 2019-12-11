@@ -207,7 +207,7 @@ RouteDataEditableTable.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  sectors: state.sectors,
+  sectors: state.sectorsStore.sectors,
 });
 
 export default withRouter(connect(mapStateToProps)(RouteDataEditableTable));
