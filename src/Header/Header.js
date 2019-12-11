@@ -9,6 +9,7 @@ import Logo from '../Logo/Logo';
 import Slider from '../Slider/Slider';
 import getArrayByIds from '../../v1/utils/getArrayByIds';
 import SectorContext from '../contexts/SectorContext';
+import SpotContext from '../contexts/SpotContext';
 import './Header.css';
 
 class Header extends Component {
@@ -35,9 +36,8 @@ class Header extends Component {
     this.photosInternal[newProps.data.photo.url].src = newProps.data.photo.url;
   }
 
-  onSliderClick = (sectorId) => {
-    const { sectorIds, sectors, changeSectorFilter } = this.props;
-    const currentSectors = getArrayByIds(sectorIds, sectors);
+  onSliderClick = (sectorId, currentSectors) => {
+    const { changeSectorFilter } = this.props;
     const index = R.findIndex(R.propEq('id', sectorId))(currentSectors) + 1;
     if (index < currentSectors.length) {
       changeSectorFilter(currentSectors[index].id);
@@ -48,51 +48,64 @@ class Header extends Component {
 
   render() {
     const {
-      showMenu, data, infoData,
+      showMenu, data, spots, sectors,
     } = this.props;
     const { bgImageLoaded } = this.state;
     return (
-      <SectorContext.Consumer>
+      <SpotContext.Consumer>
         {
-          ({ sector }) => (
-            <header className="header-m">
-              <div className="header-m__top">
-                <Logo />
-                <MainNav showMenu={showMenu} />
-              </div>
-              <div
-                className="header-m__items-container"
-                style={
-                  (data.photo && bgImageLoaded)
-                    ? { backgroundImage: `url(${this.photosInternal[data.photo.url].src})` }
-                    : {}
+          ({ spot }) => {
+            const sectorIds = spot ? spots[spot.id].sectorIds : [];
+            const currentSectors = getArrayByIds(sectorIds, sectors);
+            return (
+              <SectorContext.Consumer>
+                {
+                  ({ sector }) => (
+                    <header className="header-m">
+                      <div className="header-m__top">
+                        <Logo />
+                        <MainNav showMenu={showMenu} />
+                      </div>
+                      <div
+                        className="header-m__items-container"
+                        style={
+                          (data.photo && bgImageLoaded)
+                            ? { backgroundImage: `url(${this.photosInternal[data.photo.url].src})` }
+                            : {}
+                        }
+                      >
+                        <h1 className="header-m__header">{data.name}</h1>
+                        <p className="header-m__descr">{data.description}</p>
+                        <InfoBlock infoData={data.infoData} />
+                      </div>
+                      <Slider
+                        onClick={() => this.onSliderClick(
+                          sector ? sector.id : 0, currentSectors,
+                        )}
+                      />
+                    </header>
+                  )
                 }
-              >
-                <h1 className="header-m__header">{data.name}</h1>
-                <p className="header-m__descr">{data.description}</p>
-                <InfoBlock infoData={infoData} />
-              </div>
-              <Slider onClick={() => this.onSliderClick(sector ? sector.id : 0)} />
-            </header>
-          )
+              </SectorContext.Consumer>
+            );
+          }
         }
-      </SectorContext.Consumer>
+      </SpotContext.Consumer>
     );
   }
 }
 
 Header.propTypes = {
-  infoData: PropTypes.array,
   showMenu: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   changeSectorFilter: PropTypes.func.isRequired,
   sectors: PropTypes.object.isRequired,
-  sectorIds: PropTypes.array.isRequired,
+  spots: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  sectors: state.sectors,
-  sectorIds: state.sectorIds,
+  sectors: state.sectorsStore.sectors,
+  spots: state.spotsStore.spots,
 });
 
 export default withRouter(connect(mapStateToProps)(Header));

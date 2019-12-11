@@ -1,40 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Axios from 'axios';
-import Qs from 'qs';
-import * as R from 'ramda';
 import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastr';
 import MainPageHeader from '../MainPageHeader/MainPageHeader';
 import MainPageContent from '../MainPageContent/MainPageContent';
 import MainMenu from '../MainMenu/MainMenu';
 import Footer from '../Footer/Footer';
-import {
-  saveUser,
-  saveToken,
-  removeToken,
-  increaseNumOfActiveRequests,
-  decreaseNumOfActiveRequests,
-} from '../actions';
 import { ApiUrl } from '../Environ';
 import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
 import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
-import Authorization from '../Authorization';
+import BaseComponent from '../BaseComponent';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../Utils';
-import { userStateToUser } from '../Utils/Workarounds';
+import { activateEmail, signIn } from '../../v1/stores/users/utils';
+import { logOutUser, loadToken } from '../../v1/stores/users/actions';
+import getState from '../../v1/utils/getState';
 
-Axios.interceptors.request.use((config) => {
-  const configCopy = R.clone(config);
-  configCopy.paramsSerializer = params => Qs.stringify(params, { arrayFormat: 'brackets' });
-  return configCopy;
-});
-
-class SpotsIndex extends Authorization {
+class SpotsIndex extends BaseComponent {
   constructor(props) {
     super(props);
 
@@ -46,7 +32,10 @@ class SpotsIndex extends Authorization {
 
   componentDidMount() {
     const {
-      saveUser: saveUserProp,
+      signIn: signInProp,
+      loadToken: loadTokenProp,
+      logOutUser: logOutUserProp,
+      activateEmail: activateEmailProp,
     } = this.props;
     this.props.history.listen((location, action) => {
       if (action === 'POP') {
@@ -56,17 +45,15 @@ class SpotsIndex extends Authorization {
     const url = new URL(window.location.href);
     let code = url.searchParams.get('activate_mail_code');
     if (code !== null) {
-      this.props.increaseNumOfActiveRequests();
       const userId = url.searchParams.get('user_id');
-      Axios.get(`${ApiUrl}/v1/users/mail_activation/${code}`, { params: { id: userId }, withCredentials: true })
-        .then((response) => {
-          this.props.decreaseNumOfActiveRequests();
-          saveUserProp(response.data.payload);
-          this.showToastr('success', 'Успешно', 'Активация email');
-        }).catch(() => {
-          this.props.decreaseNumOfActiveRequests();
-          this.showToastr('warning', 'Активация email', 'При активации произошла ошибка');
-        });
+      activateEmailProp(
+        `${ApiUrl}/v1/users/mail_activation/${code}`,
+        { id: userId },
+        () => this.showToastr('success', 'Успешно', 'Активация email'),
+        () => this.showToastr(
+          'warning', 'Активация email', 'При активации произошла ошибка',
+        ),
+      );
     }
     code = url.searchParams.get('reset_password_code');
     if (code !== null) {
@@ -78,10 +65,10 @@ class SpotsIndex extends Authorization {
     }
     if (Cookies.get('user_session_token') !== undefined) {
       const token = Cookies.get('user_session_token');
-      this.props.saveToken(token);
-      this.signIn(token);
+      loadTokenProp(token);
+      signInProp(token);
     } else {
-      saveUserProp({ id: null });
+      logOutUserProp();
     }
   }
 
@@ -93,7 +80,7 @@ class SpotsIndex extends Authorization {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, loading } = this.props;
     return (
       <>
         {
@@ -140,13 +127,12 @@ class SpotsIndex extends Authorization {
             : ''
         }
         {
-          (avail(user.id) && this.state.profileFormVisible)
+          (avail(user) && this.state.profileFormVisible)
             ? (
               <Profile
                 user={user}
                 onFormSubmit={this.submitProfileForm}
                 removeVk={this.removeVk}
-                numOfActiveRequests={this.props.numOfActiveRequests}
                 showToastr={this.showToastr}
                 enterWithVk={this.enterWithVk}
                 isWaiting={this.state.profileIsWaiting}
@@ -166,7 +152,7 @@ class SpotsIndex extends Authorization {
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}
-            user={userStateToUser(user)}
+            user={user}
             logIn={this.logIn}
             signUp={this.signUp}
           />
@@ -174,7 +160,7 @@ class SpotsIndex extends Authorization {
             this.state.showMenu
               ? (
                 <MainMenu
-                  user={userStateToUser(user)}
+                  user={user}
                   hideMenu={() => this.setState({ showMenu: false })}
                   changeNameFilter={this.changeNameFilter}
                   logIn={this.logIn}
@@ -187,10 +173,10 @@ class SpotsIndex extends Authorization {
               : ''
           }
           <MainPageContent />
-          <StickyBar loading={this.props.numOfActiveRequests > 0} />
+          <StickyBar loading={loading} />
         </div>
         <Footer
-          user={userStateToUser(user)}
+          user={user}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}
@@ -201,17 +187,17 @@ class SpotsIndex extends Authorization {
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
-  token: state.token,
-  numOfActiveRequests: state.numOfActiveRequests,
+  user: state.usersStore.users[state.usersStore.currentUserId],
+  loading: getState(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveUser: user => dispatch(saveUser(user)),
-  saveToken: token => dispatch(saveToken(token)),
-  removeToken: () => dispatch(removeToken()),
-  increaseNumOfActiveRequests: () => dispatch(increaseNumOfActiveRequests()),
-  decreaseNumOfActiveRequests: () => dispatch(decreaseNumOfActiveRequests()),
+  activateEmail: (url, params, afterSuccess, afterFail) => dispatch(
+    activateEmail(url, params, afterSuccess, afterFail),
+  ),
+  loadToken: token => dispatch(loadToken(token)),
+  signIn: (token, afterSignIn) => dispatch(signIn(token, afterSignIn)),
+  logOutUser: () => dispatch(logOutUser()),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SpotsIndex));
