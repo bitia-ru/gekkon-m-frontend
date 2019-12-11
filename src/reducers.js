@@ -2,135 +2,16 @@ import { combineReducers } from 'redux';
 import * as R from 'ramda';
 import * as acts from './Constants/Actions';
 import { DEFAULT_FILTERS } from './Constants/DefaultFilters';
-
-const routesReducer = (state = {}, action) => {
-  switch (action.type) {
-  case acts.SET_ROUTES:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs(R.map(route => [route.id, route], action.routes)),
-    );
-  case acts.SET_ROUTES_DATA:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs(R.map(data => [data.routeId, data.content], action.routesData)),
-    );
-  case acts.SET_ROUTE:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs([[action.route.id, action.route]]),
-    );
-  case acts.SET_ROUTE_DATA:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs([[action.routeId, action.routeData]]),
-    );
-  case acts.SET_ROUTE_PROPERTY:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs(
-        [[
-          action.routeId,
-          R.fromPairs(
-            [[
-              action.routePropertyName,
-              R.fromPairs([[action.routePropertyData.id, action.routePropertyData]]),
-            ]],
-          ),
-        ]],
-      ),
-    );
-  case acts.REMOVE_ROUTE_PROPERTY_BY_ID:
-    return R.dissocPath(
-      [`${action.routeId}`, action.routePropertyName, `${action.routePropertyId}`],
-      state,
-    );
-  case acts.REMOVE_ROUTE:
-    return R.dissoc(action.routeId, state);
-  default:
-    return state;
-  }
-};
-
-const routeIdsReducer = (state = [], action) => {
-  switch (action.type) {
-  case acts.SET_ROUTE_IDS:
-    return action.routeIds;
-  default:
-    return state;
-  }
-};
-
-const sectorsReducer = (state = {}, action) => {
-  switch (action.type) {
-  case acts.SET_SECTORS:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs(R.map(sector => [sector.id, sector], action.sectors)),
-    );
-  case acts.SET_SECTOR:
-    return R.mergeDeepRight(
-      state,
-      R.fromPairs([[action.sector.id, action.sector]]),
-    );
-  default:
-    return state;
-  }
-};
-
-const sectorIdsReducer = (state = [], action) => {
-  switch (action.type) {
-  case acts.SET_SECTOR_IDS:
-    return action.sectorIds;
-  default:
-    return state;
-  }
-};
-
-const usersReducer = (state = [], action) => {
-  switch (action.type) {
-  case acts.SET_USERS:
-    return action.users;
-  default:
-    return state;
-  }
-};
-
-const userReducer = (state = {}, action) => {
-  switch (action.type) {
-  case acts.SAVE_USER:
-    return action.user;
-  default:
-    return state;
-  }
-};
+import routeMarkColorsStoreReducer from '../v1/stores/route_mark_colors/reducers';
+import usersStoreReducer from '../v1/stores/users/reducers';
+import routesStoreReducer from '../v1/stores/routes/reducers';
+import sectorsStoreReducer from '../v1/stores/sectors/reducers';
+import spotsStoreReducer from '../v1/stores/spots/reducers';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
   case acts.CHANGE_TAB:
     return action.tab;
-  default:
-    return state;
-  }
-};
-
-const tokenReducer = (state = null, action) => {
-  switch (action.type) {
-  case acts.SAVE_TOKEN:
-    return action.token;
-  case acts.REMOVE_TOKEN:
-    return null;
-  default:
-    return state;
-  }
-};
-
-const numOfActiveRequestsReducer = (state = 0, action) => {
-  switch (action.type) {
-  case acts.INC_NUM_OF_ACTIVE_REQUESTS:
-    return state + 1;
-  case acts.DEC_NUM_OF_ACTIVE_REQUESTS:
-    return state - 1;
   default:
     return state;
   }
@@ -228,27 +109,14 @@ const selectedFiltersReducer = (state = {}, action) => {
   }
 };
 
-const routeMarkColorsReducer = (state = [], action) => {
-  switch (action.type) {
-  case acts.LOAD_ROUTE_MARK_COLORS:
-    return action.routeMarkColors;
-  default:
-    return state;
-  }
-};
-
 export default combineReducers({
-  routes: routesReducer,
-  routeIds: routeIdsReducer,
-  sectors: sectorsReducer,
-  sectorIds: sectorIdsReducer,
-  user: userReducer,
-  users: usersReducer,
   tab: tabReducer,
-  token: tokenReducer,
-  numOfActiveRequests: numOfActiveRequestsReducer,
   selectedPages: selectedPagesReducer,
   selectedFilters: selectedFiltersReducer,
-  routeMarkColors: routeMarkColorsReducer,
   selectedViewModes: selectedViewModesReducer,
+  routeMarkColorsStore: routeMarkColorsStoreReducer,
+  usersStore: usersStoreReducer,
+  spotsStore: spotsStoreReducer,
+  sectorsStore: sectorsStoreReducer,
+  routesStore: routesStoreReducer,
 });

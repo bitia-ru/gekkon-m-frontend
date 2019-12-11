@@ -7,25 +7,20 @@ import InfoPageHeader from '../InfoPageHeader/InfoPageHeader';
 import InfoPageContent from '../InfoPageContent/InfoPageContent';
 import MainMenu from '../MainMenu/MainMenu';
 import Footer from '../Footer/Footer';
-import {
-  saveUser,
-  saveToken,
-  removeToken,
-  increaseNumOfActiveRequests,
-  decreaseNumOfActiveRequests,
-} from '../actions';
 import SignUpForm from '../SignUpForm/SignUpForm';
 import LogInForm from '../LogInForm/LogInForm';
 import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import Profile from '../Profile/Profile';
-import Authorization from '../Authorization';
+import BaseComponent from '../BaseComponent';
 import StickyBar from '../StickyBar/StickyBar';
 import { TITLE, TITLES, FAQ_DATA } from '../Constants/Faq';
 import { avail } from '../Utils';
-import { userStateToUser } from '../Utils/Workarounds';
+import { signIn } from '../../v1/stores/users/utils';
+import { logOutUser, loadToken } from '../../v1/stores/users/actions';
+import getState from '../../v1/utils/getState';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 
-class Faq extends Authorization {
+class Faq extends BaseComponent {
   constructor(props) {
     super(props);
 
@@ -37,8 +32,9 @@ class Faq extends Authorization {
   componentDidMount() {
     const {
       history,
-      saveToken: saveTokenProp,
-      saveUser: saveUserProp,
+      signIn: signInProp,
+      loadToken: loadTokenProp,
+      logOutUser: logOutUserProp,
     } = this.props;
     history.listen((location, action) => {
       if (action === 'POP') {
@@ -47,10 +43,10 @@ class Faq extends Authorization {
     });
     if (Cookies.get('user_session_token') !== undefined) {
       const token = Cookies.get('user_session_token');
-      saveTokenProp(token);
-      this.signIn(token);
+      loadTokenProp(token);
+      signInProp(token);
     } else {
-      saveUserProp({ id: null });
+      logOutUserProp();
     }
   }
 
@@ -62,7 +58,7 @@ class Faq extends Authorization {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, loading } = this.props;
     return (
       <>
         {
@@ -103,12 +99,11 @@ class Faq extends Authorization {
           )
         }
         {
-          (avail(user.id) && this.state.profileFormVisible) && (
+          (avail(user) && this.state.profileFormVisible) && (
             <Profile
               user={user}
               onFormSubmit={this.submitProfileForm}
               removeVk={this.removeVk}
-              numOfActiveRequests={this.props.numOfActiveRequests}
               showToastr={this.showToastr}
               enterWithVk={this.enterWithVk}
               isWaiting={this.state.profileIsWaiting}
@@ -133,7 +128,7 @@ class Faq extends Authorization {
           {
             this.state.showMenu && (
               <MainMenu
-                user={userStateToUser(user)}
+                user={user}
                 hideMenu={() => this.setState({showMenu: false})}
                 changeNameFilter={this.changeNameFilter}
                 logIn={this.logIn}
@@ -145,10 +140,10 @@ class Faq extends Authorization {
             )
           }
           <InfoPageContent titles={TITLES} data={FAQ_DATA} />
-          <StickyBar loading={this.props.numOfActiveRequests > 0} />
+          <StickyBar loading={loading} />
         </div>
         <Footer
-          user={userStateToUser(user)}
+          user={user}
           logIn={this.logIn}
           signUp={this.signUp}
           logOut={this.logOut}
@@ -159,17 +154,14 @@ class Faq extends Authorization {
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
-  token: state.token,
-  numOfActiveRequests: state.numOfActiveRequests,
+  user: state.usersStore.users[state.usersStore.currentUserId],
+  loading: getState(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveUser: user => dispatch(saveUser(user)),
-  saveToken: token => dispatch(saveToken(token)),
-  removeToken: () => dispatch(removeToken()),
-  increaseNumOfActiveRequests: () => dispatch(increaseNumOfActiveRequests()),
-  decreaseNumOfActiveRequests: () => dispatch(decreaseNumOfActiveRequests()),
+  loadToken: token => dispatch(loadToken(token)),
+  signIn: (token, afterSignIn) => dispatch(signIn(token, afterSignIn)),
+  logOutUser: () => dispatch(logOutUser()),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Faq));

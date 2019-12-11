@@ -47,8 +47,12 @@ RouteCardTable.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  routes: state.routes,
-  routeIds: state.routeIds,
+  routes: state.routesStore.routes,
+  routeIds: (
+    state.routesStore.filtrationResults[0]
+      ? state.routesStore.filtrationResults[0].routeIds
+      : []
+  ),
 });
 
 export default withRouter(connect(mapStateToProps)(RouteCardTable));
