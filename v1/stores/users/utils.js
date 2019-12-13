@@ -10,11 +10,10 @@ import {
   loadUserSuccess,
   loadSortedUserIds,
   logOutUser,
-  loadTokenSuccess,
-  loadToken,
   logOutUserSuccess,
   resetPasswordSuccess,
   sendResetPasswordMailSuccess,
+  logInSuccess,
 } from './actions';
 import { domain } from '../../../src/Constants/Cookies';
 
@@ -40,7 +39,7 @@ export const loadUsers = () => (
   }
 );
 
-export const signIn = (token, afterSignIn) => (
+export const signIn = afterSignIn => (
   (dispatch) => {
     dispatch(loadUsersRequest());
 
@@ -75,8 +74,8 @@ export const logIn = (params, password, afterLogIn, afterSignIn, onFormError) =>
         paramsCopy.user_session.user.password_digest = hash;
         Axios.post(`${ApiUrl}/v1/user_sessions`, paramsCopy)
           .then((resp) => {
-            dispatch(loadTokenSuccess(resp.data.payload.token));
-            dispatch(signIn(resp.data.payload.token, () => afterSignIn(resp)));
+            dispatch(logInSuccess());
+            dispatch(signIn(() => afterSignIn(resp)));
           }).catch((error) => {
             dispatch(loadUsersFailed());
             if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
@@ -148,7 +147,6 @@ export const signUp = (params, afterSuccess, afterFail, onFormError) => (
     })
       .then((response) => {
         dispatch(loadUserSuccess(response.data.payload));
-        dispatch(loadToken(response.data.payload.user_session.token));
         afterSuccess(response);
       }).catch((error) => {
         dispatch(loadUsersFailed());
@@ -190,9 +188,7 @@ export const resetPassword = (params, afterSuccess, afterFail, afterAll) => (
 );
 
 export const updateUser = (url, data, afterSuccess, afterFail, afterAll) => (
-  (dispatch, getState) => {
-    const state = getState();
-    const token = state.usersStore.currentUserToken;
+  (dispatch) => {
     dispatch(loadUsersRequest());
 
     Axios({
@@ -220,9 +216,7 @@ export const updateUser = (url, data, afterSuccess, afterFail, afterAll) => (
 );
 
 export const removeVk = (url, afterAll) => (
-  (dispatch, getState) => {
-    const state = getState();
-    const token = state.usersStore.currentUserToken;
+  (dispatch) => {
     dispatch(loadUsersRequest());
 
     Axios({

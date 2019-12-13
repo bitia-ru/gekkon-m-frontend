@@ -42,16 +42,9 @@ const selectedViewModesReducer = (state = {}, action) => {
     selectedViewModes = R.clone(state);
     selectedViewModes[action.spotId] = selectedViewModes[action.spotId] || {};
     selectedViewModes[action.spotId][action.sectorId] = action.viewMode;
-    localStorage.setItem('viewModes', JSON.stringify(selectedViewModes));
     return selectedViewModes;
   default:
-    if (R.equals(state, {})) {
-      selectedViewModes = localStorage.getItem('viewModes');
-      selectedViewModes = selectedViewModes ? JSON.parse(selectedViewModes) : {};
-    } else {
-      selectedViewModes = R.clone(state);
-    }
-    return selectedViewModes;
+    return state;
   }
 };
 
@@ -76,7 +69,6 @@ const selectedFiltersReducer = (state = {}, action) => {
         R.fromPairs(sectorsDefaultFilters),
       );
       selectedFilters[action.spotId] = spotFilters;
-      localStorage.setItem('routeFilters', JSON.stringify(selectedFilters));
     }
     return R.clone(selectedFilters);
   case acts.SET_SELECTED_FILTER:
@@ -94,16 +86,7 @@ const selectedFiltersReducer = (state = {}, action) => {
       selectedFilters[action.spotId][action.sectorId][action.filterName] = action.filterValue;
       selectedFilters[action.spotId][action.sectorId].wasChanged = true;
     }
-    localStorage.setItem('routeFilters', JSON.stringify(selectedFilters));
     return R.clone(selectedFilters);
-  case acts.LOAD_FROM_LOCAL_STORAGE_SELECTED_FILTERS:
-    routeFilters = localStorage.getItem('routeFilters');
-    if (routeFilters === undefined) {
-      routeFilters = {};
-    } else {
-      routeFilters = JSON.parse(routeFilters);
-    }
-    return routeFilters;
   default:
     return state;
   }

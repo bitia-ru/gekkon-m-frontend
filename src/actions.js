@@ -38,7 +38,3 @@ export const setDefaultSelectedFilters = (spotId, sectorIds) => ({
   spotId,
   sectorIds,
 });
-
-export const loadFromLocalStorageSelectedFilters = () => ({
-  type: acts.LOAD_FROM_LOCAL_STORAGE_SELECTED_FILTERS,
-});
