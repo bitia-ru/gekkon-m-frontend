@@ -1,14 +1,9 @@
 import * as R from 'ramda';
 import * as acts from './constants/actions';
+import DEFAULT_STORE_FORMAT from './constants/defaultStoreFormat';
 
 const usersStoreReducer = (
-  state = {
-    numOfActiveRequests: 0,
-    users: {},
-    currentUserId: undefined,
-    currentUserToken: null,
-    sortedUserIds: [],
-  },
+  state = DEFAULT_STORE_FORMAT,
   action,
 ) => {
   const stateCopy = R.clone(state);
@@ -31,22 +26,13 @@ const usersStoreReducer = (
     stateCopy.users[action.user.id] = action.user;
     stateCopy.numOfActiveRequests -= 1;
     return stateCopy;
-  case acts.LOAD_TOKEN_SUCCESS:
-    stateCopy.currentUserToken = action.token;
-    stateCopy.numOfActiveRequests -= 1;
-    return stateCopy;
-  case acts.LOAD_TOKEN:
-    stateCopy.currentUserToken = action.token;
-    return stateCopy;
   case acts.LOAD_SORTED_USER_IDS:
     stateCopy.sortedUserIds = action.sortedUserIds;
     return stateCopy;
   case acts.LOGOUT_USER:
-    stateCopy.currentUserToken = null;
     stateCopy.currentUserId = null;
     return stateCopy;
   case acts.LOGOUT_USER_SUCCESS:
-    stateCopy.currentUserToken = null;
     stateCopy.currentUserId = null;
     stateCopy.numOfActiveRequests -= 1;
     return stateCopy;
@@ -54,6 +40,9 @@ const usersStoreReducer = (
     stateCopy.numOfActiveRequests -= 1;
     return stateCopy;
   case acts.SEND_RESET_PASSWORD_MAIL_SUCCESS:
+    stateCopy.numOfActiveRequests -= 1;
+    return stateCopy;
+  case acts.LOGIN_SUCCESS:
     stateCopy.numOfActiveRequests -= 1;
     return stateCopy;
   default:
