@@ -13,7 +13,7 @@ import Profile from '../Profile/Profile';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../Utils';
-import { loadToken, logOutUser } from '../../v1/stores/users/actions';
+import { logOutUser } from '../../v1/stores/users/actions';
 import { signIn } from '../../v1/stores/users/utils';
 import getState from '../../v1/utils/getState';
 
@@ -128,8 +128,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadToken: token => dispatch(loadToken(token)),
-  signIn: (token, afterSignIn) => dispatch(signIn(token, afterSignIn)),
+  signIn: afterSignIn => dispatch(signIn(afterSignIn)),
   logOutUser: () => dispatch(logOutUser()),
   changeTab: tab => dispatch(changeTab(tab)),
 });

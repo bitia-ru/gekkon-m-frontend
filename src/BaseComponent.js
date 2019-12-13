@@ -11,7 +11,6 @@ import store from '../v1/store';
 import {
   logIn, signUp, resetPassword, updateUser, signIn, removeVk, sendResetPasswordMail, logOut,
 } from '../v1/stores/users/utils';
-import { loadToken } from '../v1/stores/users/actions';
 
 export default class BaseComponent extends React.Component {
   constructor(props) {
@@ -224,10 +223,8 @@ export default class BaseComponent extends React.Component {
   };
 
   enterWithVk = (type) => {
-    const { token } = this.props;
     this.w = window.open(`https://oauth.vk.com/authorize?client_id=${CLIENT_ID}&scope=email%2Cphotos&redirect_uri=${REDIRECT_URI}&response_type=code&v=5.74&state=${JSON.stringify({
       method: type,
-      token: (token || ''),
     })}`, 'VK', 'resizable,scrollbars,status');
     window.addEventListener('message', this.afterVkEnter);
   };
@@ -237,9 +234,7 @@ export default class BaseComponent extends React.Component {
       return;
     }
     ev.source.close();
-    const token = Cookies.get('user_session_token');
-    store.dispatch(loadToken(token));
-    store.dispatch(signIn(token));
+    store.dispatch(signIn());
     this.setState({ signUpFormVisible: false, logInFormVisible: false });
     window.removeEventListener('message', this.afterVkEnter);
   };
@@ -272,10 +267,8 @@ export default class BaseComponent extends React.Component {
 
 BaseComponent.propTypes = {
   user: PropTypes.object,
-  token: PropTypes.string,
 };
 
 BaseComponent.defaultProps = {
   user: null,
-  token: null,
 };

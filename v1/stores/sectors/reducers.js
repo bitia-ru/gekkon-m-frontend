@@ -1,11 +1,9 @@
 import * as R from 'ramda';
 import * as acts from './constants/actions';
+import DEFAULT_STORE_FORMAT from './constants/defaultStoreFormat';
 
 const sectorsStoreReducer = (
-  state = {
-    numOfActiveRequests: 0,
-    sectors: {},
-  },
+  state = DEFAULT_STORE_FORMAT,
   action,
 ) => {
   const stateCopy = R.clone(state);

@@ -18,16 +18,6 @@ export const loadUserSuccess = user => ({
   user,
 });
 
-export const loadTokenSuccess = token => ({
-  type: acts.LOAD_TOKEN_SUCCESS,
-  token,
-});
-
-export const loadToken = token => ({
-  type: acts.LOAD_TOKEN,
-  token,
-});
-
 export const loadSortedUserIds = sortedUserIds => ({
   type: acts.LOAD_SORTED_USER_IDS,
   sortedUserIds,
@@ -47,4 +37,8 @@ export const resetPasswordSuccess = () => ({
 
 export const sendResetPasswordMailSuccess = () => ({
   type: acts.SEND_RESET_PASSWORD_MAIL_SUCCESS,
+});
+
+export const logInSuccess = () => ({
+  type: acts.LOGIN_SUCCESS,
 });

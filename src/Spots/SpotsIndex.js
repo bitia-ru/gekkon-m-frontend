@@ -17,7 +17,7 @@ import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../Utils';
 import { activateEmail, signIn } from '../../v1/stores/users/utils';
-import { logOutUser, loadToken } from '../../v1/stores/users/actions';
+import { logOutUser } from '../../v1/stores/users/actions';
 import getState from '../../v1/utils/getState';
 
 class SpotsIndex extends BaseComponent {
@@ -33,7 +33,6 @@ class SpotsIndex extends BaseComponent {
   componentDidMount() {
     const {
       signIn: signInProp,
-      loadToken: loadTokenProp,
       logOutUser: logOutUserProp,
       activateEmail: activateEmailProp,
     } = this.props;
@@ -64,9 +63,7 @@ class SpotsIndex extends BaseComponent {
       });
     }
     if (Cookies.get('user_session_token') !== undefined) {
-      const token = Cookies.get('user_session_token');
-      loadTokenProp(token);
-      signInProp(token);
+      signInProp();
     } else {
       logOutUserProp();
     }
@@ -195,8 +192,7 @@ const mapDispatchToProps = dispatch => ({
   activateEmail: (url, params, afterSuccess, afterFail) => dispatch(
     activateEmail(url, params, afterSuccess, afterFail),
   ),
-  loadToken: token => dispatch(loadToken(token)),
-  signIn: (token, afterSignIn) => dispatch(signIn(token, afterSignIn)),
+  signIn: afterSignIn => dispatch(signIn(afterSignIn)),
   logOutUser: () => dispatch(logOutUser()),
 });
 
