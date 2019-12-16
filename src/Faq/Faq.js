@@ -52,37 +52,17 @@ class Faq extends BaseComponent {
         {
           this.state.signUpFormVisible && (
             <SignUpForm
-              onFormSubmit={this.submitSignUpForm}
               closeForm={this.closeSignUpForm}
               enterWithVk={this.enterWithVk}
-              isWaiting={this.state.signUpIsWaiting}
-              formErrors={this.state.signUpFormErrors}
-              resetErrors={this.signUpResetErrors}
-            />
-          )
-        }
-        {
-          this.state.resetPasswordFormVisible && (
-            <ResetPasswordForm
-              onFormSubmit={this.submitResetPasswordForm}
-              closeForm={this.closeResetPasswordForm}
-              isWaiting={this.state.resetPasswordIsWaiting}
-              formErrors={this.state.resetPasswordFormErrors}
-              email={this.state.email}
-              resetErrors={this.resetPasswordResetErrors}
             />
           )
         }
         {
           this.state.logInFormVisible && (
             <LogInForm
-              onFormSubmit={this.submitLogInForm}
               closeForm={this.closeLogInForm}
               enterWithVk={this.enterWithVk}
-              isWaiting={this.state.logInIsWaiting}
               resetPassword={this.resetPassword}
-              formErrors={this.state.logInFormErrors}
-              resetErrors={this.logInResetErrors}
             />
           )
         }
