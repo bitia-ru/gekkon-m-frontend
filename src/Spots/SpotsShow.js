@@ -3,7 +3,6 @@ import { withRouter, Switch, Route } from 'react-router-dom';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastr';
 import { ApiUrl } from '../Environ';
 import {
@@ -36,8 +35,6 @@ import getArrayFromObject from '../../v1/utils/getArrayFromObject';
 import { NUM_OF_DAYS } from '../Constants/Route';
 import { loadSector } from '../../v1/stores/sectors/utils';
 import { loadSpot } from '../../v1/stores/spots/utils';
-import { signIn } from '../../v1/stores/users/utils';
-import { logOutUser } from '../../v1/stores/users/actions';
 import {
   loadRoutes,
   removeLike,
@@ -74,8 +71,6 @@ class SpotsShow extends BaseComponent {
   componentDidMount() {
     const {
       history,
-      signIn: signInProp,
-      logOutUser: logOutUserProp,
     } = this.props;
     const sectorId = this.getSectorId();
     history.listen((location, action) => {
@@ -84,22 +79,11 @@ class SpotsShow extends BaseComponent {
       }
     });
 
-    if (Cookies.get('user_session_token') !== undefined) {
-      signInProp((currentUser) => {
-        this.reloadSpot(currentUser.id);
-        if (sectorId !== 0) {
-          this.reloadSector(sectorId, currentUser.id);
-        }
-        this.reloadRoutes();
-      });
-    } else {
-      this.reloadSpot();
-      if (sectorId !== 0) {
-        this.reloadSector(sectorId);
-      }
-      this.reloadRoutes();
-      logOutUserProp();
+    this.reloadSpot();
+    if (sectorId !== 0) {
+      this.reloadSector(sectorId);
     }
+    this.reloadRoutes();
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
   }
@@ -134,34 +118,6 @@ class SpotsShow extends BaseComponent {
     }
     history.goBack();
     this.reloadRoutes({}, null);
-  };
-
-  afterLogOut = () => {
-    const sectorId = this.getSectorId();
-    this.setState({ ascents: [] });
-    this.reloadRoutes();
-    if (sectorId === 0) {
-      this.reloadSpot(0);
-    } else {
-      this.reloadSector(sectorId, 0);
-    }
-    const resultFilters = [];
-    const personal = {
-      clickable: true,
-      id: 'personal',
-      selected: this.state.personal,
-      text: `Авторские трассы ${this.state.personal ? ' ✓' : ''}`,
-      value: 'personal',
-    };
-    const outdated = {
-      clickable: true,
-      id: 'outdated',
-      selected: this.state.outdated,
-      text: `Скрученные ${this.state.outdated ? ' ✓' : ''}`,
-      value: 'outdated',
-    };
-
-    this.setState({ filters: R.concat(resultFilters, [personal, outdated]) });
   };
 
   reloadSpot = (userId) => {
@@ -790,8 +746,6 @@ const mapDispatchToProps = dispatch => ({
   setSelectedFilter: (spotId, sectorId, filterName, filterValue) => dispatch(
     setSelectedFilter(spotId, sectorId, filterName, filterValue),
   ),
-  signIn: afterSignIn => dispatch(signIn(afterSignIn)),
-  logOutUser: () => dispatch(logOutUser()),
   loadSector: (url, params) => dispatch(loadSector(url, params)),
   loadSpot: (url, params, currentSectorId, afterLoad) => dispatch(
     loadSpot(url, params, currentSectorId, afterLoad),

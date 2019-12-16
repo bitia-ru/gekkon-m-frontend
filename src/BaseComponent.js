@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Cookies from 'js-cookie';
 import bcrypt from 'bcryptjs';
 import * as R from 'ramda';
 import SALT_ROUNDS from './Constants/Bcrypt';
@@ -9,7 +8,7 @@ import { CLIENT_ID, REDIRECT_URI } from './Constants/Vk';
 import RE_EMAIL from './Constants/Constraints';
 import store from '../v1/store';
 import {
-  logIn, signUp, resetPassword, updateUser, signIn, removeVk, sendResetPasswordMail, logOut,
+  logIn, signUp, resetPassword, updateUser, signIn, removeVk, sendResetPasswordMail,
 } from '../v1/stores/users/utils';
 
 export default class BaseComponent extends React.Component {
@@ -33,7 +32,8 @@ export default class BaseComponent extends React.Component {
   }
 
   logOut = () => {
-    store.dispatch(logOut(this.afterLogOut));
+    const { history } = this.props;
+    history.push('/logout');
   };
 
   signUp = () => {

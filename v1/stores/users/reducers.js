@@ -29,9 +29,6 @@ const usersStoreReducer = (
   case acts.LOAD_SORTED_USER_IDS:
     stateCopy.sortedUserIds = action.sortedUserIds;
     return stateCopy;
-  case acts.LOGOUT_USER:
-    stateCopy.currentUserId = null;
-    return stateCopy;
   case acts.LOGOUT_USER_SUCCESS:
     stateCopy.currentUserId = null;
     stateCopy.numOfActiveRequests -= 1;
