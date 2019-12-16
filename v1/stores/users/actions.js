@@ -23,10 +23,6 @@ export const loadSortedUserIds = sortedUserIds => ({
   sortedUserIds,
 });
 
-export const logOutUser = () => ({
-  type: acts.LOGOUT_USER,
-});
-
 export const logOutUserSuccess = () => ({
   type: acts.LOGOUT_USER_SUCCESS,
 });
