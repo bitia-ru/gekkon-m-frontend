@@ -339,26 +339,6 @@ class SpotsShow extends BaseComponent {
     this.props.setSelectedPage(spotId, sectorId, 1);
   };
 
-  afterSubmitLogInForm = (userId) => {
-    const sectorId = this.getSectorId();
-    this.reloadRoutes();
-    if (sectorId === 0) {
-      this.reloadSpot(userId);
-    } else {
-      this.reloadSector(sectorId, userId);
-    }
-  };
-
-  afterSubmitSignUpForm = (userId) => {
-    const sectorId = this.getSectorId();
-    this.reloadRoutes();
-    if (sectorId === 0) {
-      this.reloadSpot(userId);
-    } else {
-      this.reloadSector(sectorId, userId);
-    }
-  };
-
   removeRoute = (routeId) => {
     const { removeRoute: removeRouteProp } = this.props;
     if (window.confirm('Удалить трассу?')) {
@@ -673,12 +653,8 @@ class SpotsShow extends BaseComponent {
           this.state.signUpFormVisible
             ? (
               <SignUpForm
-                onFormSubmit={this.submitSignUpForm}
                 closeForm={this.closeSignUpForm}
                 enterWithVk={this.enterWithVk}
-                isWaiting={this.state.signUpIsWaiting}
-                formErrors={this.state.signUpFormErrors}
-                resetErrors={this.signUpResetErrors}
               />
             )
             : ''
@@ -687,13 +663,9 @@ class SpotsShow extends BaseComponent {
           this.state.logInFormVisible
             ? (
               <LogInForm
-                onFormSubmit={this.submitLogInForm}
                 closeForm={this.closeLogInForm}
                 enterWithVk={this.enterWithVk}
-                isWaiting={this.state.logInIsWaiting}
                 resetPassword={this.resetPassword}
-                formErrors={this.state.logInFormErrors}
-                resetErrors={this.logInResetErrors}
               />
             )
             : ''
