@@ -9,7 +9,6 @@ import About from './About/About';
 import Faq from './Faq/Faq';
 import { notAvail } from './Utils';
 import BootingScreen from './BootingScreen/BootingScreen';
-import LogoutingScreen from './LogoutingScreen/LogoutingScreen';
 
 const Main = ({ user }) => (
   <main className="page">
@@ -21,7 +20,6 @@ const Main = ({ user }) => (
         : (
           <Switch>
             <Route exact path="/" component={SpotsIndex} />
-            <Route exact path="/logout" component={LogoutingScreen} />
             <Route exact path="/crags" component={CragsIndex} />
             <Route exact path="/about" component={About} />
             <Route exact path="/faq" component={Faq} />

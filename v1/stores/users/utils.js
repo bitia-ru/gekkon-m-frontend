@@ -58,7 +58,7 @@ export const signIn = afterSignIn => (
   }
 );
 
-export const logIn = (params, password, afterLogIn, afterSignIn, onFormError) => (
+export const logIn = (params, password, afterLogInSuccess, afterLogInFail, onFormError) => (
   (dispatch) => {
     dispatch(loadUsersRequest());
 
@@ -71,9 +71,9 @@ export const logIn = (params, password, afterLogIn, afterSignIn, onFormError) =>
         const paramsCopy = R.clone(params);
         paramsCopy.user_session.user.password_digest = hash;
         Axios.post(`${ApiUrl}/v1/user_sessions`, paramsCopy)
-          .then((resp) => {
+          .then(() => {
             dispatch(logInSuccess());
-            dispatch(signIn(() => afterSignIn(resp)));
+            afterLogInSuccess();
           }).catch((error) => {
             dispatch(loadUsersFailed());
             if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
@@ -81,7 +81,7 @@ export const logIn = (params, password, afterLogIn, afterSignIn, onFormError) =>
             } else {
             //  dispatch(pushError(error));
             }
-            afterLogIn();
+            afterLogInFail();
           });
       }).catch((error) => {
         dispatch(loadUsersFailed());
@@ -91,7 +91,7 @@ export const logIn = (params, password, afterLogIn, afterSignIn, onFormError) =>
         } else {
         //  dispatch(pushError(error));
         }
-        afterLogIn();
+        afterLogInFail();
       });
   }
 );

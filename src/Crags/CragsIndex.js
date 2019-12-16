@@ -36,12 +36,8 @@ class CragsIndex extends BaseComponent {
           this.state.signUpFormVisible
             ? (
               <SignUpForm
-                onFormSubmit={this.submitSignUpForm}
                 closeForm={this.closeSignUpForm}
                 enterWithVk={this.enterWithVk}
-                isWaiting={this.state.signUpIsWaiting}
-                formErrors={this.state.signUpFormErrors}
-                resetErrors={this.signUpResetErrors}
               />
             )
             : ''
@@ -50,13 +46,9 @@ class CragsIndex extends BaseComponent {
           this.state.logInFormVisible
             ? (
               <LogInForm
-                onFormSubmit={this.submitLogInForm}
                 closeForm={this.closeLogInForm}
                 enterWithVk={this.enterWithVk}
-                isWaiting={this.state.logInIsWaiting}
                 resetPassword={this.resetPassword}
-                formErrors={this.state.logInFormErrors}
-                resetErrors={this.logInResetErrors}
               />
             )
             : ''
