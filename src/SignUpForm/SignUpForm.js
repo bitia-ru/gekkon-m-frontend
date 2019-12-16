@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as R from 'ramda';
+import bcrypt from 'bcryptjs';
+import SALT_ROUNDS from '../Constants/Bcrypt';
 import TabBar from '../TabBar/TabBar';
 import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
 import Button from '../Button/Button';
@@ -8,9 +12,10 @@ import FormField from '../FormField/FormField';
 import CloseButton from '../CloseButton/CloseButton';
 import { PASSWORD_MIN_LENGTH } from '../Constants/User';
 import RE_EMAIL from '../Constants/Constraints';
+import { signUp } from '../../v1/stores/users/utils';
 import './SignUpForm.css';
 
-export default class SignUpForm extends Component {
+class SignUpForm extends Component {
   constructor(props) {
     super(props);
 
@@ -21,6 +26,7 @@ export default class SignUpForm extends Component {
       password: '',
       repeatPassword: '',
       errors: {},
+      isWaiting: false,
     };
     this.mouseOver = false;
   }
@@ -44,39 +50,29 @@ export default class SignUpForm extends Component {
   };
 
   onPhoneChange = (event) => {
-    const { resetErrors } = this.props;
     this.resetErrors();
-    resetErrors();
     this.setState({ phone: event.target.value });
   };
 
   onPasswordFromSmsChange = (event) => {
-    const { resetErrors } = this.props;
     this.resetErrors();
-    resetErrors();
     this.setState({ passwordFromSms: event.target.value });
   };
 
   onEmailChange = (event) => {
-    const { resetErrors } = this.props;
     this.resetErrors();
-    resetErrors();
     this.setState({ email: event.target.value });
     this.check('email', event.target.value);
   };
 
   onPasswordChange = (event) => {
-    const { resetErrors } = this.props;
     this.resetErrors();
-    resetErrors();
     this.setState({ password: event.target.value });
     this.check('password', event.target.value);
   };
 
   onRepeatPasswordChange = (event) => {
-    const { resetErrors } = this.props;
     this.resetErrors();
-    resetErrors();
     this.setState({ repeatPassword: event.target.value });
     this.check('repeatPassword', event.target.value);
   };
@@ -114,41 +110,59 @@ export default class SignUpForm extends Component {
 
   checkAndSubmit = (type, data, passwordNew) => {
     const { email, password, repeatPassword } = this.state;
-    const { onFormSubmit } = this.props;
     let res = !this.check('email', email);
     res += !this.check('password', password);
     res += !this.check('repeatPassword', repeatPassword);
     if (res > 0) {
       return;
     }
-    onFormSubmit(type, data, passwordNew);
+    this.onFormSubmit(type, data, passwordNew);
+  };
+
+  onFormSubmit = (type, data, password) => {
+    const { errors } = this.state;
+    const { signUp: signUpProp } = this.props;
+    const { location } = window;
+    if (type === 'email') {
+      this.setState({ isWaiting: true });
+      const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+      const hash = bcrypt.hashSync(password, salt);
+      const params = {
+        user: {
+          password_digest: hash,
+          email: data,
+        },
+      };
+      signUpProp(
+        params,
+        () => location.reload(),
+        () => this.setState({ isWaiting: false }),
+        error => this.setState({ errors: R.merge(errors, error.response.data) }),
+      );
+    }
   };
 
   hasError = (field) => {
     const { errors } = this.state;
-    const { formErrors } = this.props;
-    return errors[field] || formErrors[field];
+    return errors[field];
   };
 
   errorText = (field) => {
     const { errors } = this.state;
-    const { formErrors } = this.props;
     return R.join(
       ', ',
-      R.concat(errors[field] ? errors[field] : [], formErrors[field] ? formErrors[field] : []),
+      errors[field] ? errors[field] : [],
     );
   };
 
   closeForm = () => {
-    const { resetErrors, closeForm } = this.props;
+    const { closeForm } = this.props;
     this.resetErrors();
-    resetErrors();
     closeForm();
   };
 
   firstTabContent = () => {
-    const { phone, passwordFromSms } = this.state;
-    const { isWaiting } = this.props;
+    const { phone, passwordFromSms, isWaiting } = this.state;
     return (
       <form action="#" className="form">
         <FormField
@@ -183,8 +197,9 @@ export default class SignUpForm extends Component {
   };
 
   secondTabContent = () => {
-    const { email, password, repeatPassword } = this.state;
-    const { isWaiting } = this.props;
+    const {
+      email, password, repeatPassword, isWaiting,
+    } = this.state;
     return (
       <form action="#" className="form">
         <FormField
@@ -282,14 +297,16 @@ export default class SignUpForm extends Component {
 }
 
 SignUpForm.propTypes = {
-  isWaiting: PropTypes.bool,
-  onFormSubmit: PropTypes.func.isRequired,
   enterWithVk: PropTypes.func.isRequired,
   closeForm: PropTypes.func.isRequired,
-  formErrors: PropTypes.object.isRequired,
-  resetErrors: PropTypes.func.isRequired,
 };
 
-SignUpForm.defaultProps = {
-  isWaiting: false,
-};
+const mapDispatchToProps = dispatch => ({
+  signUp: (
+    params, afterSuccess, afterFail, onFormError,
+  ) => dispatch(
+    signUp(params, afterSuccess, afterFail, onFormError),
+  ),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(SignUpForm));
