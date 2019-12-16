@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastr';
 import MainPageHeader from '../MainPageHeader/MainPageHeader';
 import MainPageContent from '../MainPageContent/MainPageContent';
@@ -16,8 +15,7 @@ import BaseComponent from '../BaseComponent';
 import StickyBar from '../StickyBar/StickyBar';
 import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../Utils';
-import { activateEmail, signIn } from '../../v1/stores/users/utils';
-import { logOutUser } from '../../v1/stores/users/actions';
+import { activateEmail } from '../../v1/stores/users/utils';
 import getState from '../../v1/utils/getState';
 
 class SpotsIndex extends BaseComponent {
@@ -32,8 +30,6 @@ class SpotsIndex extends BaseComponent {
 
   componentDidMount() {
     const {
-      signIn: signInProp,
-      logOutUser: logOutUserProp,
       activateEmail: activateEmailProp,
     } = this.props;
     this.props.history.listen((location, action) => {
@@ -61,11 +57,6 @@ class SpotsIndex extends BaseComponent {
         resetPasswordFormVisible: true,
         email: email || url.searchParams.get('user_login'),
       });
-    }
-    if (Cookies.get('user_session_token') !== undefined) {
-      signInProp();
-    } else {
-      logOutUserProp();
     }
   }
 
@@ -192,8 +183,6 @@ const mapDispatchToProps = dispatch => ({
   activateEmail: (url, params, afterSuccess, afterFail) => dispatch(
     activateEmail(url, params, afterSuccess, afterFail),
   ),
-  signIn: afterSignIn => dispatch(signIn(afterSignIn)),
-  logOutUser: () => dispatch(logOutUser()),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SpotsIndex));
