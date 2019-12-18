@@ -17,10 +17,8 @@ export default class MainMenu extends Component {
   }
 
   searchSubmitted = () => {
-    const { changeNameFilter, hideMenu } = this.props;
-    const { searchString } = this.state;
+    const { hideMenu } = this.props;
     this.setState({ searchString: '' });
-    changeNameFilter(searchString);
     hideMenu();
   };
 
@@ -114,7 +112,6 @@ export default class MainMenu extends Component {
 
 MainMenu.propTypes = {
   user: PropTypes.object,
-  changeNameFilter: PropTypes.func.isRequired,
   logIn: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,

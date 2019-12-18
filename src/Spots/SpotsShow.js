@@ -60,7 +60,6 @@ class SpotsShow extends BaseComponent {
     super(props);
 
     this.state = Object.assign(this.state, {
-      name: '',
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
@@ -182,7 +181,6 @@ class SpotsShow extends BaseComponent {
       personal: currentPersonal,
       outdated: currentOutdated,
     } = R.merge(getFilters(spotId, currentSectorId), filters);
-    const currentName = getFromFilters(filters, 'name', this.state.name);
     const currentPage = (
       (page === null || page === undefined)
         ? selectedPages[spotId][currentSectorId]
@@ -200,9 +198,6 @@ class SpotsShow extends BaseComponent {
       if (currentLiked) {
         params.filters.liked_by = 'self';
       }
-    }
-    if (currentName !== '') {
-      params.filters.name = { like: currentName };
     }
     if (currentPeriod !== 0) {
       const d = new Date();
@@ -256,11 +251,6 @@ class SpotsShow extends BaseComponent {
       null,
       user ? user.id : user,
     );
-  };
-
-  changeNameFilter = (searchString) => {
-    this.setState({ name: searchString });
-    this.reloadRoutes({ name: searchString });
   };
 
   changePage = (page) => {
@@ -555,7 +545,6 @@ class SpotsShow extends BaseComponent {
                       <MainMenu
                         user={user}
                         hideMenu={() => this.setState({ showMenu: false })}
-                        changeNameFilter={this.changeNameFilter}
                         logIn={this.logIn}
                         signUp={this.signUp}
                         logOut={this.logOut}
