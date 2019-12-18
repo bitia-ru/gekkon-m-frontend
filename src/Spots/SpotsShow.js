@@ -61,7 +61,6 @@ class SpotsShow extends BaseComponent {
 
     this.state = Object.assign(this.state, {
       name: '',
-      numOfPages: 1,
       editRouteIsWaiting: false,
       showMenu: false,
       showFilters: false,
@@ -576,7 +575,6 @@ class SpotsShow extends BaseComponent {
                       ? this.props.selectedPages[spotId][sectorId]
                       : 1
                   }
-                  numOfPages={this.state.numOfPages}
                   onRouteClick={this.onRouteClick}
                   changePage={this.changePage}
                   numOfRoutes={
