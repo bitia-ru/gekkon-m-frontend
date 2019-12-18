@@ -5,7 +5,7 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 
 module.exports = () => ({
-  entry: './src/index.js',
+  entry: './src/v1/index.js',
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'index-[hash].js',
@@ -48,7 +48,7 @@ module.exports = () => ({
       CLIENT_ID: '',
     }),
     new FaviconsWebpackPlugin({
-      logo: './src/Logo/images/logo-75x75-blacked.png',
+      logo: './src/v1/components/Logo/images/logo-75x75-blacked.png',
       favicons: {
         appName: 'Roving Climbers',
         appShortName: 'RC',
