@@ -11,6 +11,14 @@ module.exports = () => ({
     filename: 'index-[hash].js',
     publicPath: '/',
   },
+  devServer: {
+    historyApiFallback: true,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   module: {
     rules: [
       {
