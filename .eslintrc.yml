@@ -11,6 +11,8 @@ parserOptions:
   ecmaVersion: 2018
   sourceType: module
 parser: babel-eslint
+settings:
+  import/resolver: webpack
 plugins:
   - react
 rules:
