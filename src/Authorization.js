@@ -123,13 +123,15 @@ export default class Authorization extends React.Component {
   };
 
   displayError = (error) => {
-    if (error.response.status === 404 && error.response.statusText === 'Not Found') {
-      this.showToastr('error', 'Ошибка', error.response.data.message);
-      return;
-    }
-    if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
-      this.showToastr('error', 'Ошибка', error.response.data);
-      return;
+    if (error.response) {
+      if (error.response.status === 404 && error.response.statusText === 'Not Found') {
+        this.showToastr('error', 'Ошибка', error.response.data.message);
+        return;
+      }
+      if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
+        this.showToastr('error', 'Ошибка', error.response.data);
+        return;
+      }
     }
     this.showToastr('error', 'Ошибка', 'Неожиданная ошибка');
   };
@@ -164,7 +166,7 @@ export default class Authorization extends React.Component {
           }
         }).catch((error) => {
           decreaseNumOfActiveRequests();
-          if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
+          if (error.response && error.response.status === 400 && error.response.statusText === 'Bad Request') {
             this.setState({ signUpFormErrors: error.response.data });
           } else {
             this.displayError(error);
@@ -206,7 +208,7 @@ export default class Authorization extends React.Component {
               });
             }).catch((error) => {
               decreaseNumOfActiveRequests();
-              if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
+              if (error.response && error.response.status === 400 && error.response.statusText === 'Bad Request') {
                 this.setState({ logInFormErrors: error.response.data });
               } else {
                 this.displayError(error);
@@ -216,7 +218,7 @@ export default class Authorization extends React.Component {
         }).catch((error) => {
           decreaseNumOfActiveRequests();
           const r = error.response;
-          if (r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
+          if (r && r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
             this.setState({ logInFormErrors: { email: ['Пользователь не найден'] } });
           } else {
             this.displayError(error);
@@ -255,7 +257,7 @@ export default class Authorization extends React.Component {
         }).catch((error) => {
           decreaseNumOfActiveRequests();
           const r = error.response;
-          if (r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
+          if (r && r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
             this.showToastr(
               'error',
               'Ошибка',
@@ -301,7 +303,7 @@ export default class Authorization extends React.Component {
         }
       }).catch((error) => {
         decreaseNumOfActiveRequests();
-        if (error.response.status === 400 && error.response.statusText === 'Bad Request') {
+        if (error.response && error.response.status === 400 && error.response.statusText === 'Bad Request') {
           this.setState({ profileFormErrors: error.response.data });
         } else {
           this.displayError(error);
@@ -391,7 +393,7 @@ export default class Authorization extends React.Component {
         }).catch((error) => {
           decreaseNumOfActiveRequests();
           const r = error.response;
-          if (r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
+          if (r && r.status === 404 && r.statusText === 'Not Found' && r.data.model === 'User') {
             this.showToastr('error', 'Ошибка', 'Пользователь не найден');
           } else if (r.status === 400 && r.statusText === 'Bad Request' && r.data.email) {
             this.showToastr(

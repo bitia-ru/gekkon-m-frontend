@@ -105,9 +105,6 @@ const Footer = ({
             <li className="footer-m__list-item">
               <Link to="/about" className="footer-m__list-link">О нас</Link>
             </li>
-            <li className="footer-m__list-item">
-              <Link to="/howtohelp" className="footer-m__list-link">Как нам помочь</Link>
-            </li>
           </ul>
         </div>
       </div>

@@ -530,10 +530,13 @@ class SpotsShow extends Authorization {
       viewMode = selectedViewModes[spotId][currentSectorId];
     } else if (currentSectorId === 0) {
       viewMode = DEFAULT_SPOT_VIEW_MODE;
-    } else if (R.find(s => s.id === currentSectorId, sectors).diagram) {
-      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === currentSectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     const currentViewMode = viewModeCurr || viewMode;
     const currentCategoryFrom = (
@@ -710,9 +713,12 @@ class SpotsShow extends Authorization {
     let filter = R.find(R.propEq('id', 'personal'))(filters);
     const personal = filter.selected;
     filter = R.find(R.propEq('id', 'outdated'))(filters);
-    const outdated = filter.selected;
+    let outdated = null;
+    if (filter) {
+      outdated = filter.selected;
+      this.props.setSelectedFilter(spotId, sectorId, 'outdated', outdated);
+    }
     this.props.setSelectedFilter(spotId, sectorId, 'personal', personal);
-    this.props.setSelectedFilter(spotId, sectorId, 'outdated', outdated);
     const resultFilters = R.filter(
       e => R.contains(e.id, R.map(f => f.id, RESULT_FILTERS)),
       filters,
@@ -1232,10 +1238,13 @@ class SpotsShow extends Authorization {
       viewMode = selectedViewModes[spotId][sectorId];
     } else if (sectorId === 0) {
       viewMode = DEFAULT_SPOT_VIEW_MODE;
-    } else if (R.find(s => s.id === sectorId, sectors).diagram) {
-      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === sectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     let currentSector;
     if (sectorId === 0) {
@@ -1376,10 +1385,13 @@ class SpotsShow extends Authorization {
       viewMode = selectedViewModes[spotId][sectorId];
     } else if (sectorId === 0) {
       viewMode = DEFAULT_SPOT_VIEW_MODE;
-    } else if (R.find(s => s.id === sectorId, sectors).diagram) {
-      [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === sectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     const period = (
       (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])

@@ -12,8 +12,7 @@ import './RouteDataTable.css';
 const RouteDataTable = ({ route, user }) => {
   const isCurrentUserRoute = user && route.author_id === user.id;
   let name = route.author ? getUserName(route.author) : null;
-  name = name || 'Неизвестен';
-  if (!isCurrentUserRoute && name === 'Неизвестен' && route.author_id !== null) {
+  if (!isCurrentUserRoute && name === null && route.author_id !== null) {
     if (user.role === 'admin') {
       name = getUserName(route.author, true);
     }
@@ -25,7 +24,7 @@ const RouteDataTable = ({ route, user }) => {
     <div className="route-m__table">
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-          Сложность:
+          Категория:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           <Category category={route.category} color={getCategoryColor(route.category)} />
@@ -33,7 +32,7 @@ const RouteDataTable = ({ route, user }) => {
       </div>
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
-          Цвет зацепов:
+          Зацепы:
         </div>
         <div className="route-m__table-item route-m__table-item-right">
           <div className="mark-color-picker__info">
@@ -44,25 +43,23 @@ const RouteDataTable = ({ route, user }) => {
           </div>
         </div>
       </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Цвет маркировки:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          <div className="mark-color-picker__info">
-            <div
-              className="mark-color-picker__color"
-              style={getColorStyle(route.marks_color)}
-            />
+      {
+        route.marks_color && (
+          <div className="route-m__table-row">
+            <div className="route-m__table-item route-m__table-item_header">
+              Маркировка:
+            </div>
+            <div className="route-m__table-item route-m__table-item-right">
+              <div className="mark-color-picker__info">
+                <div
+                  className="mark-color-picker__color"
+                  style={getColorStyle(route.marks_color)}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Народная категория:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right" />
-      </div>
+        )
+      }
       <div className="route-m__table-row">
         <div className="route-m__table-item route-m__table-item_header">
           Тип:
@@ -76,51 +73,51 @@ const RouteDataTable = ({ route, user }) => {
           }
         </div>
       </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Дата накрутки:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          {
-            route.installed_at
-              ? (
-                moment(route.installed_at).format('DD.MM.YYYY')
-              )
-              : ''
-          }
-        </div>
-      </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Дата cкрутки:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          {
-            route.installed_until
-              ? (
-                moment(route.installed_until).format('DD.MM.YYYY')
-              )
-              : ''
-          }
-        </div>
-      </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Накрутчик:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          <div
-            style={{
-              color: '#006CEB',
-              textDecoration: 'none',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {isCurrentUserRoute ? 'Вы' : name}
+      {
+        route.installed_at && (<>
+          <div className="route-m__table-row">
+            <div className="route-m__table-item route-m__table-item_header">
+              Накручена:
+            </div>
+            <div className="route-m__table-item route-m__table-item-right">
+              {moment(route.installed_at).format('DD.MM.YYYY')}
+            </div>
           </div>
-        </div>
-      </div>
+        </>)
+      }
+      {
+        route.installed_until && (<>
+          <div className="route-m__table-row">
+            <div className="route-m__table-item route-m__table-item_header">
+              Cкручена:
+            </div>
+            <div className="route-m__table-item route-m__table-item-right">
+              {moment(route.installed_until).format('DD.MM.YYYY')}
+            </div>
+          </div>
+        </>)
+      }
+      {
+        name && (<>
+          <div className="route-m__table-row">
+            <div className="route-m__table-item route-m__table-item_header">
+              Накрутчик:
+            </div>
+            <div className="route-m__table-item route-m__table-item-right">
+              <div
+                style={{
+                  color: '#006CEB',
+                  textDecoration: 'none',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {isCurrentUserRoute ? 'Вы' : name}
+              </div>
+            </div>
+          </div>
+        </>)
+      }
     </div>
   );
 };

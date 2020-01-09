@@ -6,6 +6,7 @@ COPY . /app
 WORKDIR /app
 
 RUN npm i --production
+RUN npm i favicons-webpack-plugin@1.0.2
 
 ARG apiUrl
 ARG clientId
