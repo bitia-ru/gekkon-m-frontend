@@ -1,6 +1,6 @@
 import gravityImage from '../../img/spot-card-img/gravity.jpg';
 import limestoneImage from '../../img/spot-card-img/limestone.jpg';
-import atmosphereImage from '../../img/spot-card-img/atmosphere.jpg';
+import bigwallImage from '../../img/spot-card-img/bigwall.jpg';
 import tokyoImage from '../../img/spot-card-img/tokyo.jpg';
 
 const SPOTS_DATA = [
@@ -17,10 +17,10 @@ const SPOTS_DATA = [
     className: 'climbing-card-m_limestone',
   },
   {
-    id: 3,
-    name: 'Атмосфера',
-    imgSrc: atmosphereImage,
-    className: 'climbing-card-m_atmosphere',
+    id: 10,
+    name: 'BigWall ВДНХ',
+    imgSrc: bigwallImage,
+    className: 'climbing-card-m_bigwall',
   },
   {
     id: 4,
