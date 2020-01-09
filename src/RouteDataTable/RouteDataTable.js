@@ -12,7 +12,6 @@ import './RouteDataTable.css';
 const RouteDataTable = ({ route, user }) => {
   const isCurrentUserRoute = user && route.author_id === user.id;
   let name = route.author ? getUserName(route.author) : null;
-
   if (!isCurrentUserRoute && name === null && route.author_id !== null) {
     if (user.role === 'admin') {
       name = getUserName(route.author, true);
@@ -143,7 +142,7 @@ const RouteDataTable = ({ route, user }) => {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {name}
+                {isCurrentUserRoute ? 'Вы' : name}
               </div>
             </div>
           </div>

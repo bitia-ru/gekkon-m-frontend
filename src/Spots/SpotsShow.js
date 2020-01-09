@@ -534,7 +534,12 @@ class SpotsShow extends Authorization {
     } else if (currSector && currSector.diagram) {
       [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === currentSectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     const currentViewMode = viewModeCurr || viewMode;
     const currentCategoryFrom = (
@@ -1240,7 +1245,12 @@ class SpotsShow extends Authorization {
     } else if (currSector && currSector.diagram) {
       [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === sectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     let currentSector;
     if (sectorId === 0) {
@@ -1385,7 +1395,12 @@ class SpotsShow extends Authorization {
     } else if (currSector && currSector.diagram) {
       [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
     } else {
-      viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      const r = R.find(s => s.id === sectorId, sectors);
+      if (r && r.diagram) {
+        [viewMode] = DEFAULT_SECTOR_VIEW_MODE_LIST;
+      } else {
+        viewMode = R.last(DEFAULT_SECTOR_VIEW_MODE_LIST);
+      }
     }
     const period = (
       (this.props.selectedFilters && this.props.selectedFilters[this.state.spotId])

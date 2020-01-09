@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/newline-after-import,import/order
-//import { SentryDsn } from './Environ';
-//Sentry.init({ dsn: SentryDsn }); // eslint-disable-line no-undef
+import { SentryDsn } from './Environ';
+Sentry.init({ dsn: SentryDsn }); // eslint-disable-line no-undef
 
 /* eslint-disable import/first */
 import React from 'react';
