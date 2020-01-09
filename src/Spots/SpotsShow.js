@@ -250,7 +250,7 @@ class SpotsShow extends Authorization {
       return;
     }
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/users/${id}/ascents`)
+    Axios.get(`${ApiUrl}/v1/users/${id}/ascents`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         this.setState({ ascents: response.data.payload });
@@ -290,7 +290,7 @@ class SpotsShow extends Authorization {
 
   loadRoute = (id, afterLoadRoute) => {
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${id}`)
+    Axios.get(`${ApiUrl}/v1/routes/${id}`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         this.setState({
@@ -371,7 +371,7 @@ class SpotsShow extends Authorization {
       params.user_id = currentUserId;
     }
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}`, { params })
+    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}`, { params, withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         let infoData = [
@@ -421,7 +421,7 @@ class SpotsShow extends Authorization {
     }
     params.numOfDays = NUM_OF_DAYS;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/sectors/${id}`, { params })
+    Axios.get(`${ApiUrl}/v1/sectors/${id}`, { params, withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         let infoData = [
@@ -459,7 +459,7 @@ class SpotsShow extends Authorization {
   reloadSectors = (currentSectorId, user) => {
     const { selectedFilters, selectedPages } = this.props;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/sectors`)
+    Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/sectors`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         this.props.loadSectors(response.data.payload);
@@ -499,7 +499,7 @@ class SpotsShow extends Authorization {
 
   loadRouteMarkColors = () => {
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/route_mark_colors`)
+    Axios.get(`${ApiUrl}/v1/route_mark_colors`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         this.props.loadRouteMarkColors(response.data.payload);
@@ -635,7 +635,7 @@ class SpotsShow extends Authorization {
     if (this.props.token) params.token = this.props.token;
     if (currentSectorId === 0) {
       this.props.increaseNumOfActiveRequests();
-      Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/routes`, { params })
+      Axios.get(`${ApiUrl}/v1/spots/${this.state.spotId}/routes`, { params, withCredentials: true })
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
           this.setState({
@@ -657,7 +657,7 @@ class SpotsShow extends Authorization {
         });
     } else {
       this.props.increaseNumOfActiveRequests();
-      Axios.get(`${ApiUrl}/v1/sectors/${currentSectorId}/routes`, { params })
+      Axios.get(`${ApiUrl}/v1/sectors/${currentSectorId}/routes`, { params, withCredentials: true })
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
           this.setState({
@@ -807,7 +807,7 @@ class SpotsShow extends Authorization {
 
   addRoute = () => {
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/new`, { headers: { TOKEN: this.props.token } })
+    Axios.get(`${ApiUrl}/v1/routes/new`, { headers: { TOKEN: this.props.token }, withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const newRoute = R.clone(response.data.payload);
@@ -872,7 +872,7 @@ class SpotsShow extends Authorization {
 
   reloadComments = (routeId) => {
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/route_comments`)
+    Axios.get(`${ApiUrl}/v1/routes/${routeId}/route_comments`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         this.setState({
@@ -906,7 +906,7 @@ class SpotsShow extends Authorization {
 
   saveComment = (params, afterSuccess) => {
     this.props.increaseNumOfActiveRequests();
-    Axios.post(`${ApiUrl}/v1/route_comments`, params, { headers: { TOKEN: this.props.token } })
+    Axios.post(`${ApiUrl}/v1/route_comments`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
       .then(() => {
         this.props.decreaseNumOfActiveRequests();
         this.reloadComments(this.state.currentShown.id);
@@ -922,7 +922,7 @@ class SpotsShow extends Authorization {
   reloadLikes = (routeId) => {
     const { user } = this.props;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/likes`)
+    Axios.get(`${ApiUrl}/v1/routes/${routeId}/likes`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const like = (
@@ -968,7 +968,7 @@ class SpotsShow extends Authorization {
           route_id: this.state.currentShown.id,
         },
       };
-      Axios.post(`${ApiUrl}/v1/likes`, params, { headers: { TOKEN: this.props.token } })
+      Axios.post(`${ApiUrl}/v1/likes`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
         .then(() => {
           this.props.decreaseNumOfActiveRequests();
           this.reloadLikes(this.state.currentShown.id);
@@ -983,7 +983,7 @@ class SpotsShow extends Authorization {
   reloadAscents = (routeId) => {
     const { user } = this.props;
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/routes/${routeId}/ascents`)
+    Axios.get(`${ApiUrl}/v1/routes/${routeId}/ascents`, { withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const ascent = (
@@ -1036,7 +1036,7 @@ class SpotsShow extends Authorization {
           route_id: this.state.currentShown.id,
         },
       };
-      Axios.post(`${ApiUrl}/v1/ascents`, params, { headers: { TOKEN: this.props.token } })
+      Axios.post(`${ApiUrl}/v1/ascents`, params, { headers: { TOKEN: this.props.token }, withCredentials: true })
         .then(() => {
           this.props.decreaseNumOfActiveRequests();
           this.reloadAscents(this.state.currentShown.id);
@@ -1049,7 +1049,7 @@ class SpotsShow extends Authorization {
 
   loadUsers = () => {
     this.props.increaseNumOfActiveRequests();
-    Axios.get(`${ApiUrl}/v1/users`, { headers: { TOKEN: this.props.token } })
+    Axios.get(`${ApiUrl}/v1/users`, { headers: { TOKEN: this.props.token }, withCredentials: true })
       .then((response) => {
         this.props.decreaseNumOfActiveRequests();
         const users = R.sort(

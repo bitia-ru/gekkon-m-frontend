@@ -58,7 +58,7 @@ class SpotsIndex extends Authorization {
     if (code !== null) {
       this.props.increaseNumOfActiveRequests();
       const userId = url.searchParams.get('user_id');
-      Axios.get(`${ApiUrl}/v1/users/mail_activation/${code}`, { params: { id: userId } })
+      Axios.get(`${ApiUrl}/v1/users/mail_activation/${code}`, { params: { id: userId }, withCredentials: true })
         .then((response) => {
           this.props.decreaseNumOfActiveRequests();
           saveUserProp(response.data.payload);
