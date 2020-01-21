@@ -22,7 +22,7 @@
 
 .range__slider {
     background-color: #ffffff;
-    margin-bottom: 24px;
+    padding-bottom: 24px;
 }
 
 .range__slider_active {
@@ -146,7 +146,7 @@
 }
 
 .range__btn {
-    margin-top: 44px;
+    margin-top: 20px;
 }
 
 .range__btn-cancel {

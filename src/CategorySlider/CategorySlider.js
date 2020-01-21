@@ -26,7 +26,7 @@ export default class CategorySlider extends Component {
   change = (event) => {
     const { editing } = this.state;
     if (editing) {
-      const sliderBarRect = this.sliderBarRef.getBoundingClientRect();
+      const sliderBarRect = this.sliderRef.getBoundingClientRect();
       const { clientX } = event.touches[0];
       let newPosition = (clientX - sliderBarRect.left) / sliderBarRect.width * 100;
       if (newPosition > 100) {
@@ -40,7 +40,7 @@ export default class CategorySlider extends Component {
   };
 
   onTouchEnd = (event) => {
-    const sliderBarRect = this.sliderBarRef.getBoundingClientRect();
+    const sliderBarRect = this.sliderRef.getBoundingClientRect();
     const { clientX } = event.changedTouches[0];
     let newPosition = (clientX - sliderBarRect.left) / sliderBarRect.width * 100;
     if (newPosition > 100) {
@@ -109,7 +109,13 @@ export default class CategorySlider extends Component {
                   </div>
                 </div>
               </div>
-              <div className="range__slider">
+              <div
+                className="range__slider"
+                ref={(ref) => { this.sliderRef = ref; }}
+                onTouchEnd={this.onTouchEnd}
+                onTouchMove={this.change}
+                onTouchStart={this.startChange}
+              >
                 <div className="range__slider-ruler">
                   <div className="range__slider-ruler-item range__slider-ruler-item_first">
                     {CATEGORIES[0].toUpperCase()}
@@ -122,15 +128,11 @@ export default class CategorySlider extends Component {
                   </div>
                 </div>
                 <div
-                  ref={(ref) => { this.sliderBarRef = ref; }}
-                  onTouchEnd={this.onTouchEnd}
-                  onTouchMove={this.change}
                   className="range__slider-bar"
                 >
                   <div
                     style={{ left: `calc(${this.positionFromCategory(category)}% - 4px` }}
                     className="range__slider-bar-handler range__slider-bar-handler_left"
-                    onTouchStart={this.startChange}
                   />
                   <div className="range__slider-bar-item range__slider-bar-item_first" />
                   <div className="range__slider-bar-item range__slider-bar-item_middle" />
