@@ -17,6 +17,7 @@ const resultFilters = R.map(
 
 export const PERSONAL_DEFAULT = false;
 export const OUTDATED_DEFAULT = false;
+export const LIKED_DEFAULT = false;
 
 export const DEFAULT_FILTERS = {
   categoryFrom: CATEGORIES[0],
@@ -42,6 +43,13 @@ export const DEFAULT_FILTERS = {
         selected: OUTDATED_DEFAULT,
         text: `Скрученные ${OUTDATED_DEFAULT ? ' ✓' : ''}`,
         value: 'outdated',
+      },
+      {
+        clickable: true,
+        id: 'liked',
+        selected: LIKED_DEFAULT,
+        text: `Понравившиеся мне ${LIKED_DEFAULT ? ' ✓' : ''}`,
+        value: 'liked',
       },
     ],
   ),
