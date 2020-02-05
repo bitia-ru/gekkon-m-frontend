@@ -351,6 +351,7 @@ class SpotsShow extends Authorization {
       text: `Скрученные ${this.state.outdated ? ' ✓' : ''}`,
       value: 'outdated',
     };
+
     this.setState({ filters: R.concat(resultFilters, [personal, outdated]) });
   };
 
@@ -583,6 +584,11 @@ class SpotsShow extends Authorization {
         ? selectedFilters[this.state.spotId][currentSectorId].outdated
         : filters.outdated
     );
+    const currentLiked = (
+      (filters.liked === null || filters.liked === undefined)
+        ? selectedFilters[this.state.spotId][currentSectorId].liked
+        : filters.liked
+    );
     const currentPage = (
       (page === null || page === undefined)
         ? selectedPages[this.state.spotId][currentSectorId]
@@ -597,6 +603,9 @@ class SpotsShow extends Authorization {
     };
     if ((userCurr && avail(userCurr.id)) || avail(user.id)) {
       params.filters.result = (currentResult.length === 0 ? [null] : currentResult);
+      if (currentLiked) {
+        params.filters.liked_by = 'self';
+      }
     }
     if (currentName !== '') {
       params.filters.name = { like: currentName };
@@ -727,6 +736,9 @@ class SpotsShow extends Authorization {
       filters,
     );
     if (this.props.user) {
+      filter = R.find(R.propEq('id', 'liked'))(filters);
+      const liked = filter.selected;
+      this.props.setSelectedFilter(spotId, sectorId, 'liked', liked);
       const result = R.map(e => e.value, R.filter(e => e.selected, resultFilters));
       this.props.setSelectedFilter(spotId, sectorId, 'result', result);
       this.reloadRoutes({
@@ -736,6 +748,7 @@ class SpotsShow extends Authorization {
         date: date || DEFAULT_FILTERS.date,
         personal,
         outdated,
+        liked,
         result,
       });
     } else {
@@ -1447,7 +1460,9 @@ class SpotsShow extends Authorization {
                     ? filters
                     : (
                       R.filter(
-                        e => !R.contains(e.id, R.map(f => f.id, RESULT_FILTERS)),
+                        e => !R.contains(
+                          e.id, R.append('liked', R.map(f => f.id, RESULT_FILTERS)),
+                        ),
                         filters,
                       )
                     )
