@@ -11,6 +11,9 @@ module.exports = () => ({
     filename: 'index-[hash].js',
     publicPath: '/',
   },
+  devServer: {
+    historyApiFallback: true,
+  },
   module: {
     rules: [
       {
