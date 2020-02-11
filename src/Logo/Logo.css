@@ -1,6 +1,9 @@
 .logo-m {
     width: 76px;
     height: 76px;
+    position: fixed;
+    left: 0;
+    top: 0;
     background-color: #0D0D0D;
     display: flex;
     align-items: center;

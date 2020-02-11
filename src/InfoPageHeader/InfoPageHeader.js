@@ -30,10 +30,8 @@ export default class InfoPageHeader extends Component {
         className="header-m"
         style={bgImageLoaded ? { backgroundImage: `url(${image})` } : {}}
       >
-        <div className="header-m__top">
-          <Logo />
-          <MainNav showMenu={showMenu} />
-        </div>
+        <Logo />
+        <MainNav showMenu={showMenu} />
         <div className="header-m__about">
           <h1 className="header-m__header">{title}</h1>
         </div>

@@ -2,12 +2,14 @@
     background-color: #F0F0F0;
     width: 76px;
     height: 76px;
+    right: 0;
+    top: 0;
     border: none;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: fixed;
     z-index: 10;
 }
 

@@ -56,7 +56,7 @@
     width: 16px;
     height: 16px;
     margin-left: auto;
-    position: relative;
+    position: static;
     z-index: 20;
 }
 

@@ -43,7 +43,13 @@ export default class CommentForm extends Component {
               )
               : ''
           }
-          <div className="comment-form__inner-wrap">
+          <div
+            className={
+              `comment-form__inner-wrap${
+                user ? ' comment-form__inner-wrap-active' : ''
+              }`
+            }
+          >
             <AvatarRound user={user} />
             {
               (user && !user.login && !user.name)
@@ -59,22 +65,24 @@ export default class CommentForm extends Component {
                   </a>
                 )
                 : (
-                  <textarea
-                    className={`comment-form__input${
-                      content === ''
-                        ? ''
-                        : ' comment-form__input_active'
-                    }`}
-                    ref={this.setTextAreaRef}
-                    disabled={!(user && (user.login || user.name))}
-                    placeholder={
-                      user
-                        ? 'Комментировать...'
-                        : 'Залогиньтесь, чтобы написать комментарий'
-                    }
-                    value={content}
-                    onChange={event => onContentChange(event.target.value)}
-                  />
+                  user ? (
+                    <textarea
+                      className={`comment-form__input${
+                        content === ''
+                          ? ''
+                          : ' comment-form__input_active'
+                      }`}
+                      ref={this.setTextAreaRef}
+                      disabled={!(user && (user.login || user.name))}
+                      placeholder="Комментировать..."
+                      value={content}
+                      onChange={event => onContentChange(event.target.value)}
+                    />
+                  ) : (
+                    <div className="comment-form__input-substitutor">
+                      Залогиньтесь, чтобы написать комментарий
+                    </div>
+                  )
                 )
             }
           </div>

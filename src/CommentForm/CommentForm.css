@@ -64,6 +64,10 @@
     display: flex;
 }
 
+.comment-form__inner-wrap-active {
+    padding-bottom: 0;
+}
+
 .comment-form__btn-wrap {
     display: flex;
     justify-content: flex-end;
@@ -80,7 +84,7 @@
     width: 100%;
 }
 
-.comment-form__input {
+textarea.comment-form__input {
     border: 0;
     margin-left: 18px;
     font-family: GilroyRegular, sans-serif;
@@ -88,10 +92,26 @@
     font-size: 16px;
     outline: none;
     width: 100%;
+    min-height: 42px;
     resize: none;
-    padding: 14px 0 0 0;
     box-sizing: border-box;
     background-color: transparent;
+    padding-top: 14px;
+}
+
+div.comment-form__input-substitutor {
+    border: 0;
+    margin-left: 18px;
+    font-family: GilroyRegular, sans-serif;
+    font-size: 16px;
+    outline: none;
+    width: 100%;
+    min-height: 42px;
+    resize: none;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: #828282;
+    line-height: 21px;
 }
 
 .comment-form__input::placeholder {

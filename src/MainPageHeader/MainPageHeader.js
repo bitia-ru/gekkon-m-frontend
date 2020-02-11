@@ -37,10 +37,8 @@ export default class MainPageHeader extends Component {
         style={bgImageLoaded ? { backgroundImage: `url(${bgImage})` } : {}}
         className="first-section-m"
       >
-        <div className="first-section-m__top">
-          <Logo />
-          <MainNav showMenu={showMenu} />
-        </div>
+        <Logo />
+        <MainNav showMenu={showMenu} />
         <div className="first-section-m__container">
           <div className="first-section-m__data">
             <h1 className="first-section-m__header">Не можешь вспомнить свою первую 6С?</h1>

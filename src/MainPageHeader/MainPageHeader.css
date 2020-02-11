@@ -8,20 +8,6 @@
     padding-bottom: 64px;
 }
 
-.first-section-m__top {
-    display: flex;
-    position: absolute;
-    left: 0;
-    top: 0;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-
 .first-section-m__data {
     margin-top: 98px;
 }
