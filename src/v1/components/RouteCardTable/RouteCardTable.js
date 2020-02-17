@@ -53,6 +53,7 @@ const mapStateToProps = state => ({
       ? state.routesStore.filtrationResults[0].routeIds
       : []
   ),
+  user: state.usersStore.users[state.usersStore.currentUserId],
 });
 
 export default withRouter(connect(mapStateToProps)(RouteCardTable));

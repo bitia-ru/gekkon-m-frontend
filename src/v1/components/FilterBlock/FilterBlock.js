@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import moment from 'moment/moment';
@@ -10,17 +12,26 @@ import Button from '../Button/Button';
 import PERIOD_FILTERS from '../../Constants/PeriodFilters';
 import { CATEGORIES, CATEGORIES_ITEMS, getCategoryColor } from '../../Constants/Categories';
 import { DEFAULT_FILTERS } from '../../Constants/DefaultFilters';
+import getFilters from '../../utils/getFilters';
+import RESULT_FILTERS from '../../Constants/ResultFilters';
+import { setSelectedFilter, setSelectedPage } from '../../actions';
 import Category from '../Category/Category';
 import './FilterBlock.css';
 
 
-export default class FilterBlock extends Component {
+class FilterBlock extends Component {
   constructor(props) {
     super(props);
 
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
     const {
-      period, date, filters, categoryFrom, categoryTo,
-    } = this.props;
+      categoryFrom,
+      categoryTo,
+      period,
+      date,
+      filters,
+    } = getFilters(spotId, sectorId);
     this.state = {
       showCategoryFilter: false,
       showPeriodFilter: false,
@@ -34,17 +45,80 @@ export default class FilterBlock extends Component {
     };
   }
 
+  getSpotId = () => {
+    const { match } = this.props;
+    return parseInt(match.params.id, 10);
+  };
+
+  getSectorId = () => {
+    const { match } = this.props;
+    return match.params.sector_id ? parseInt(match.params.sector_id, 10) : 0;
+  };
+
   save = () => {
     const {
-      hideFilters, changeAllFilters,
+      hideFilters,
     } = this.props;
     const {
       period, date, filters, categoryFrom, categoryTo,
     } = this.state;
-    changeAllFilters(
+    this.changeAllFilters(
       categoryFrom, categoryTo, period, date, filters,
     );
     hideFilters();
+  };
+
+  changeAllFilters = (categoryFrom, categoryTo, period, date, filters) => {
+    const {
+      user,
+      setSelectedFilter: setSelectedFilterProp,
+      setSelectedPage: setSelectedPageProp,
+    } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
+    if (categoryFrom !== null) {
+      setSelectedFilterProp(spotId, sectorId, 'categoryFrom', categoryFrom);
+    }
+    if (categoryTo !== null) {
+      setSelectedFilterProp(spotId, sectorId, 'categoryTo', categoryTo);
+    }
+    setSelectedFilterProp(spotId, sectorId, 'period', period);
+    setSelectedFilterProp(spotId, sectorId, 'date', date);
+    let filter = R.find(R.propEq('id', 'personal'))(filters);
+    const personal = filter.selected;
+    filter = R.find(R.propEq('id', 'outdated'))(filters);
+    let outdated = null;
+    if (filter) {
+      outdated = filter.selected;
+      setSelectedFilterProp(spotId, sectorId, 'outdated', outdated);
+    }
+    setSelectedFilterProp(spotId, sectorId, 'personal', personal);
+    const resultFilters = R.filter(
+      e => R.contains(e.id, R.map(f => f.id, RESULT_FILTERS)),
+      filters,
+    );
+    if (user) {
+      filter = R.find(R.propEq('id', 'liked'))(filters);
+      const liked = filter.selected;
+      setSelectedFilterProp(spotId, sectorId, 'liked', liked);
+      const result = R.map(e => e.value, R.filter(e => e.selected, resultFilters));
+      setSelectedFilterProp(spotId, sectorId, 'result', result);
+    }
+    const filtersCopy = R.clone(getFilters(spotId, sectorId).filters);
+    R.forEach(
+      (f) => {
+        const index = R.findIndex(R.propEq('id', f.id))(filtersCopy);
+        filtersCopy[index] = f;
+      },
+      filters,
+    );
+    setSelectedFilterProp(
+      spotId,
+      sectorId,
+      'filters',
+      filtersCopy,
+    );
+    setSelectedPageProp(spotId, sectorId, 1);
   };
 
   setDefaultFilters = () => {
@@ -285,12 +359,19 @@ export default class FilterBlock extends Component {
 }
 
 FilterBlock.propTypes = {
-  date: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
-  categoryFrom: PropTypes.string.isRequired,
-  categoryTo: PropTypes.string.isRequired,
-  period: PropTypes.number.isRequired,
   hideFilters: PropTypes.func.isRequired,
-  filters: PropTypes.array.isRequired,
-  changeAllFilters: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  user: state.usersStore.users[state.usersStore.currentUserId],
+});
+
+const mapDispatchToProps = dispatch => ({
+  setSelectedFilter: (spotId, sectorId, filterName, filterValue) => (
+    dispatch(setSelectedFilter(spotId, sectorId, filterName, filterValue))
+  ),
+  setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilterBlock));
