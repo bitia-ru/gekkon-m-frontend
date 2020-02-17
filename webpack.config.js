@@ -18,11 +18,12 @@ module.exports = () => ({
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
+    extensions: ['.js', '.jsx'],
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -30,7 +31,7 @@ module.exports = () => ({
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.(pdf|jpg|png|gif|svg|ico|woff2)$/,
@@ -48,7 +49,7 @@ module.exports = () => ({
       template: './index.html',
     }),
     new webpack.EnvironmentPlugin({
-      API_URL: '',
+      API_URL: '/api',
       SENTRY_DSN: '',
       CLIENT_ID: '',
     }),
