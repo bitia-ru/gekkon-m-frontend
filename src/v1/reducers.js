@@ -8,6 +8,8 @@ import routesStoreReducer from './stores/routes/reducers';
 import sectorsStoreReducer from './stores/sectors/reducers';
 import spotsStoreReducer from './stores/spots/reducers';
 import newsStoreReducer from './stores/news/reducers';
+import { default as usersReducerV2 } from '@/v2/redux/users/reducer';
+import { default as userSessionReducerV2 } from '@/v2/redux/user_session/reducer';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -104,4 +106,6 @@ export default combineReducers({
   sectorsStore: sectorsStoreReducer,
   routesStore: routesStoreReducer,
   newsStore: newsStoreReducer,
+  usersStoreV2: usersReducerV2,
+  userSessionV2: userSessionReducerV2,
 });
