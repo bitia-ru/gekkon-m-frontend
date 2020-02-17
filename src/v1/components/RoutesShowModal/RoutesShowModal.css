@@ -52,3 +52,11 @@
     top: 50%;
     transform: translateY(-50%);
 }
+
+.route-m__route-photo-placeholder {
+    width: 118px;
+    height: 118px;
+    position: relative;
+    background-image: url(./photo-placeholder.svg);
+    background-size: contain;
+}
