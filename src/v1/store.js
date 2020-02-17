@@ -7,6 +7,7 @@ import SPOTS_DEFAULT_STORE_FORMAT from './stores/spots/constants/defaultStoreFor
 import SECTORS_DEFAULT_STORE_FORMAT from './stores/sectors/constants/defaultStoreFormat';
 import ROUTES_DEFAULT_STORE_FORMAT from './stores/routes/constants/defaultStoreFormat';
 import ROUTE_MARK_COLORS_DEFAULT_STORE_FORMAT from './stores/route_mark_colors/constants/defaultStoreFormat';
+import NEWS_DEFAULT_STORE_FORMAT from './stores/news/constants/defaultStoreFormat';
 
 const loadState = () => {
   try {
@@ -20,6 +21,9 @@ const loadState = () => {
     try {
       state.selectedViewModes = R.clone(data.selectedViewModes);
       state.selectedFilters = R.clone(data.selectedFilters);
+
+      state.newsStore = NEWS_DEFAULT_STORE_FORMAT;
+      state.newsStore.news = R.clone(data.news);
 
       state.routeMarkColorsStore = ROUTE_MARK_COLORS_DEFAULT_STORE_FORMAT;
       state.routeMarkColorsStore.routeMarkColors = R.clone(data.routeMarkColors);
@@ -64,6 +68,7 @@ const saveState = (state) => {
     data.sortedUserIds = R.clone(state.usersStore.sortedUserIds);
 
     data.routeMarkColors = R.clone(state.routeMarkColorsStore.routeMarkColors);
+    data.news = R.clone(state.newsStore.news);
     const serializedState = JSON.stringify(data);
     localStorage.setItem('reduxState', serializedState);
   } catch (_err) {

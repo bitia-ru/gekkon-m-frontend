@@ -5,11 +5,9 @@ import SPOTS_DATA from '../../Constants/Spots';
 import NewsBlock from '../NewsBlock/NewsBlock';
 import './MainPageContent.css';
 
-import NEWS from '../../Constants/NewsDemoData';
-
 const MainPageContent = () => (
   <>
-    <NewsBlock data={NEWS} />
+    <NewsBlock />
     <div className="section-climbing-m">
       <div className="section-climbing-m__container">
         <h1 className="section-climbing-m__header"> Скалодромы </h1>
