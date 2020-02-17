@@ -18,10 +18,10 @@ const SPOTS_DATA = [
     className: 'climbing-card-m_bigwall',
   },
   {
-    id: 4,
-    name: 'Токио',
-    imgSrc: require('../../../img/spot-card-img/tokyo.jpg'),
-    className: 'climbing-card-m_tokyo',
+    id: 3,
+    name: 'Атмосфера',
+    imgSrc: require('../../../img/spot-card-img/atmosphere.jpg'),
+    className: 'climbing-card-m_atmo',
   },
 ];
 
