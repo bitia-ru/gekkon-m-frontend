@@ -8,9 +8,8 @@ import {
 import { loadSectors } from '../sectors/actions';
 import numToStr from '../../Constants/NumToStr';
 import { setDefaultSelectedFilters, setDefaultSelectedPages } from '../../actions';
-import { DEFAULT_FILTERS } from '../../Constants/DefaultFilters';
 
-export const loadSpot = (url, params, currentSectorId, afterLoad) => (
+export const loadSpot = (url, params) => (
   (dispatch, getState) => {
     const state = getState();
     const {
@@ -55,15 +54,6 @@ export const loadSpot = (url, params, currentSectorId, afterLoad) => (
             spot.id,
             R.map(sector => sector.id, spot.sectors),
           ));
-          const filters = R.merge(
-            { sectorId: currentSectorId },
-            (selectedFilters[spot.id] === undefined ? DEFAULT_FILTERS : {}),
-          );
-          if (afterLoad) {
-            afterLoad(filters, 1, params.user_id);
-          }
-        } else if (afterLoad) {
-          afterLoad({ sectorId: currentSectorId }, null, params.user_id);
         }
         dispatch(loadSectors(spot.sectors));
       }).catch((error) => {

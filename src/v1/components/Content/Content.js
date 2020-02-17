@@ -10,10 +10,75 @@ import NUM_OF_DISPLAYED_PAGES from '../../Constants/Pagination';
 import SectorContext from '../../contexts/SectorContext';
 import getNumOfPages from '../../utils/getNumOfPages';
 import './Content.css';
+import {
+  setSelectedPage,
+} from '../../actions';
+import reloadRoutes from '../../utils/reloadRoutes';
+import getViewMode from '../../utils/getViewMode';
+import getPage from '../../utils/getPage';
+import getNumOfRoutes from '@/v1/utils/getNumOfRoutes';
+import getArrayByIds from '@/v1/utils/getArrayByIds';
 
 class Content extends Component {
+  componentDidMount() {
+    reloadRoutes(this.getSpotId(), this.getSectorId());
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.needReload(prevProps)) {
+      reloadRoutes(this.getSpotId(), this.getSectorId());
+    }
+  }
+
+  needReload = (prevProps) => {
+    const {
+      selectedFilters,
+      selectedViewModes,
+      selectedPages,
+      match,
+    } = this.props;
+    if (!R.equals(selectedFilters, prevProps.selectedFilters)) {
+      return true;
+    }
+    if (!R.equals(selectedViewModes, prevProps.selectedViewModes)) {
+      return true;
+    }
+    if (!R.equals(selectedPages, prevProps.selectedPages)) {
+      return true;
+    }
+    if (!R.equals(match.url, prevProps.match.url)) {
+      return true;
+    }
+    return false;
+  };
+
+  getSpotId = () => {
+    const { match } = this.props;
+    return parseInt(match.params.id, 10);
+  };
+
+  getSectorId = () => {
+    const { match } = this.props;
+    return match.params.sector_id ? parseInt(match.params.sector_id, 10) : 0;
+  };
+
+  onRouteClick = (id) => {
+    const { history, match } = this.props;
+    history.push(`${match.url}/routes/${id}`);
+  };
+
+  changePage = (page) => {
+    const {
+      setSelectedPage: setSelectedPageProp,
+    } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
+    setSelectedPageProp(spotId, sectorId, page);
+  };
+
   pagesList = () => {
-    const { numOfPages, page } = this.props;
+    const { numOfPages } = this.props;
+    const page = getPage(this.getSpotId(), this.getSectorId());
     if (NUM_OF_DISPLAYED_PAGES >= numOfPages) {
       return R.range(1, numOfPages + 1);
     }
@@ -28,30 +93,33 @@ class Content extends Component {
     return R.range(1, NUM_OF_DISPLAYED_PAGES + 1);
   };
 
+  addRoute = () => { this.props.history.push(`${this.props.match.url}/routes/new`); };
+
   render() {
     const {
-      user,
-      page,
-      numOfPages,
-      addRoute,
-      onRouteClick,
-      changePage,
-      numOfRoutes,
-      showFilters,
-      viewMode,
-      changeViewMode,
+      showFilters, routeIds, routes,
     } = this.props;
+    const {
+      numOfPages,
+    } = this.props;
+    const spotId = this.getSpotId();
+    const sectorId = this.getSectorId();
+    const page = getPage(spotId, sectorId);
+    const viewMode = getViewMode(spotId, sectorId);
     return (
       <SectorContext.Consumer>
         {
           ({ sector }) => {
             const diagram = sector && sector.diagram && sector.diagram.url;
+            const numOfRoutes = (viewMode === 'scheme'
+              ? getArrayByIds(routeIds, routes).length
+              : getNumOfRoutes(spotId, sectorId)
+            );
             return (
               <div className="content-m">
                 <div className="content-m__container">
                   <FilterControl
                     viewMode={viewMode}
-                    onViewModeChange={changeViewMode}
                     numOfRoutes={numOfRoutes}
                     showFilters={showFilters}
                     viewModeData={
@@ -73,13 +141,12 @@ class Content extends Component {
                   <RouteCardView
                     diagram={diagram}
                     viewMode={viewMode}
-                    addRoute={addRoute}
-                    user={user}
-                    onRouteClick={onRouteClick}
+                    addRoute={this.addRoute}
+                    onRouteClick={this.onRouteClick}
                   />
                   {
                     viewMode !== 'scheme' && <Pagination
-                      onPageChange={changePage}
+                      onPageChange={this.changePage}
                       page={page}
                       pagesList={this.pagesList()}
                       firstPage={1}
@@ -97,20 +164,25 @@ class Content extends Component {
 }
 
 Content.propTypes = {
-  user: PropTypes.object,
-  viewMode: PropTypes.string.isRequired,
-  changeViewMode: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
   numOfPages: PropTypes.number.isRequired,
-  changePage: PropTypes.func.isRequired,
-  addRoute: PropTypes.func.isRequired,
-  onRouteClick: PropTypes.func.isRequired,
-  numOfRoutes: PropTypes.number.isRequired,
   showFilters: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   numOfPages: getNumOfPages(state),
+  selectedViewModes: state.selectedViewModes,
+  selectedPages: state.selectedPages,
+  selectedFilters: state.selectedFilters,
+  routes: state.routesStore.routes,
+  routeIds: (
+    state.routesStore.filtrationResults[0]
+      ? state.routesStore.filtrationResults[0].routeIds
+      : []
+  ),
 });
 
-export default withRouter(connect(mapStateToProps)(Content));
+const mapDispatchToProps = dispatch => ({
+  setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Content));
