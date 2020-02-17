@@ -7,6 +7,7 @@ import usersStoreReducer from './stores/users/reducers';
 import routesStoreReducer from './stores/routes/reducers';
 import sectorsStoreReducer from './stores/sectors/reducers';
 import spotsStoreReducer from './stores/spots/reducers';
+import newsStoreReducer from './stores/news/reducers';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -102,4 +103,5 @@ export default combineReducers({
   spotsStore: spotsStoreReducer,
   sectorsStore: sectorsStoreReducer,
   routesStore: routesStoreReducer,
+  newsStore: newsStoreReducer,
 });
