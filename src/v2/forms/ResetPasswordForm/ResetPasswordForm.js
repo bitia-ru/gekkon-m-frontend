@@ -234,26 +234,17 @@ class ResetPasswordForm extends Component {
         <ModalContext.Consumer>
           {
             ({ closeModal }) => (
-              <div className="modal-block-m">
-                <div className="modal-block-m__inner">
-                  <div className="modal-block-m__container">
-                    <div className="modal-block-m__header">
-                      <div className="modal-block-m__header-btn">
-                        <CloseButton onClick={closeModal} />
-                      </div>
-                    </div>
-                    <h3 className="modal-block__title modal-block-m__title_form">
-                      Установка нового пароля
-                    </h3>
-                    <TabBar
-                      contentList={[this.firstTabContent(), this.secondTabContent()]}
-                      activeList={[false, true]}
-                      activeTab={2}
-                      titleList={['Телефон', 'Email']}
-                    />
-                  </div>
-                </div>
-              </div>
+              <>
+                <h3 className="modal-block__title modal-block-m__title_form">
+                  Установка нового пароля
+                </h3>
+                <TabBar
+                  contentList={[this.firstTabContent(), this.secondTabContent()]}
+                  activeList={[false, true]}
+                  activeTab={2}
+                  titleList={['Телефон', 'Email']}
+                />
+              </>
             )
           }
         </ModalContext.Consumer>
