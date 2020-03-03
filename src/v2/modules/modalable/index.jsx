@@ -126,7 +126,6 @@ const withModals = (BaseComponent) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() => this.closeModal()}
           onScroll={(e) => { e.preventDefault(); }}
         >
           <ModalContext.Provider
@@ -159,8 +158,6 @@ const withModals = (BaseComponent) => {
           ),
         modalStates[this.currentModal()]?.args,
       );
-
-      return null;
     }
 
     render() {
