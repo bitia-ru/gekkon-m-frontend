@@ -32,7 +32,7 @@ export const createUserSession = (
             },
             failed(error) {
               let errorDetails;
-              if (error && error.response && error.response.status === 400 && error.response.statusText === 'Bad Request') {
+              if (error && error.response && error.response.status === 400) {
                 errorDetails = error.response.data;
               } else {
                 //  dispatch(pushError(error));
@@ -43,10 +43,9 @@ export const createUserSession = (
         );
       },
       failed(error) {
-        console.log(error);
         const resp = error.response;
         let errorDetails;
-        if (resp && resp.status === 404 && resp.statusText === 'Not Found' && R.path(['data', 'model'], resp) === 'User') {
+        if (resp && resp.status === 404 && R.path(['data', 'model'], resp) === 'User') {
           errorDetails = { email: ['Пользователь не найден'] };
         } else {
           //  dispatch(pushError(error));
@@ -63,10 +62,10 @@ export const closeUserSession = () => {
     null,
     {
       success() {
-        window.location.reload();
+        window.location.reload(true);
       },
       failed() {
-        window.location.reload();
+        window.location.reload(true);
       },
     },
   );

@@ -3,15 +3,19 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import TabBar from '../TabBar/TabBar';
-import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
-import Button from '../Button/Button';
-import FormField from '../FormField/FormField';
-import CloseButton from '../CloseButton/CloseButton';
-import CheckBox from '../CheckBox/CheckBox';
+import TabBar from '@/v1/components/TabBar/TabBar';
+import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
+import Button from '@/v1/components/Button/Button';
+import FormField from '@/v1/components/FormField/FormField';
+import CloseButton from '@/v1/components/CloseButton/CloseButton';
+import CheckBox from '@/v1/components/CheckBox/CheckBox';
 import './LogInForm.css';
-import RE_EMAIL from '../../Constants/Constraints';
-import { logIn } from '../../stores/users/utils';
+import RE_EMAIL from '@/v1/Constants/Constraints';
+import { createUserSession } from '../../utils/auth';
+import { enterWithVk } from '../../utils/vk';
+import { ModalContext } from '../../modules/modalable';
+import Api from '@/v2/utils/Api';
+import Modal from '../../layouts/Modal';
 
 class LogInForm extends Component {
   constructor(props) {
@@ -28,20 +32,6 @@ class LogInForm extends Component {
     };
     this.mouseOver = false;
   }
-
-  componentDidMount() {
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.closeForm();
-    }
-  };
 
   resetErrors = () => {
     this.setState({ errors: {} });
@@ -92,41 +82,40 @@ class LogInForm extends Component {
     }
   };
 
-  checkAndSubmit = (type, data, passwordNew) => {
+  checkAndSubmit = (type, data, passwordNew, after) => {
     const { password, rememberMe } = this.state;
     const res = !this.check('password', password);
     if (res > 0) {
       return;
     }
-    this.onFormSubmit(type, data, passwordNew, rememberMe);
+    this.onFormSubmit(type, data, passwordNew, rememberMe, after);
   };
 
-  onFormSubmit = (type, data, password, rememberMe) => {
+  onFormSubmit = (type, data, password, longDuration, after) => {
     if (type !== 'email') {
       throw `Argument error: value ${type} for argument type is invalid.`;
     }
+
     const { errors } = this.state;
-    const { logIn: logInProp } = this.props;
-    const { location } = window;
+
     this.setState({ isWaiting: true });
-    let params;
-    if (R.test(RE_EMAIL, data)) {
-      params = {
-        user_session: { user: { email: data } },
-        rememberMe,
-      };
-    } else {
-      params = {
-        user_session: { user: { login: data } },
-        rememberMe,
-      };
-    }
-    logInProp(
-      params,
+
+    createUserSession(
+      {
+        [R.test(RE_EMAIL, data) ? 'email' : 'login']: data,
+      },
       password,
-      () => location.reload(),
-      () => this.setState({ isWaiting: false }),
-      err => this.setState({ errors: R.merge(errors, err) }),
+      longDuration,
+      () => {
+        after && after();
+      },
+      (errorDetails) => {
+        console.log(errorDetails);
+        this.setState({ isWaiting: false });
+        if (errorDetails) {
+          this.setState({ errors: R.merge(errors, errorDetails) });
+        }
+      },
     );
   };
 
@@ -143,32 +132,55 @@ class LogInForm extends Component {
     );
   };
 
-  closeForm = () => {
-    const { closeForm } = this.props;
-    this.resetErrors();
-    closeForm();
-  };
-
   resetPassword = (type) => {
-    const { phone, email } = this.state;
-    const { resetPassword } = this.props;
-    if (type === 'phone') {
-      if (phone === '') {
-        this.setState({ errors: { phone: ['Введите телефон'] } });
-      } else {
-        resetPassword('phone', phone);
-      }
-    }
+    const { email, errors } = this.state;
+
     if (type === 'email') {
       if (email === '') {
         this.setState({ errors: { email: ['Введите почту / логин'] } });
       } else {
-        resetPassword('email', email);
+        let params;
+        if (R.test(RE_EMAIL, email)) {
+          params = { user: { email } };
+        } else {
+          params = { user: { login: email } };
+        }
+
+        const self = this;
+        Api.get(
+          '/v1/users/send_reset_password_mail',
+          {
+            params,
+            success() {
+              console.log('На почту было отправлено сообщение для восстановления пароля');
+              window.history.back();
+            },
+            failed(error) {
+              const resp = error.response;
+              let errorMsg;
+              if (resp && resp.status === 404 && resp.data.model === 'User') {
+                errorMsg = 'Пользователь не найден';
+              } else if (resp && resp.status === 400 && resp.data.email) {
+                errorMsg = 'Без почты невозможно восстановить пароль. Обратитесь к администратору.';
+              } else {
+                errorMsg = 'Не удалось отправить на почту сообщение для восстановления пароля';
+              }
+              self.setState(
+                {
+                  errors: R.merge(
+                    errors,
+                    { email: [errorMsg] },
+                  ),
+                },
+              );
+            },
+          },
+        );
       }
     }
   };
 
-  firstTabContent = () => {
+  firstTabContent = (closeModal) => {
     const {
       isWaiting, phone, passwordEnter, rememberMe,
     } = this.state;
@@ -222,7 +234,7 @@ class LogInForm extends Component {
     );
   };
 
-  secondTabContent = () => {
+  secondTabContent = (closeModal) => {
     const {
       isWaiting, email, password, rememberMe,
     } = this.state;
@@ -244,7 +256,17 @@ class LogInForm extends Component {
           type="password"
           hasError={this.hasError('password_digest')}
           errorText={this.errorText('password_digest')}
-          onEnter={() => this.checkAndSubmit('email', email, password)}
+          onEnter={
+            () => this.checkAndSubmit(
+              'email',
+              email,
+              password,
+              () => {
+                closeModal();
+                window.location.reload(true);
+              },
+            )
+          }
           value={password}
         />
         <Button
@@ -254,7 +276,17 @@ class LogInForm extends Component {
           fullLength
           submit
           isWaiting={isWaiting}
-          onClick={() => this.checkAndSubmit('email', email, password)}
+          onClick={
+            () => this.checkAndSubmit(
+              'email',
+              email,
+              password,
+              () => {
+                closeModal();
+                window.location.reload(true);
+              },
+            )
+          }
         />
         <div className="modal-block-m__settings">
           <CheckBox
@@ -278,70 +310,65 @@ class LogInForm extends Component {
   };
 
   render() {
-    const { enterWithVk } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
     );
     return (
-      <div className="modal-block-m">
-        <div className="modal-block-m__inner">
-          <div className="modal-block-m__container">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__header-btn">
-                <CloseButton onClick={this.closeForm} />
+      <Modal>
+        <ModalContext.Consumer>
+          {
+            ({ closeModal }) => (
+              <div className="modal-block-m">
+                <div className="modal-block-m__inner">
+                  <div className="modal-block-m__container">
+                    <div className="modal-block-m__header">
+                      <div className="modal-block-m__header-btn">
+                        <CloseButton onClick={closeModal} />
+                      </div>
+                    </div>
+                    <h3 className="modal-block__title modal-block-m__title_form">
+                      Вход в систему
+                    </h3>
+                    <TabBar
+                      contentList={
+                        [
+                          this.firstTabContent(closeModal),
+                          this.secondTabContent(closeModal),
+                        ]
+                      }
+                      activeList={[false, true]}
+                      activeTab={2}
+                      titleList={['Телефон', 'Email / логин']}
+                    />
+                    <div className="modal-block-m__or">
+                      <div className="modal-block-m__or-inner">или</div>
+                    </div>
+                    <div className="modal-block-m__social">
+                      <ul className="social-links">
+                        <li>
+                          <SocialLinkButton
+                            onClick={() => enterWithVk('logIn')}
+                            xlinkHref={`${socialLinks}#icon-vk`}
+                            dark
+                          />
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <h3 className="modal-block__title modal-block-m__title_form">
-              Вход в систему
-            </h3>
-            <TabBar
-              contentList={[this.firstTabContent(), this.secondTabContent()]}
-              activeList={[false, true]}
-              activeTab={2}
-              test={this.firstTabContent()}
-              titleList={['Телефон', 'Email / логин']}
-            />
-            <div className="modal-block-m__or">
-              <div className="modal-block-m__or-inner">или</div>
-            </div>
-            <div className="modal-block-m__social">
-              <ul className="social-links">
-                <li>
-                  <SocialLinkButton
-                    onClick={() => enterWithVk('logIn')}
-                    xlinkHref={`${socialLinks}#icon-vk`}
-                    dark
-                  />
-                </li>
-                { false
-                    && <>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive /></li>
-                    </>
-                }
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+            )
+          }
+        </ModalContext.Consumer>
+      </Modal>
     );
   }
 }
 
 LogInForm.propTypes = {
-  enterWithVk: PropTypes.func.isRequired,
-  closeForm: PropTypes.func.isRequired,
-  resetPassword: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  logIn: (
-    params, password, afterLogInSuccess, afterLogInFail, onFormError,
-  ) => dispatch(
-    logIn(params, password, afterLogInSuccess, afterLogInFail, onFormError),
-  ),
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(LogInForm));
