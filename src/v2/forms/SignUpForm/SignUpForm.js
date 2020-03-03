@@ -4,15 +4,18 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
 import bcrypt from 'bcryptjs';
-import SALT_ROUNDS from '../../Constants/Bcrypt';
-import TabBar from '../TabBar/TabBar';
-import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
-import Button from '../Button/Button';
-import FormField from '../FormField/FormField';
-import CloseButton from '../CloseButton/CloseButton';
-import { PASSWORD_MIN_LENGTH } from '../../Constants/User';
-import RE_EMAIL from '../../Constants/Constraints';
-import { signUp } from '../../stores/users/utils';
+import SALT_ROUNDS from '@/v1/Constants/Bcrypt';
+import TabBar from '@/v1/components/TabBar/TabBar';
+import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
+import Button from '@/v1/components/Button/Button';
+import FormField from '@/v1/components/FormField/FormField';
+import CloseButton from '@/v1/components/CloseButton/CloseButton';
+import { PASSWORD_MIN_LENGTH } from '@/v1/Constants/User';
+import RE_EMAIL from '@/v1/Constants/Constraints';
+import { enterWithVk } from '../../utils/vk';
+import { createUser } from '../../utils/users';
+import Modal from '../../layouts/Modal';
+import { ModalContext } from '@/v2/modules/modalable';
 import './SignUpForm.css';
 
 class SignUpForm extends Component {
@@ -28,22 +31,7 @@ class SignUpForm extends Component {
       errors: {},
       isWaiting: false,
     };
-    this.mouseOver = false;
   }
-
-  componentDidMount() {
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.closeForm();
-    }
-  };
 
   resetErrors = () => {
     this.setState({ errors: {} });
@@ -88,18 +76,16 @@ class SignUpForm extends Component {
       return true;
     case 'password':
       if (value === '' || value.length < PASSWORD_MIN_LENGTH) {
-        this.setState({
-          errors: R.merge(
-            errors,
-            { password: [`Минимальная длина пароля ${PASSWORD_MIN_LENGTH} символов`] },
-          ),
-        });
+        const msgErr = `Минимальная длина пароля ${PASSWORD_MIN_LENGTH} символов`;
+        this.setState({ errors: R.merge(errors, { password: [msgErr] }) });
         return false;
       }
       return true;
     case 'repeatPassword':
       if (password !== value) {
-        this.setState({ errors: R.merge(errors, { repeatPassword: ['Пароли не совпадают'] }) });
+        this.setState(
+          { errors: R.merge(errors, { repeatPassword: ['Пароли не совпадают'] }) },
+        );
         return false;
       }
       return true;
@@ -108,36 +94,46 @@ class SignUpForm extends Component {
     }
   };
 
-  checkAndSubmit = (type, data, passwordNew) => {
+  checkAndSubmit = (type, data, { success }) => {
     const { email, password, repeatPassword } = this.state;
-    let res = !this.check('email', email);
-    res += !this.check('password', password);
-    res += !this.check('repeatPassword', repeatPassword);
-    if (res > 0) {
+
+    const errors = !this.check('email', email)
+      + !this.check('password', password)
+      + !this.check('repeatPassword', repeatPassword);
+
+    if (errors > 0) {
       return;
     }
-    this.onFormSubmit(type, data, passwordNew);
+
+    this.onFormSubmit(type, data, repeatPassword, { success });
   };
 
-  onFormSubmit = (type, data, password) => {
+  onFormSubmit = (type, data, password, { success: submitSuccess }) => {
     const { errors } = this.state;
-    const { signUp: signUpProp } = this.props;
-    const { location } = window;
+
     if (type === 'email') {
       this.setState({ isWaiting: true });
+
+      const self = this;
       const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-      const hash = bcrypt.hashSync(password, salt);
-      const params = {
-        user: {
-          password_digest: hash,
-          email: data,
-        },
+      const user = {
+        password_digest: bcrypt.hashSync(password, salt),
+        email: data,
       };
-      signUpProp(
-        params,
-        () => location.reload(),
-        () => this.setState({ isWaiting: false }),
-        error => this.setState({ errors: R.merge(errors, error.response.data) }),
+
+      createUser(
+        user,
+        {
+          success() {
+            submitSuccess && submitSuccess();
+          },
+          failed(error) {
+            self.setState({ isWaiting: false });
+            if (error.response && error.response.data) {
+              self.setState({ errors: R.merge(errors, error.response.data) });
+            }
+          },
+        },
       );
     }
   };
@@ -155,13 +151,7 @@ class SignUpForm extends Component {
     );
   };
 
-  closeForm = () => {
-    const { closeForm } = this.props;
-    this.resetErrors();
-    closeForm();
-  };
-
-  firstTabContent = () => {
+  firstTabContent = (closeModal) => {
     const { phone, passwordFromSms, isWaiting } = this.state;
     return (
       <form action="#" className="form">
@@ -196,7 +186,7 @@ class SignUpForm extends Component {
     );
   };
 
-  secondTabContent = () => {
+  secondTabContent = (closeModal) => {
     const {
       email, password, repeatPassword, isWaiting,
     } = this.state;
@@ -227,7 +217,18 @@ class SignUpForm extends Component {
           type="password"
           hasError={this.hasError('repeatPassword')}
           errorText={this.errorText('repeatPassword')}
-          onEnter={() => this.checkAndSubmit('email', email, password, repeatPassword)}
+          onEnter={
+            () => this.checkAndSubmit(
+              'email',
+              email,
+              {
+                success() {
+                  closeModal();
+                  window.location.reload();
+                },
+              },
+            )
+          }
           value={repeatPassword}
         />
         <Button
@@ -237,76 +238,84 @@ class SignUpForm extends Component {
           fullLength
           submit
           isWaiting={isWaiting}
-          onClick={() => this.checkAndSubmit('email', email, password, repeatPassword)}
+          onClick={
+            () => this.checkAndSubmit(
+              'email',
+              email,
+              {
+                success() {
+                  closeModal();
+                  window.location.reload();
+                },
+              },
+            )
+          }
         />
       </form>
     );
   };
 
   render() {
-    const { enterWithVk } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
     );
     return (
-      <div className="modal-block-m">
-        <div className="modal-block-m__inner">
-          <div className="modal-block-m__container">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__header-btn">
-                <CloseButton onClick={this.closeForm} />
+      <Modal>
+        <ModalContext.Consumer>
+          {
+            ({ closeModal }) => (
+              <div className="modal-block-m">
+                <div className="modal-block-m__inner">
+                  <div className="modal-block-m__container">
+                    <div className="modal-block-m__header">
+                      <div className="modal-block-m__header-btn">
+                        <CloseButton onClick={closeModal} />
+                      </div>
+                    </div>
+                    <h3 className="modal-block-m__title modal-block-m__title_form">
+                      Регистрация
+                    </h3>
+                    <TabBar
+                      contentList={
+                        [
+                          this.firstTabContent(closeModal),
+                          this.secondTabContent(closeModal),
+                        ]
+                      }
+                      activeList={[false, true]}
+                      activeTab={2}
+                      titleList={['Телефон', 'Email']}
+                    />
+                    <div className="modal-block-m__or">
+                      <div className="modal-block-m__or-inner">или</div>
+                    </div>
+                    <div className="modal-block-m__social">
+                      <ul className="social-links">
+                        <li>
+                          <SocialLinkButton
+                            onClick={() => enterWithVk('signUp')}
+                            xlinkHref={`${socialLinks}#icon-vk`}
+                            dark
+                          />
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <h3 className="modal-block-m__title modal-block-m__title_form">
-              Регистрация
-            </h3>
-            <TabBar
-              contentList={[this.firstTabContent(), this.secondTabContent()]}
-              activeList={[false, true]}
-              activeTab={2}
-              test={this.firstTabContent()}
-              titleList={['Телефон', 'Email']}
-            />
-            <div className="modal-block-m__or">
-              <div className="modal-block-m__or-inner">или</div>
-            </div>
-            <div className="modal-block-m__social">
-              <ul className="social-links">
-                <li>
-                  <SocialLinkButton
-                    onClick={() => enterWithVk('signUp')}
-                    xlinkHref={`${socialLinks}#icon-vk`}
-                    dark
-                  />
-                </li>
-                { false
-                    && <>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive /></li>
-                      <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive /></li>
-                    </>
-                }
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+            )
+          }
+        </ModalContext.Consumer>
+      </Modal>
     );
   }
 }
 
 SignUpForm.propTypes = {
-  enterWithVk: PropTypes.func.isRequired,
-  closeForm: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  signUp: (
-    params, afterSuccess, afterFail, onFormError,
-  ) => dispatch(
-    signUp(params, afterSuccess, afterFail, onFormError),
-  ),
+  signUp: () => {},
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(SignUpForm));

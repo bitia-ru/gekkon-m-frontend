@@ -1,0 +1,115 @@
+.header-m {
+    background-color: #F2F1EB;
+    width: 100%;
+    min-height: 602px;
+    max-width: 100%;
+    position: relative;
+    font-family: GilroyRegular, sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.header-m__top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 15;
+}
+
+.header-m__items-container {
+    padding-top: 134px;
+    padding-left: 24px;
+    padding-right: 24px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.header-m__header {
+    font-family: GilroyBold;
+    font-size: 36px;
+    line-height: 44px;
+    margin-bottom: 24px;
+    margin-top: 0;
+    color: #ffffff;
+}
+
+.header-m__descr {
+    margin-bottom: 28px;
+    color: #ffffff;
+}
+
+.header-m__items-container-button {
+    margin-top: auto;
+    background-color: #0D0D0D;
+    height: 84px;
+    width: 100%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-m__info-block {
+    margin-bottom: 22px;
+    margin-top: auto;
+}
+
+.header-m__info-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: rgba(13, 13, 13, 0.3);
+    color: #ffffff;
+    margin-bottom: 16px;
+}
+
+.header-m__info-item-number {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 20px;
+    line-height: 18px;
+    font-family: GilroyBold, sans-serif;
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-m__info-item-descr {
+    font-size: 14px;
+    margin-left: 12px;
+}
+
+.header-m__info-icon {
+    display: flex;
+    width: 46px;
+    height: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-m__info-icon svg {
+    fill: #ffffff;
+    width: 100%;
+    height: 100%;
+}
+
+.header-m__about {
+    width: 100%;
+    padding-top: 174px;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+}
