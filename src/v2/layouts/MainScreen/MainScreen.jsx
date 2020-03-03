@@ -12,6 +12,7 @@ import Logo from '@/v2/components/Logo/Logo';
 import MainNav from '@/v2/components/MainNav/MainNav';
 import MainMenu from '@/v2/components/MainMenu/MainMenu';
 import TextHeader from '@/v2/layouts/MainScreen/TextHeader';
+import FilterBlock from '@/v2/components/FilterBlock/FilterBlock';
 
 class MainScreen extends React.PureComponent {
   constructor(props) {
@@ -40,6 +41,10 @@ class MainScreen extends React.PureComponent {
         hashRoute: true,
         body: <ResetPasswordForm />,
       },
+      filters: {
+        hashRoute: true,
+        body: <FilterBlock />,
+      },
     };
   }
 
@@ -53,7 +58,7 @@ class MainScreen extends React.PureComponent {
           ({ isModalShown }) => (
             <div>
               <div style={{ flex: 1 }}>
-                <LoadingIndicator isSticky={!isModalShown}>
+                <LoadingIndicator>
                   <Logo />
                   <MainNav
                     showMenu={() => this.setState({ showMenu: true })}
