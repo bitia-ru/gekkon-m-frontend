@@ -5,21 +5,22 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import moment from 'moment/moment';
 import { DATE_FORMAT, dateToTextFormatter } from '@/v1/Constants/Date';
-import CloseButton from '@/v1/components/CloseButton/CloseButton';
-import DropDownList from '@/v1/components/DropDownList/DropDownList';
-import DatePicker from '@/v1/components/DatePicker/DatePicker';
 import Button from '@/v1/components/Button/Button';
 import PERIOD_FILTERS from '@/v1/Constants/PeriodFilters';
-import { CATEGORIES, CATEGORIES_ITEMS, getCategoryColor } from '@/v1/Constants/Categories';
+import { CATEGORIES } from '@/v1/Constants/Categories';
 import { DEFAULT_FILTERS } from '@/v1/Constants/DefaultFilters';
 import getFilters from '@/v1/utils/getFilters';
 import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
 import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
-import Category from '@/v1/components/Category/Category';
 import './FilterBlock.css';
 import getViewMode from '@/v1/utils/getViewMode';
 import { ModalContext } from '@/v2/modules/modalable';
 import Modal from '@/v2/layouts/Modal';
+import CategoryRangeSelector from '@/v2/components/CategoryRangeSelector/CategoryRangeSelector';
+import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownListSelector';
+import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSelector';
+import DropDownListMultipleSelector
+  from '@/v2/components/DropDownListMultipleSelector/DropDownListMultipleSelector';
 
 
 class FilterBlock extends Component {
@@ -36,10 +37,6 @@ class FilterBlock extends Component {
       filters,
     } = getFilters(spotId, sectorId);
     this.state = {
-      showCategoryFilter: false,
-      showPeriodFilter: false,
-      showDateFilter: false,
-      showFilters: false,
       period,
       date,
       filters: R.clone(filters),
@@ -125,26 +122,26 @@ class FilterBlock extends Component {
     this.setState({ filters: DEFAULT_FILTERS.filters });
   };
 
-  setAllFiltersToDefault = () => {
+  setAllFiltersToDefault = (closeModal) => {
     this.setState({
       filters: DEFAULT_FILTERS.filters,
       period: DEFAULT_FILTERS.period,
       date: undefined,
       categoryFrom: DEFAULT_FILTERS.categoryFrom,
       categoryTo: DEFAULT_FILTERS.categoryTo,
-    }, () => this.save());
+    }, () => this.save(closeModal));
   };
 
   changePeriod = (id) => {
-    this.setState({ period: id, showPeriodFilter: false });
+    this.setState({ period: id });
   };
 
   changeDate = (date) => {
-    this.setState({ date: date ? date.format() : undefined, showDateFilter: false });
+    this.setState({ date: date ? date.format() : undefined });
   };
 
   changeFilters = (filters) => {
-    this.setState({ filters, showFilters: false });
+    this.setState({ filters });
   };
 
   changeCategoryFilter = (id) => {
@@ -169,7 +166,6 @@ class FilterBlock extends Component {
     default:
       break;
     }
-    this.setState({ showCategoryFilter: false });
   };
 
   render() {
@@ -179,10 +175,6 @@ class FilterBlock extends Component {
       period,
       date,
       filters,
-      showCategoryFilter,
-      showPeriodFilter,
-      showDateFilter,
-      showFilters,
     } = this.state;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
@@ -207,20 +199,11 @@ class FilterBlock extends Component {
                 <div className="modal-block-m__filter-item">
                   <div className="field-select-m">
                     <span className="field-select-m__title">Категория</span>
-                    <div className="field-select-m__container">
-                      <div
-                        role="button"
-                        className="field-select-m__select field-select-m__select_active"
-                        onClick={() => this.setState({ showCategoryFilter: true })}
-                        tabIndex="0"
-                        style={{ outline: 'none' }}
-                      >
-                        <span className="field-select-m__placeholder">От</span>
-                        <Category category={categoryFrom} color={getCategoryColor(categoryFrom)} />
-                        <span className="field-select-m__placeholder">до</span>
-                        <Category category={categoryTo} color={getCategoryColor(categoryTo)} />
-                      </div>
-                    </div>
+                    <CategoryRangeSelector
+                      categoryTo={categoryTo}
+                      categoryFrom={categoryFrom}
+                      onChangeCategoryFilter={this.changeCategoryFilter}
+                    />
                   </div>
                 </div>
                 <div className="modal-block-m__filter-item">
@@ -230,32 +213,24 @@ class FilterBlock extends Component {
                         ? (
                           <>
                             <span className="field-select-m__title">Дата</span>
-                            <div className="field-select-m__container">
-                              <div
-                                role="button"
-                                tabIndex="0"
-                                style={{ outline: 'none' }}
-                                onClick={() => this.setState({ showDateFilter: true })}
-                                className="field-select-m__select field-select-m__select_active"
-                              >
-                                {formatter(date || DEFAULT_FILTERS.date)}
-                              </div>
-                            </div>
+                            <DatePickerSelector
+                              formatter={formatter}
+                              date={date || DEFAULT_FILTERS.date}
+                              onChange={this.changeDate}
+                              dateClass="field-select-m__select"
+                            />
                           </>
                         )
                         : (
                           <>
                             <span className="field-select-m__title">Период</span>
                             <div className="field-select-m__container">
-                              <div
-                                role="button"
-                                tabIndex="0"
-                                style={{ outline: 'none' }}
-                                onClick={() => this.setState({ showPeriodFilter: true })}
-                                className="field-select-m__select field-select-m__select_active"
-                              >
-                                {R.find(R.propEq('id', period))(PERIOD_FILTERS).text}
-                              </div>
+                              <DropDownListSelector
+                                value={R.find(R.propEq('id', period))(PERIOD_FILTERS).text}
+                                onChange={this.changePeriod}
+                                items={PERIOD_FILTERS}
+                                fieldSelectClass="field-select-m__select"
+                              />
                             </div>
                           </>
                         )
@@ -265,25 +240,20 @@ class FilterBlock extends Component {
                 <div className="modal-block-m__filter-item">
                   <div className="field-select-m">
                     <span className="field-select-m__title">Фильтры</span>
-                    <div className="field-select-m__container">
-                      <div
-                        role="button"
-                        tabIndex="0"
-                        style={{ outline: 'none' }}
-                        onClick={() => this.setState({ showFilters: true })}
-                        className="field-select-m__select field-select-m__select_active"
-                      >
-                        {
-                          R.join(
-                            ', ',
-                            R.map(
-                              e => R.slice(0, -2, e.text),
-                              R.filter(e => e.selected, currentFilters),
-                            ),
-                          )
-                        }
-                      </div>
-                    </div>
+                    <DropDownListMultipleSelector
+                      value={
+                        R.join(
+                          ', ',
+                          R.map(
+                            e => R.slice(0, -2, e.text),
+                            R.filter(e => e.selected, currentFilters),
+                          ),
+                        )
+                      }
+                      save={this.changeFilters}
+                      setDefault={this.setDefaultFilters}
+                      items={currentFilters}
+                    />
                   </div>
                 </div>
                 <div className="modal-block-m__filter-button">
@@ -298,54 +268,8 @@ class FilterBlock extends Component {
                 <Button
                   customClass="modal-block-m__filter-button-cancel"
                   title="Сбросить фильтры"
-                  onClick={this.setAllFiltersToDefault}
+                  onClick={() => this.setAllFiltersToDefault(closeModal)}
                 />
-                {
-                  showCategoryFilter
-                    ? (
-                      <DropDownList
-                        hide={() => this.setState({ showCategoryFilter: false })}
-                        onClick={this.changeCategoryFilter}
-                        items={CATEGORIES_ITEMS}
-                        textFieldName="title"
-                      />
-                    )
-                    : ''
-                }
-                {
-                  showPeriodFilter
-                    ? (
-                      <DropDownList
-                        hide={() => this.setState({ showPeriodFilter: false })}
-                        onClick={this.changePeriod}
-                        items={PERIOD_FILTERS}
-                        textFieldName="text"
-                      />
-                    ) : ''
-                }
-                {
-                  showDateFilter
-                    ? (
-                      <DatePicker
-                        hide={() => this.setState({ showDateFilter: false })}
-                        date={moment(date || DEFAULT_FILTERS.date)}
-                        onSelect={this.changeDate}
-                      />
-                    ) : ''
-                }
-                {
-                  showFilters
-                    ? (
-                      <DropDownList
-                        hide={() => this.setState({ showFilters: false })}
-                        save={this.changeFilters}
-                        setDefault={this.setDefaultFilters}
-                        items={currentFilters}
-                        textFieldName="text"
-                        multipleSelect
-                      />
-                    ) : ''
-                }
               </>
             )
           }
