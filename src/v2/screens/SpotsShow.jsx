@@ -5,8 +5,7 @@ import * as R from 'ramda';
 import Content from '@/v2/components/Content/Content';
 import Header from '@/v2/components/Header/Header';
 import RoutesShowModal from '@/v1/components/RoutesShowModal/RoutesShowModal';
-import RoutesEditModal from '@/v1/components/RoutesEditModal/RoutesEditModal';
-import FilterBlock from '@/v1/components/FilterBlock/FilterBlock';
+import RoutesEditModal from '@/v2/components/RoutesEditModal/RoutesEditModal';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import SpotContext from '@/v1/contexts/SpotContext';
 import SectorContext from '@/v1/contexts/SectorContext';
@@ -14,7 +13,6 @@ import reloadSector from '@/v1/utils/reloadSector';
 import reloadSpot from '@/v1/utils/reloadSpot';
 import getCurrentSector from '@/v1/utils/getCurrentSector';
 import getCurrentSpotOrSectorData from '@/v1/utils/getCurrentSpotOrSectorData';
-import getViewMode from '@/v1/utils/getViewMode';
 import MainScreen from '@/v2/layouts/MainScreen/MainScreen';
 
 class SpotsShow extends React.PureComponent {
