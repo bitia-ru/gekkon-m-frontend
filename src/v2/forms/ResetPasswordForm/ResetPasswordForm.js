@@ -4,15 +4,17 @@ import * as R from 'ramda';
 import bcrypt from 'bcryptjs';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import TabBar from '../TabBar/TabBar';
-import Button from '../Button/Button';
-import FormField from '../FormField/FormField';
-import CloseButton from '../CloseButton/CloseButton';
-import { PASSWORD_MIN_LENGTH } from '../../Constants/User';
+import TabBar from '@/v1/components/TabBar/TabBar';
+import Button from '@/v1/components/Button/Button';
+import FormField from '@/v1/components/FormField/FormField';
+import CloseButton from '@/v1/components/CloseButton/CloseButton';
+import { PASSWORD_MIN_LENGTH } from '@/v1/Constants/User';
 import './ResetPasswordForm.css';
-import SALT_ROUNDS from '../../Constants/Bcrypt';
-import RE_EMAIL from '../../Constants/Constraints';
-import { logIn, resetPassword } from '../../stores/users/utils';
+import SALT_ROUNDS from '@/v1/Constants/Bcrypt';
+import RE_EMAIL from '@/v1/Constants/Constraints';
+import Modal from '../../layouts/Modal';
+import Api from '@/v2/utils/Api';
+import { ModalContext } from '@/v2/modules/modalable';
 
 class ResetPasswordForm extends Component {
   constructor(props) {
@@ -25,22 +27,20 @@ class ResetPasswordForm extends Component {
       errors: {},
       isWaiting: false,
     };
-    this.mouseOver = false;
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.closeForm();
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('reset_password_code');
+    if (code !== null) {
+      const email = url.searchParams.get('user_email');
+      this.setState(
+        {
+          email: email || url.searchParams.get('user_login'),
+        },
+      );
     }
-  };
+  }
 
   resetErrors = () => {
     this.setState({ errors: {} });
@@ -68,18 +68,16 @@ class ResetPasswordForm extends Component {
     switch (field) {
     case 'password':
       if (value === '' || value.length < PASSWORD_MIN_LENGTH) {
-        this.setState({
-          errors: R.merge(
-            errors,
-            { password: [`Минимальная длина пароля ${PASSWORD_MIN_LENGTH} символов`] },
-          ),
-        });
+        const msgErr = `Минимальная длина пароля ${PASSWORD_MIN_LENGTH} символов`;
+        this.setState({ errors: R.merge(errors, { password: [msgErr] }) });
         return false;
       }
       return true;
     case 'repeatPassword':
       if (password !== value) {
-        this.setState({ errors: R.merge(errors, { repeatPassword: ['Пароли не совпадают'] }) });
+        this.setState(
+          { errors: R.merge(errors, { repeatPassword: ['Пароли не совпадают'] }) },
+        );
         return false;
       }
       return true;
@@ -102,7 +100,6 @@ class ResetPasswordForm extends Component {
     if (type !== 'email') {
       throw `Argument error: value ${type} for argument type is invalid.`;
     }
-    const { resetPassword: resetPasswordProp } = this.props;
     this.setState({ isWaiting: true });
     const url = new URL(window.location.href);
     const salt = bcrypt.genSaltSync(SALT_ROUNDS);
@@ -119,35 +116,21 @@ class ResetPasswordForm extends Component {
         token: url.searchParams.get('reset_password_code'),
       };
     }
-    resetPasswordProp(
-      params,
-      () => {
-        this.logIn(data, password);
-      },
-      () => {
-        this.setState({ isWaiting: false });
-        //this.showToastr(
-        //  'error',
-        //  'Ошибка',
-        //  'Срок действия ссылки для восстановления пароля истек или пользователь не найден',
-        //);
-      },
-    );
-  };
 
-  logIn = (data, password) => {
-    const { logIn: logInProp } = this.props;
-    let params;
-    if (R.test(RE_EMAIL, data)) {
-      params = { user_session: { user: { email: data } } };
-    } else {
-      params = { user_session: { user: { login: data } } };
-    }
-    logInProp(
+    const self = this;
+    Api.post(
+      '/v1/users/reset_password',
       params,
-      password,
-      () => {
-        window.location.href = '/';
+      {
+        method: 'patch',
+        success() {
+          console.log('Пароль успешно изменен');
+          window.history.back();
+        },
+        failed(error) {
+          self.setState({ isWaiting: false });
+          console.log(error);
+        },
       },
     );
   };
@@ -165,15 +148,8 @@ class ResetPasswordForm extends Component {
     );
   };
 
-  closeForm = () => {
-    const { closeForm } = this.props;
-    this.resetErrors();
-    closeForm();
-  };
-
   firstTabContent = () => {
-    const { passwordFromSms, isWaiting } = this.state;
-    const { phone } = this.props;
+    const { phone, passwordFromSms, isWaiting } = this.state;
     return (
       <form action="#" className="form">
         <FormField
@@ -207,8 +183,9 @@ class ResetPasswordForm extends Component {
   };
 
   secondTabContent = () => {
-    const { password, repeatPassword, isWaiting } = this.state;
-    const { email } = this.props;
+    const {
+      email, password, repeatPassword, isWaiting,
+    } = this.state;
     return (
       <form action="#" className="form">
         <FormField
@@ -253,53 +230,45 @@ class ResetPasswordForm extends Component {
 
   render() {
     return (
-      <div className="modal-block-m">
-        <div className="modal-block-m__inner">
-          <div className="modal-block-m__container">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__header-btn">
-                <CloseButton onClick={this.closeForm} />
+      <Modal>
+        <ModalContext.Consumer>
+          {
+            ({ closeModal }) => (
+              <div className="modal-block-m">
+                <div className="modal-block-m__inner">
+                  <div className="modal-block-m__container">
+                    <div className="modal-block-m__header">
+                      <div className="modal-block-m__header-btn">
+                        <CloseButton onClick={closeModal} />
+                      </div>
+                    </div>
+                    <h3 className="modal-block__title modal-block-m__title_form">
+                      Установка нового пароля
+                    </h3>
+                    <TabBar
+                      contentList={[this.firstTabContent(), this.secondTabContent()]}
+                      activeList={[false, true]}
+                      activeTab={2}
+                      titleList={['Телефон', 'Email']}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <h3 className="modal-block__title modal-block-m__title_form">
-              Установка нового пароля
-            </h3>
-            <TabBar
-              contentList={[this.firstTabContent(), this.secondTabContent()]}
-              activeList={[false, true]}
-              activeTab={2}
-              test={this.firstTabContent()}
-              titleList={['Телефон', 'Email']}
-            />
-          </div>
-        </div>
-      </div>
+            )
+          }
+        </ModalContext.Consumer>
+      </Modal>
     );
   }
 }
 
 ResetPasswordForm.propTypes = {
-  phone: PropTypes.string,
-  email: PropTypes.string,
-  closeForm: PropTypes.func.isRequired,
-};
-
-ResetPasswordForm.defaultProps = {
-  phone: '',
-  email: '',
 };
 
 const mapDispatchToProps = dispatch => ({
   resetPassword: (
     params, afterSuccess, afterFail, afterAll,
-  ) => dispatch(
-    resetPassword(params, afterSuccess, afterFail, afterAll),
-  ),
-  logIn: (
-    params, password, afterLogInSuccess, afterLogInFail, onFormError,
-  ) => dispatch(
-    logIn(params, password, afterLogInSuccess, afterLogInFail, onFormError),
-  ),
+  ) => {},
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(ResetPasswordForm));
