@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import Content from '@/v1/components/Content/Content';
+import Content from '@/v2/components/Content/Content';
 import Header from '@/v2/components/Header/Header';
 import RoutesShowModal from '@/v1/components/RoutesShowModal/RoutesShowModal';
 import RoutesEditModal from '@/v1/components/RoutesEditModal/RoutesEditModal';
@@ -100,9 +100,7 @@ class SpotsShow extends React.PureComponent {
                   />
                 }
               >
-                <Content
-                  showFilters={() => this.setState({ showFilters: true })}
-                />
+                <Content />
               </MainScreen>
             </>
           )}
@@ -119,20 +117,9 @@ class SpotsShow extends React.PureComponent {
     const sectorId = this.getSectorId();
     const spot = spots[spotId];
     const sector = getCurrentSector(sectorId);
-    const viewMode = getViewMode(spotId, sectorId);
     return (
       <>
         <ScrollToTopOnMount />
-        {
-          this.state.showFilters
-            ? (
-              <FilterBlock
-                viewMode={viewMode}
-                hideFilters={() => this.setState({ showFilters: false })}
-              />
-            )
-            : ''
-        }
         <SpotContext.Provider value={{ spot }}>
           <SectorContext.Provider value={{ sector }}>
             {this.content()}

@@ -327,138 +327,127 @@ class Profile extends Component {
       '../../../../img/social-links-sprite/social-links-sprite.svg',
     );
     return (
-      <Modal>
+      <Modal backgroundColor="#E8F2F9">
         {
           user && <ModalContext.Consumer>
             {
-              ({ closeModal }) => (
-                <div className="modal-block-m">
-                  <div className="modal-block-m__inner">
-                    <div className="modal-block-m__container modal-block-m__container_blue">
-                      <div className="modal-block-m__header">
-                        <div className="modal-block-m__header-btn">
-                          <CloseButton onClick={closeModal} />
-                        </div>
+              () => (
+                <form action="#" method="post" encType="multipart/form-data" className="form">
+                  <div className="modal-block-m__avatar-block">
+                    <div className="modal-block-m__avatar modal-block-m__avatar_login">
+                      {
+                        (avatar !== null)
+                          ? (
+                            <img src={avatar} alt="" />
+                          )
+                          : ''
+                      }
+                      <input
+                        type="file"
+                        name="avatar"
+                        title={(avatar !== null) ? 'Изменить аватарку' : 'Загрузить аватарку'}
+                        onChange={event => this.onFileChosen(event.target.files[0])}
+                      />
+                      {
+                        avatar !== null
+                          ? (
+                            <button
+                              className="modal-block-m__avatar-delete"
+                              type="button"
+                              title="Удалить"
+                              onClick={this.removeAvatar}
+                            />
+                          )
+                          : ''
+                      }
+                    </div>
+                  </div>
+                  <div className="modal-block-m__padding-wrapper">
+                    <FormField
+                      placeholder="Имя"
+                      id="name"
+                      onChange={this.onNameChange}
+                      type="text"
+                      hasError={this.hasError('name')}
+                      errorText={this.errorText('name')}
+                      value={name}
+                    />
+                    <FormField
+                      placeholder="Логин"
+                      id="login"
+                      onChange={this.onLoginChange}
+                      type="text"
+                      hasError={this.hasError('login')}
+                      errorText={this.errorText('login')}
+                      value={login}
+                    />
+                    <FormField
+                      placeholder={user.password_digest === null ? 'Задать пароль' : 'Сменить пароль'}
+                      id="password"
+                      onChange={this.onPasswordChange}
+                      type="password"
+                      hasError={this.hasError('password')}
+                      errorText={this.errorText('password')}
+                      value={password}
+                    />
+                    <FormField
+                      placeholder="Подтверждение пароля"
+                      id="repeat-password"
+                      onChange={this.onRepeatPasswordChange}
+                      type="password"
+                      hasError={this.hasError('repeatPassword')}
+                      errorText={this.errorText('repeatPassword')}
+                      value={repeatPassword}
+                    />
+                    <FormField
+                      placeholder="Email"
+                      id="email"
+                      onChange={this.onEmailChange}
+                      type="text"
+                      hasError={this.hasError('email')}
+                      errorText={this.errorText('email')}
+                      value={email}
+                    />
+                    <FormField
+                      placeholder="Телефон"
+                      id="phone"
+                      onChange={this.onPhoneChange}
+                      type="number"
+                      hasError={this.hasError('phone')}
+                      errorText={this.errorText('phone')}
+                      value={phone}
+                    />
+                    <div className="modal-block-m__allow">
+                      <div className="modal-block-m__allow-title">Разрешить вход через:</div>
+                      <div className="modal-block-m__social">
+                        <ul className="social-links">
+                          <li>
+                            <SocialLinkButton
+                              onClick={
+                                (user.data.vk_user_id !== undefined)
+                                  ? this.removeVk
+                                  : (() => enterWithVk('addVk'))
+                              }
+                              xlinkHref={`${socialLinks}#icon-vk`}
+                              active={user.data.vk_user_id !== undefined}
+                              dark={user.data.vk_user_id === undefined}
+                              withRemoveButton={user.data.vk_user_id !== undefined}
+                            />
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                    <form action="#" method="post" encType="multipart/form-data" className="form">
-                      <div className="modal-block-m__avatar-block">
-                        <div className="modal-block-m__avatar modal-block-m__avatar_login">
-                          {
-                            (avatar !== null)
-                              ? (
-                                <img src={avatar} alt="" />
-                              )
-                              : ''
-                          }
-                          <input
-                            type="file"
-                            name="avatar"
-                            title={(avatar !== null) ? 'Изменить аватарку' : 'Загрузить аватарку'}
-                            onChange={event => this.onFileChosen(event.target.files[0])}
-                          />
-                          {
-                            avatar !== null
-                              ? (
-                                <button
-                                  className="modal-block-m__avatar-delete"
-                                  type="button"
-                                  title="Удалить"
-                                  onClick={this.removeAvatar}
-                                />
-                              )
-                              : ''
-                          }
-                        </div>
-                      </div>
-                      <div className="modal-block-m__padding-wrapper">
-                        <FormField
-                          placeholder="Имя"
-                          id="name"
-                          onChange={this.onNameChange}
-                          type="text"
-                          hasError={this.hasError('name')}
-                          errorText={this.errorText('name')}
-                          value={name}
-                        />
-                        <FormField
-                          placeholder="Логин"
-                          id="login"
-                          onChange={this.onLoginChange}
-                          type="text"
-                          hasError={this.hasError('login')}
-                          errorText={this.errorText('login')}
-                          value={login}
-                        />
-                        <FormField
-                          placeholder={user.password_digest === null ? 'Задать пароль' : 'Сменить пароль'}
-                          id="password"
-                          onChange={this.onPasswordChange}
-                          type="password"
-                          hasError={this.hasError('password')}
-                          errorText={this.errorText('password')}
-                          value={password}
-                        />
-                        <FormField
-                          placeholder="Подтверждение пароля"
-                          id="repeat-password"
-                          onChange={this.onRepeatPasswordChange}
-                          type="password"
-                          hasError={this.hasError('repeatPassword')}
-                          errorText={this.errorText('repeatPassword')}
-                          value={repeatPassword}
-                        />
-                        <FormField
-                          placeholder="Email"
-                          id="email"
-                          onChange={this.onEmailChange}
-                          type="text"
-                          hasError={this.hasError('email')}
-                          errorText={this.errorText('email')}
-                          value={email}
-                        />
-                        <FormField
-                          placeholder="Телефон"
-                          id="phone"
-                          onChange={this.onPhoneChange}
-                          type="number"
-                          hasError={this.hasError('phone')}
-                          errorText={this.errorText('phone')}
-                          value={phone}
-                        />
-                        <div className="modal-block-m__allow">
-                          <div className="modal-block-m__allow-title">Разрешить вход через:</div>
-                          <div className="modal-block-m__social">
-                            <ul className="social-links">
-                              <li>
-                                <SocialLinkButton
-                                  onClick={
-                                    (user.data.vk_user_id !== undefined)
-                                      ? this.removeVk
-                                      : (() => enterWithVk('addVk'))
-                                  }
-                                  xlinkHref={`${socialLinks}#icon-vk`}
-                                  active={user.data.vk_user_id !== undefined}
-                                  dark={user.data.vk_user_id === undefined}
-                                  withRemoveButton={user.data.vk_user_id !== undefined}
-                                />
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <Button
-                          size="medium"
-                          buttonStyle="normal"
-                          title="Сохранить"
-                          fullLength
-                          submit
-                          disabled={!this.fieldsChanged()}
-                          onClick={this.checkAndSubmit}
-                        />
-                      </div>
-                    </form>
+                    <Button
+                      size="medium"
+                      buttonStyle="normal"
+                      title="Сохранить"
+                      fullLength
+                      submit
+                      disabled={!this.fieldsChanged()}
+                      onClick={this.checkAndSubmit}
+                    />
                   </div>
-                </div>
+                </form>
               )
             }
           </ModalContext.Consumer>

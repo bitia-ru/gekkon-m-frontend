@@ -1,0 +1,60 @@
+.filter-block__title {
+    color: #1f1f1f;
+    font-size: 20px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.content__filter {
+    display: flex;
+    padding-bottom: 40px;
+}
+
+.content__filter-item {
+    margin-right: 50px;
+}
+
+.content__filter-item_category {
+    max-width: 320px;
+    width: 100%;
+}
+
+.content__filter-item_period {
+    max-width: 320px;
+    width: 100%;
+}
+
+.content__filter-item_result {
+    max-width: 320px;
+    width: 100%;
+}
+
+.btn-filter {
+    background-color: #ffffff;
+    color: #1f1f1f;
+    width: 100%;
+    line-height: 24px;
+    font-size: 24px;
+    font-family: GilroyRegular, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #DDE2EF;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.btn-filter__icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 24px;
+}
+
+.btn-filter__icon svg {
+    fill: #1f1f1f;
+    width: 100%;
+    height: 100%;
+}
