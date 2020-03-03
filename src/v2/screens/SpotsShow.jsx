@@ -2,51 +2,32 @@ import React from 'react';
 import { withRouter, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import { ToastContainer } from 'react-toastr';
 import Content from '@/v1/components/Content/Content';
-import Header from '@/v1/components/Header/Header';
-import Footer from '@/v1/components/Footer/Footer';
-import MainMenu from '@/v1/components/MainMenu/MainMenu';
+import Header from '@/v2/components/Header/Header';
 import RoutesShowModal from '@/v1/components/RoutesShowModal/RoutesShowModal';
 import RoutesEditModal from '@/v1/components/RoutesEditModal/RoutesEditModal';
 import FilterBlock from '@/v1/components/FilterBlock/FilterBlock';
-import SignUpForm from '@/v1/components/SignUpForm/SignUpForm';
-import LogInForm from '@/v1/components/LogInForm/LogInForm';
-import Profile from '@/v1/components/Profile/Profile';
-import BaseComponent from '@/v1/components/BaseComponent';
-import StickyBar from '@/v1/components/StickyBar/StickyBar';
-import { avail } from '@/v1/utils';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import SpotContext from '@/v1/contexts/SpotContext';
 import SectorContext from '@/v1/contexts/SectorContext';
 import reloadSector from '@/v1/utils/reloadSector';
 import reloadSpot from '@/v1/utils/reloadSpot';
-import getState from '@/v1/utils/getState';
 import getCurrentSector from '@/v1/utils/getCurrentSector';
 import getCurrentSpotOrSectorData from '@/v1/utils/getCurrentSpotOrSectorData';
 import getViewMode from '@/v1/utils/getViewMode';
+import MainScreen from '@/v2/layouts/MainScreen/MainScreen';
 
-class SpotsShow extends BaseComponent {
+class SpotsShow extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = Object.assign(this.state, {
-      showMenu: false,
+    this.state = {
       showFilters: false,
-    });
+    };
   }
 
   componentDidMount() {
-    const {
-      history,
-    } = this.props;
     const sectorId = this.getSectorId();
-    history.listen((location, action) => {
-      if (action === 'POP') {
-        this.setState({ profileFormVisible: (location.hash === '#profile') });
-      }
-    });
-
     reloadSpot(this.getSpotId());
     if (sectorId !== 0) {
       reloadSector(sectorId);
@@ -82,7 +63,7 @@ class SpotsShow extends BaseComponent {
 
   content = () => {
     const {
-      user, match, loading,
+      match,
     } = this.props;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
@@ -111,38 +92,18 @@ class SpotsShow extends BaseComponent {
           path={match.path}
           render={() => (
             <>
-              <div className="sticky-bar">
-                <Header
-                  data={getCurrentSpotOrSectorData(spotId, sectorId)}
-                  changeSectorFilter={this.changeSectorFilter}
-                  showMenu={() => this.setState({ showMenu: true })}
-                />
-                {
-                  this.state.showMenu
-                    ? (
-                      <MainMenu
-                        user={user}
-                        hideMenu={() => this.setState({ showMenu: false })}
-                        logIn={this.logIn}
-                        signUp={this.signUp}
-                        logOut={this.logOut}
-                        openProfile={this.openProfileForm}
-                        enterWithVk={this.enterWithVk}
-                      />
-                    )
-                    : ''
+              <MainScreen
+                header={
+                  <Header
+                    data={getCurrentSpotOrSectorData(spotId, sectorId)}
+                    changeSectorFilter={this.changeSectorFilter}
+                  />
                 }
+              >
                 <Content
                   showFilters={() => this.setState({ showFilters: true })}
                 />
-                <StickyBar loading={loading} />
-              </div>
-              <Footer
-                user={user}
-                logIn={this.logIn}
-                signUp={this.signUp}
-                logOut={this.logOut}
-              />
+              </MainScreen>
             </>
           )}
         />
@@ -152,7 +113,7 @@ class SpotsShow extends BaseComponent {
 
   render() {
     const {
-      user, spots,
+      spots,
     } = this.props;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
@@ -172,47 +133,6 @@ class SpotsShow extends BaseComponent {
             )
             : ''
         }
-        {
-          this.state.signUpFormVisible
-            ? (
-              <SignUpForm
-                closeForm={this.closeSignUpForm}
-                enterWithVk={this.enterWithVk}
-              />
-            )
-            : ''
-        }
-        {
-          this.state.logInFormVisible
-            ? (
-              <LogInForm
-                closeForm={this.closeLogInForm}
-                enterWithVk={this.enterWithVk}
-                resetPassword={this.resetPassword}
-              />
-            )
-            : ''
-        }
-        {
-          (avail(user) && this.state.profileFormVisible) && (
-            <Profile
-              user={user}
-              onFormSubmit={this.submitProfileForm}
-              removeVk={this.removeVk}
-              showToastr={this.showToastr}
-              enterWithVk={this.enterWithVk}
-              isWaiting={this.state.profileIsWaiting}
-              closeForm={this.closeProfileForm}
-              formErrors={this.state.profileFormErrors}
-              resetErrors={this.profileResetErrors}
-            />
-          )
-        }
-        <ToastContainer
-          ref={(ref) => { this.container = ref; }}
-          onClick={() => this.container.clear()}
-          className="toast-top-right"
-        />
         <SpotContext.Provider value={{ spot }}>
           <SectorContext.Provider value={{ sector }}>
             {this.content()}
@@ -227,8 +147,6 @@ const mapStateToProps = state => ({
   routes: state.routesStore.routes,
   spots: state.spotsStore.spots,
   sectors: state.sectorsStore.sectors,
-  user: state.usersStore.users[state.usersStore.currentUserId],
-  loading: getState(state),
 });
 
 export default withRouter(connect(mapStateToProps, null)(SpotsShow));
