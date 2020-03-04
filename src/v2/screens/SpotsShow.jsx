@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as R from 'ramda';
 import Content from '@/v2/components/Content/Content';
 import Header from '@/v2/components/Header/Header';
-import RoutesShowModal from '@/v1/components/RoutesShowModal/RoutesShowModal';
+import RoutesShowModal from '@/v2/components/RoutesShowModal/RoutesShowModal';
 import RoutesEditModal from '@/v2/components/RoutesEditModal/RoutesEditModal';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import SpotContext from '@/v1/contexts/SpotContext';
@@ -82,7 +82,6 @@ class SpotsShow extends React.PureComponent {
             <RoutesShowModal
               onClose={this.closeRoutesModal}
               openEdit={this.openEdit}
-              goToProfile={this.openProfileForm}
             />
           )}
         />
