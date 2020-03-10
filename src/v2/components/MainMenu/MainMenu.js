@@ -97,9 +97,7 @@ class MainMenu extends React.PureComponent {
             textFieldName="title"
           />
           <div className="m-menu__list">
-            <h3 className="m-menu__header">
-              Соцсети
-            </h3>
+            <h3 className="m-menu__header">Соцсети</h3>
             <ul className="social-links">
               <li>
                 <SocialLinkButton

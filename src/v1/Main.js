@@ -8,7 +8,7 @@ import V2 from '@/v2/V2';
 import BootingScreen from './components/BootingScreen/BootingScreen';
 
 const Main = ({ currentUserId }) => (
-  <main className="page">
+  <>
     {
       currentUserId === undefined
         ? (
@@ -23,7 +23,7 @@ const Main = ({ currentUserId }) => (
           </Switch>
         )
     }
-  </main>
+  </>
 );
 
 const mapStateToProps = state => ({

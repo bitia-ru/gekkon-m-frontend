@@ -1,18 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import Footer from '../../components/Footer/Footer';
 import { css, StyleSheet } from '../../aphrodite';
-import withModals, { ModalContainerContext } from '../../modules/modalable';
+import withModals from '../../modules/modalable';
 import Profile from '../../forms/Profile/Profile';
 import LogInForm from '../../forms/LogInForm/LogInForm';
 import SignUpForm from '../../forms/SignUpForm/SignUpForm';
 import ResetPasswordForm from '../../forms/ResetPasswordForm/ResetPasswordForm';
 import LoadingIndicator from '@/v2/components/LoadingIndicator/LoadingIndicator';
-import Logo from '@/v2/components/Logo/Logo';
-import MainNav from '@/v2/components/MainNav/MainNav';
-import MainMenu from '@/v2/components/MainMenu/MainMenu';
+import MainNav from '@/v3/components/mobile/MainNav/MainNav';
 import TextHeader from '@/v2/layouts/MainScreen/TextHeader';
 import FilterBlock from '@/v2/components/FilterBlock/FilterBlock';
+import './MainScreen.css';
 
 class MainScreen extends React.PureComponent {
   constructor(props) {
@@ -49,60 +47,36 @@ class MainScreen extends React.PureComponent {
   }
 
   render() {
-    const { children, header } = this.props;
-    const { showMenu } = this.state;
+    const { children } = this.props;
 
     return (
-      <ModalContainerContext.Consumer>
-        {
-          ({ isModalShown }) => (
-            <div>
-              <div style={{ flex: 1 }}>
-                <LoadingIndicator>
-                  <Logo />
-                  <MainNav
-                    showMenu={() => this.setState({ showMenu: true })}
-                  />
-                  {
-                    header && (
-                      typeof header === 'string' || typeof header === 'number'
-                        ? <TextHeader title={header} /> : header
-                    )
-                  }
-                  {
-                    showMenu
-                      ? (
-                        <MainMenu
-                          user={null}
-                          hideMenu={() => this.setState({ showMenu: false })}
-                          logIn={() => {}}
-                          signUp={() => {}}
-                          logOut={() => {}}
-                          openProfile={() => {}}
-                          enterWithVk={() => {}}
-                        />
-                      )
-                      : ''
-                  }
-                  {children && children}
-                </LoadingIndicator>
-              </div>
-              <div style={{ flex: 0 }}>
-                <Footer
-                  logIn={() => {}}
-                  signUp={() => {}}
-                  logOut={() => {}}
-                />
-              </div>
-            </div>
-          )
-        }
-      </ModalContainerContext.Consumer>
+      <div className={css(style.container)}>
+        <div className={css(style.mainNavContainer)}>
+          <MainNav />
+        </div>
+        <div className={css(style.childrenContainer)}>
+          {children && children}
+        </div>
+        <LoadingIndicator />
+      </div>
     );
   }
 }
 
 const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: '100vh',
+    position: 'relative',
+    display: 'flex',
+    flexFlow: 'column',
+  },
+  mainNavContainer: {
+    flex: '0 0 32px',
+  },
+  childrenContainer: {
+    flex: 1,
+  },
 });
 
 export default withRouter(withModals(MainScreen));

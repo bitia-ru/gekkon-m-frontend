@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MainPageHeader from '@/v2/components/MainPageHeader/MainPageHeader';
-import MainPageContent from '@/v1/components/MainPageContent/MainPageContent';
+import { default as SpotsIndexComponent } from '@/v3/components/spots/SpotsIndex/SpotsIndex';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import MainScreen from '@/v2/layouts/MainScreen/MainScreen';
 
@@ -10,12 +9,8 @@ class SpotsIndex extends React.PureComponent {
     return (
       <>
         <ScrollToTopOnMount />
-        <MainScreen
-          header={
-            <MainPageHeader />
-          }
-        >
-          <MainPageContent />
+        <MainScreen>
+          <SpotsIndexComponent />
         </MainScreen>
       </>
     );

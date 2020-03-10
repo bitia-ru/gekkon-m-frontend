@@ -10,6 +10,7 @@ import spotsStoreReducer from './stores/spots/reducers';
 import newsStoreReducer from './stores/news/reducers';
 import { default as usersReducerV2 } from '@/v2/redux/users/reducer';
 import { default as userSessionReducerV2 } from '@/v2/redux/user_session/reducer';
+import { default as spotsReducerV3 } from '@/v3/redux/spots/reducer';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -108,4 +109,5 @@ export default combineReducers({
   newsStore: newsStoreReducer,
   usersStoreV2: usersReducerV2,
   userSessionV2: userSessionReducerV2,
+  spotsStoreV3: spotsReducerV3,
 });
