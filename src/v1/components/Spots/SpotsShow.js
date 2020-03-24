@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import { ToastContainer } from 'react-toastr';
 import Content from '../Content/Content';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -199,7 +198,6 @@ class SpotsShow extends BaseComponent {
               user={user}
               onFormSubmit={this.submitProfileForm}
               removeVk={this.removeVk}
-              showToastr={this.showToastr}
               enterWithVk={this.enterWithVk}
               isWaiting={this.state.profileIsWaiting}
               closeForm={this.closeProfileForm}
@@ -208,11 +206,6 @@ class SpotsShow extends BaseComponent {
             />
           )
         }
-        <ToastContainer
-          ref={(ref) => { this.container = ref; }}
-          onClick={() => this.container.clear()}
-          className="toast-top-right"
-        />
         <SpotContext.Provider value={{ spot }}>
           <SectorContext.Provider value={{ sector }}>
             {this.content()}

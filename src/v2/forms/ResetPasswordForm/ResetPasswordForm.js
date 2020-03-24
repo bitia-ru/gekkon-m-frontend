@@ -15,6 +15,8 @@ import RE_EMAIL from '@/v1/Constants/Constraints';
 import Modal from '../../layouts/Modal';
 import Api from '@/v2/utils/Api';
 import { ModalContext } from '@/v2/modules/modalable';
+import showToastr from '@/v2/utils/showToastr';
+import toastHttpError from '@/v2/utils/toastHttpError';
 
 class ResetPasswordForm extends Component {
   constructor(props) {
@@ -124,12 +126,19 @@ class ResetPasswordForm extends Component {
       {
         method: 'patch',
         success() {
-          console.log('Пароль успешно изменен');
-          window.history.back();
+          showToastr(
+            'Пароль успешно изменен',
+            {
+              type: 'success',
+              after: () => {
+                window.location.href = '/';
+              },
+            },
+          );
         },
         failed(error) {
           self.setState({ isWaiting: false });
-          console.log(error);
+          toastHttpError(error);
         },
       },
     );

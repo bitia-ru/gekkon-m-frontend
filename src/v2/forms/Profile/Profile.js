@@ -19,6 +19,8 @@ import { enterWithVk } from '../../utils/vk';
 import closeForm from '@/v2/utils/closeForm';
 import './Profile.css';
 import { ModalContext } from '@/v2/modules/modalable';
+import showToastr from '@/v2/utils/showToastr';
+import toastHttpError from '@/v2/utils/toastHttpError';
 
 class Profile extends Component {
   constructor(props) {
@@ -127,8 +129,7 @@ class Profile extends Component {
           if (R.path(['response', 'status'])(error) === 400) {
             self.setState({ errors: error.response.data });
           } else {
-            // this.displayError(error);
-            console.log(error);
+            toastHttpError(error);
           }
           self.setState({ profileIsWaiting: false });
         },
@@ -300,7 +301,12 @@ class Profile extends Component {
   removeVk = () => {
     const { user } = this.props;
     if ((!user.email && !user.login && !user.phone) || (!user.password_digest)) {
-      console.log('Заполните логин, email или номер телефона и задайте пароль');
+      showToastr(
+        'Заполните логин, email или номер телефона и задайте пароль',
+        {
+          type: 'error',
+        },
+      );
       return;
     }
     Api.post(
@@ -312,7 +318,7 @@ class Profile extends Component {
           closeForm();
         },
         failed(error) {
-          console.log(error);
+          toastHttpError(error);
         },
       },
     );

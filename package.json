@@ -60,7 +60,6 @@
     "react-image-crop": "^7.0.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^5.0.0",
-    "react-toastr": "^3.0.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "spin.js": "^4.0.0",

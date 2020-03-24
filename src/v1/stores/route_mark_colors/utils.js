@@ -5,6 +5,7 @@ import {
   loadRouteMarkColorsFailed,
   loadRouteMarkColorsSuccess,
 } from './actions';
+import toastHttpError from '@/v2/utils/toastHttpError';
 
 export const loadRouteMarkColors = () => (
   (dispatch) => {
@@ -15,7 +16,7 @@ export const loadRouteMarkColors = () => (
         dispatch(loadRouteMarkColorsSuccess(response.data.payload));
       }).catch((error) => {
         dispatch(loadRouteMarkColorsFailed());
-        // dispatch(pushError(error));
+        toastHttpError(error);
       });
   }
 );

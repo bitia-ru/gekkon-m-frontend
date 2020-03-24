@@ -204,6 +204,7 @@ class RoutesShowModal extends Component {
         scope.setExtra('user_phone', user.phone);
       }
       Sentry.captureException(msg);
+      showToastr('Сообщение успешно отправлено', { type: 'success' });
     });
     this.setState({ showTooltip: false, showNoticeForm: false });
   };
