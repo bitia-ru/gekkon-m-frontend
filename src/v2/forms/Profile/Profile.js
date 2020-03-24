@@ -8,13 +8,14 @@ import Api from '../../utils/Api';
 import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import Button from '@/v1/components/Button/Button';
 import FormField from '@/v1/components/FormField/FormField';
-import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import SALT_ROUNDS from '@/v1/Constants/Bcrypt';
 import { PASSWORD_MIN_LENGTH } from '@/v1/Constants/User';
 import RE_EMAIL from '@/v1/Constants/Constraints';
 import Modal from '../../layouts/Modal';
 import { currentUser } from '@/v2/redux/user_session/utils';
-import { updateUsers as updateUsersAction } from '../../redux/users/actions';
+import {
+  updateUser as updateUserAction,
+} from '../../redux/users/actions';
 import { enterWithVk } from '../../utils/vk';
 import closeForm from '@/v2/utils/closeForm';
 import './Profile.css';
@@ -99,7 +100,7 @@ class Profile extends Component {
 
   onSubmit = (data, afterSuccess) => {
     const {
-      user,
+      user, updateUser,
     } = this.props;
 
     this.setState({ profileIsWaiting: true });
@@ -113,26 +114,22 @@ class Profile extends Component {
 
     const self = this;
 
-    Api.patch(
-      `/v1/users/${user.id}`,
+    updateUser(
+      user.id,
       dataCopy,
-      {
-        type: 'form-multipart',
-        success(updatedUser) {
-          self.props.updateUsers({ [updatedUser.id]: updatedUser });
-          self.setState({ profileIsWaiting: false });
-          if (afterSuccess) {
-            afterSuccess(updatedUser);
-          }
-        },
-        failed(error) {
-          if (R.path(['response', 'status'])(error) === 400) {
-            self.setState({ errors: error.response.data });
-          } else {
-            toastHttpError(error);
-          }
-          self.setState({ profileIsWaiting: false });
-        },
+      (updatedUser) => {
+        self.setState({ profileIsWaiting: false });
+        if (afterSuccess) {
+          afterSuccess(updatedUser);
+        }
+      },
+      (error) => {
+        if (R.path(['response', 'status'])(error) === 400) {
+          self.setState({ errors: error.response.data });
+        } else {
+          toastHttpError(error);
+        }
+        self.setState({ profileIsWaiting: false });
       },
     );
   };
@@ -474,7 +471,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateUsers: users => dispatch(updateUsersAction(users)),
+  updateUser: (id, params, afterSuccess, afterFail) => dispatch(
+    updateUserAction(id, params, afterSuccess, afterFail),
+  ),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

@@ -269,8 +269,12 @@ class LogInForm extends Component {
               email,
               password,
               () => {
-                closeModal();
-                window.location.reload(true);
+                if (this.props.location.state && this.props.location.state.prevUrl) {
+                  window.location = this.props.location.state.prevUrl;
+                } else {
+                  closeModal();
+                  window.location.reload(true);
+                }
               },
             )
           }
@@ -289,8 +293,12 @@ class LogInForm extends Component {
               email,
               password,
               () => {
-                closeModal();
-                window.location.reload(true);
+                if (this.props.location.state && this.props.location.state.prevUrl) {
+                  window.location = this.props.location.state.prevUrl;
+                } else {
+                  closeModal();
+                  window.location.reload(true);
+                }
               },
             )
           }
