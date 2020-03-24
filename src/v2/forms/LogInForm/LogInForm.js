@@ -16,6 +16,7 @@ import { enterWithVk } from '../../utils/vk';
 import { ModalContext } from '../../modules/modalable';
 import Api from '@/v2/utils/Api';
 import Modal from '../../layouts/Modal';
+import showToastr from '@/v2/utils/showToastr';
 
 class LogInForm extends Component {
   constructor(props) {
@@ -110,7 +111,6 @@ class LogInForm extends Component {
         after && after();
       },
       (errorDetails) => {
-        console.log(errorDetails);
         this.setState({ isWaiting: false });
         if (errorDetails) {
           this.setState({ errors: R.merge(errors, errorDetails) });
@@ -152,15 +152,22 @@ class LogInForm extends Component {
           {
             params,
             success() {
-              console.log('На почту было отправлено сообщение для восстановления пароля');
-              window.history.back();
+              showToastr(
+                'На почту было отправлено сообщение для восстановления пароля',
+                {
+                  type: 'success',
+                  after: () => {
+                    window.history.back();
+                  },
+                },
+              );
             },
             failed(error) {
-              const resp = error.response;
+              const resp = error?.response;
               let errorMsg;
-              if (resp && resp.status === 404 && resp.data.model === 'User') {
+              if (resp?.status === 404 && resp.data.model === 'User') {
                 errorMsg = 'Пользователь не найден';
-              } else if (resp && resp.status === 400 && resp.data.email) {
+              } else if (resp?.status === 400 && resp.data.email) {
                 errorMsg = 'Без почты невозможно восстановить пароль. Обратитесь к администратору.';
               } else {
                 errorMsg = 'Не удалось отправить на почту сообщение для восстановления пароля';

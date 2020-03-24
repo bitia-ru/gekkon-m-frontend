@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastr';
 import MainPageHeader from '../MainPageHeader/MainPageHeader';
 import MainPageContent from '../MainPageContent/MainPageContent';
 import MainMenu from '../MainMenu/MainMenu';
@@ -17,6 +16,7 @@ import ScrollToTopOnMount from '../ScrollToTopOnMount';
 import { avail } from '../../utils';
 import { activateEmail } from '../../stores/users/utils';
 import getState from '../../utils/getState';
+import showToastr from '@/v2/utils/showToastr';
 
 class SpotsIndex extends BaseComponent {
   constructor(props) {
@@ -44,9 +44,12 @@ class SpotsIndex extends BaseComponent {
       activateEmailProp(
         `${ApiUrl}/v1/users/mail_activation/${code}`,
         { id: userId },
-        () => this.showToastr('success', 'Успешно', 'Активация email'),
-        () => this.showToastr(
-          'warning', 'Активация email', 'При активации произошла ошибка',
+        () => showToastr('Активация email', { type: 'success' }),
+        () => showToastr(
+          'При активации произошла ошибка',
+          {
+            type: 'warning',
+          },
         ),
       );
     }
@@ -109,7 +112,7 @@ class SpotsIndex extends BaseComponent {
                 user={user}
                 onFormSubmit={this.submitProfileForm}
                 removeVk={this.removeVk}
-                showToastr={this.showToastr}
+                showToastr={showToastr}
                 enterWithVk={this.enterWithVk}
                 isWaiting={this.state.profileIsWaiting}
                 closeForm={this.closeProfileForm}
@@ -120,11 +123,6 @@ class SpotsIndex extends BaseComponent {
             : ''
         }
         <ScrollToTopOnMount />
-        <ToastContainer
-          ref={this.setToastContainerRef}
-          onClick={() => this.container.clear()}
-          className="toast-top-right"
-        />
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}
