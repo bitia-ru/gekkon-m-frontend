@@ -10,6 +10,7 @@ import SALT_ROUNDS from '../../Constants/Bcrypt';
 import { PASSWORD_MIN_LENGTH } from '../../Constants/User';
 import RE_EMAIL from '../../Constants/Constraints';
 import './Profile.css';
+import showToastr from '@/v2/utils/showToastr';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -293,13 +294,14 @@ export default class Profile extends Component {
   };
 
   removeVk = () => {
-    const { user, showToastr, removeVk } = this.props;
+    const { user, removeVk } = this.props;
     if ((!user.email && !user.login && !user.phone) || (!user.password_digest)) {
       showToastr(
-        'error',
-        'Ошибка',
         'Невозможно отключить вход через VK. '
         + 'Заполните логин, email или номер телефона и задайте пароль',
+        {
+          type: 'error',
+        },
       );
       return;
     }
@@ -464,5 +466,4 @@ Profile.propTypes = {
   isWaiting: PropTypes.bool.isRequired,
   enterWithVk: PropTypes.func.isRequired,
   removeVk: PropTypes.func.isRequired,
-  showToastr: PropTypes.func.isRequired,
 };

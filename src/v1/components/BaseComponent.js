@@ -10,6 +10,7 @@ import store from '../store';
 import {
   updateUser, signIn, removeVk, sendResetPasswordMail, logOut,
 } from '../stores/users/utils';
+import showToastr from '@/v2/utils/showToastr';
 
 export default class BaseComponent extends React.Component {
   constructor(props) {
@@ -49,19 +50,7 @@ export default class BaseComponent extends React.Component {
   };
 
   showToastr = (type, title, msg) => {
-    switch (type) {
-    case 'error':
-      this.container.error(msg, title, { closeButton: true });
-      break;
-    case 'success':
-      this.container.success(msg, title, { closeButton: true });
-      break;
-    case 'warning':
-      this.container.warning(msg, title, { closeButton: true });
-      break;
-    default:
-      break;
-    }
+    showToastr(msg, { type });
   };
 
   submitProfileForm = (data, afterSuccess) => {

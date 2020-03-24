@@ -13,6 +13,7 @@ import './ResetPasswordForm.css';
 import SALT_ROUNDS from '../../Constants/Bcrypt';
 import RE_EMAIL from '../../Constants/Constraints';
 import { logIn, resetPassword } from '../../stores/users/utils';
+import showToastr from '@/v2/utils/showToastr';
 
 class ResetPasswordForm extends Component {
   constructor(props) {
@@ -126,11 +127,12 @@ class ResetPasswordForm extends Component {
       },
       () => {
         this.setState({ isWaiting: false });
-        //this.showToastr(
-        //  'error',
-        //  'Ошибка',
-        //  'Срок действия ссылки для восстановления пароля истек или пользователь не найден',
-        //);
+        showToastr(
+          'Срок действия ссылки для восстановления пароля истек или пользователь не найден',
+          {
+            type: 'error',
+          },
+        );
       },
     );
   };

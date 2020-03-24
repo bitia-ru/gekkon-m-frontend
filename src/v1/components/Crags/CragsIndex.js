@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastr';
 import MainPageHeader from '../MainPageHeader/MainPageHeader';
 import MainMenu from '../MainMenu/MainMenu';
 import Footer from '../Footer/Footer';
@@ -60,7 +59,6 @@ class CragsIndex extends BaseComponent {
               onFormSubmit={this.submitProfileForm}
               removeVk={this.removeVk}
               numOfActiveRequests={this.props.numOfActiveRequests}
-              showToastr={this.showToastr}
               enterWithVk={this.enterWithVk}
               isWaiting={this.state.profileIsWaiting}
               closeForm={this.closeProfileForm}
@@ -70,11 +68,6 @@ class CragsIndex extends BaseComponent {
           )
         }
         <ScrollToTopOnMount />
-        <ToastContainer
-          ref={this.setToastContainerRef}
-          onClick={() => this.container.clear()}
-          className="toast-top-right"
-        />
         <div className="sticky-bar">
           <MainPageHeader
             showMenu={() => this.setState({ showMenu: true })}

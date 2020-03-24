@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastr';
 import Cookies from 'js-cookie';
 import InfoPageHeader from '../InfoPageHeader/InfoPageHeader';
 import InfoPageContent from '../InfoPageContent/InfoPageContent';
@@ -72,7 +71,6 @@ class Faq extends BaseComponent {
               user={user}
               onFormSubmit={this.submitProfileForm}
               removeVk={this.removeVk}
-              showToastr={this.showToastr}
               enterWithVk={this.enterWithVk}
               isWaiting={this.state.profileIsWaiting}
               closeForm={this.closeProfileForm}
@@ -82,11 +80,6 @@ class Faq extends BaseComponent {
           )
         }
         <ScrollToTopOnMount />
-        <ToastContainer
-          ref={this.setToastContainerRef}
-          onClick={() => this.container.clear()}
-          className="toast-top-right"
-        />
         <div className="sticky-bar">
           <InfoPageHeader
             title={TITLE}
