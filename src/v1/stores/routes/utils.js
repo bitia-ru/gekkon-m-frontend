@@ -16,11 +16,12 @@ import CARDS_PER_PAGE from '../../Constants/RouteCardTable';
 import getObjectFromArray from '../../utils/getObjectFromArray';
 import { ApiUrl } from '../../Environ';
 
-Axios.interceptors.request.use((config) => {
-  const configCopy = R.clone(config);
-  configCopy.paramsSerializer = params => Qs.stringify(params, { arrayFormat: 'brackets' });
-  return configCopy;
-});
+Axios.interceptors.request.use(
+  config => ({
+    ...config,
+    paramsSerializer: params => Qs.stringify(params, { arrayFormat: 'brackets' }),
+  }),
+);
 
 const flatten = (arr) => {
   if (arr.length === 0) {
@@ -29,45 +30,20 @@ const flatten = (arr) => {
   return R.map(e => R.concat([e], flatten(e.route_comments)), arr);
 };
 
-const formattedCommentsData = (data) => {
-  return R.map((comment) => {
-    const c = R.clone(comment);
-    c.route_comments = R.flatten(flatten(c.route_comments));
-    return c;
-  }, data);
-};
+const formattedCommentsData = data => R.map(
+  comment => ({
+    ...comment,
+    route_comments: R.flatten(flatten(comment.route_comments)),
+  }),
+  data,
+);
 
-const prepareAscentsForRoute = (route) => {
-  const routeCopy = R.clone(route);
-  routeCopy.ascents = getObjectFromArray(routeCopy.ascents);
-  return routeCopy;
-};
-
-const prepareCommentsForRoute = (route) => {
-  const routeCopy = R.clone(route);
-  routeCopy.comments = formattedCommentsData(routeCopy.comments);
-  return routeCopy;
-};
-
-const prepareLikesForRoute = (route) => {
-  const routeCopy = R.clone(route);
-  routeCopy.likes = getObjectFromArray(routeCopy.likes);
-  return routeCopy;
-};
-
-const prepareRoute = (route) => {
-  let routeNew = R.clone(route);
-  if (route.ascents) {
-    routeNew = prepareAscentsForRoute(routeNew);
-  }
-  if (route.comments) {
-    routeNew = prepareCommentsForRoute(routeNew);
-  }
-  if (route.likes) {
-    routeNew = prepareLikesForRoute(routeNew);
-  }
-  return routeNew;
-};
+const prepareRoute = route => ({
+  ...route,
+  ...(route.ascents && { ascents: getObjectFromArray(route.ascents) }),
+  ...(route.comments && { comments: formattedCommentsData(route.comments) }),
+  ...(route.likes && { likes: getObjectFromArray(route.likes) }),
+});
 
 const prepareAllRoutes = routes => (
   R.map(
@@ -80,9 +56,10 @@ export const loadRoutes = (url, params) => (
   (dispatch) => {
     dispatch(loadRoutesRequest());
 
-    const paramsCopy = R.clone(params);
-    paramsCopy.with = ['ascents'];
-    Axios.get(url, { params: paramsCopy, withCredentials: true })
+    Axios.get(
+      url,
+      { params: { ...params, with: ['ascents'] }, withCredentials: true },
+    )
       .then((response) => {
         const routeIds = R.map(route => route.id, response.data.payload);
         const numOfPages = Math.max(

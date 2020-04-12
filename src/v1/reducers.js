@@ -21,31 +21,40 @@ const tabReducer = (state = 1, action) => {
 };
 
 const selectedPagesReducer = (state = {}, action) => {
-  let selectedPages;
   let sectorsDefaultPages;
   switch (action.type) {
   case acts.SET_DEFAULT_SELECTED_PAGES:
-    selectedPages = R.clone(state);
     sectorsDefaultPages = R.map(sectorId => [sectorId, 1], action.sectorIds);
-    selectedPages[action.spotId] = R.merge({ 0: 1 }, R.fromPairs(sectorsDefaultPages));
-    return selectedPages;
+    return {
+      ...state,
+      [action.spotId]: {
+        0: 1,
+        ...R.fromPairs(sectorsDefaultPages),
+      },
+    };
   case acts.SET_SELECTED_PAGE:
-    selectedPages = R.clone(state);
-    selectedPages[action.spotId][action.sectorId] = action.page;
-    return selectedPages;
+    return {
+      ...state,
+      [action.spotId]: {
+        ...state[action.spotId],
+        [action.sectorId]: action.page,
+      },
+    };
   default:
     return state;
   }
 };
 
 const selectedViewModesReducer = (state = {}, action) => {
-  let selectedViewModes;
   switch (action.type) {
   case acts.SET_SELECTED_VIEW_MODE:
-    selectedViewModes = R.clone(state);
-    selectedViewModes[action.spotId] = selectedViewModes[action.spotId] || {};
-    selectedViewModes[action.spotId][action.sectorId] = action.viewMode;
-    return selectedViewModes;
+    return {
+      ...state,
+      [action.spotId]: {
+        ...state[action.spotId],
+        [action.sectorId]: action.viewMode,
+      },
+    };
   default:
     return state;
   }
@@ -56,40 +65,44 @@ const selectedFiltersReducer = (state = {}, action) => {
   let routeFilters;
   switch (action.type) {
   case acts.SET_DEFAULT_SELECTED_FILTERS:
-    selectedFilters = state === null ? {} : R.clone(state);
+    selectedFilters = state === null ? {} : { ...state };
     routeFilters = localStorage.getItem('routeFilters');
     if (routeFilters) {
       selectedFilters = JSON.parse(routeFilters);
     }
     if (selectedFilters[action.spotId] === undefined) {
-      const defaultFilters = R.merge(DEFAULT_FILTERS, { wasChanged: false });
+      const defaultFilters = {
+        ...DEFAULT_FILTERS,
+        wasChanged: false,
+      };
       const sectorsDefaultFilters = R.map(
-        sectorId => [sectorId, R.clone(defaultFilters)],
+        sectorId => [sectorId, defaultFilters],
         action.sectorIds,
       );
-      const spotFilters = R.merge(
-        { 0: R.clone(defaultFilters) },
-        R.fromPairs(sectorsDefaultFilters),
-      );
-      selectedFilters[action.spotId] = spotFilters;
+      selectedFilters[action.spotId] = {
+        0: defaultFilters,
+        ...R.fromPairs(sectorsDefaultFilters),
+      };
     }
-    return R.clone(selectedFilters);
+    return selectedFilters;
   case acts.SET_SELECTED_FILTER:
-    selectedFilters = {...state};
+    selectedFilters = { ...state };
     if (action.sectorId === 0) {
-      const spotSelectedFilters = {...selectedFilters[action.spotId]};
-      selectedFilters[action.spotId] = R.map((filters) => {
-        const filtersCopy = {...filters};
-        if (!filtersCopy.wasChanged) {
-          return action.filters;
-        }
-        return filtersCopy;
-      }, spotSelectedFilters);
+      const spotSelectedFilters = { ...selectedFilters[action.spotId] };
+      selectedFilters[action.spotId] = R.map(
+        filters => ({
+          ...filters,
+          [action.filterName]: (
+            filters.wasChanged ? filters[action.filterName] : action.filterValue
+          ),
+        }),
+        spotSelectedFilters,
+      );
     } else {
-      selectedFilters[action.spotId][action.sectorId] = action.filters;
+      selectedFilters[action.spotId][action.sectorId][action.filterName] = action.filterValue;
       selectedFilters[action.spotId][action.sectorId].wasChanged = true;
     }
-    return R.clone(selectedFilters);
+    return selectedFilters;
   default:
     return state;
   }
