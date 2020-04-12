@@ -6,24 +6,34 @@ const sectorsStoreReducer = (
   state = DEFAULT_STORE_FORMAT,
   action,
 ) => {
-  const stateCopy = R.clone(state);
   switch (action.type) {
   case acts.LOAD_SECTORS_REQUEST:
-    stateCopy.numOfActiveRequests += 1;
-    return stateCopy;
+    return {
+      ...state,
+      numOfActiveRequests: state.numOfActiveRequests + 1,
+    };
   case acts.LOAD_SECTORS_FAILED:
-    stateCopy.numOfActiveRequests -= 1;
-    return stateCopy;
+    return {
+      ...state,
+      numOfActiveRequests: state.numOfActiveRequests - 1,
+    };
   case acts.LOAD_SECTOR_SUCCESS:
-    stateCopy.sectors[action.sector.id] = action.sector;
-    stateCopy.numOfActiveRequests -= 1;
-    return stateCopy;
+    return {
+      ...state,
+      sectors: {
+        ...state.sectors,
+        [action.sector.id]: action.sector,
+      },
+      numOfActiveRequests: state.numOfActiveRequests - 1,
+    };
   case acts.LOAD_SECTORS:
-    stateCopy.sectors = R.mergeDeepRight(
-      stateCopy.sectors,
-      R.fromPairs(R.map(sector => [sector.id, sector], action.sectors)),
-    );
-    return stateCopy;
+    return {
+      ...state,
+      sectors: R.mergeDeepRight(
+        state.sectors,
+        R.fromPairs(R.map(sector => [sector.id, sector], action.sectors)),
+      ),
+    };
   default:
     return state;
   }

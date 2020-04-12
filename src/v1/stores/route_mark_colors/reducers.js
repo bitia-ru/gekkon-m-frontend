@@ -6,18 +6,23 @@ const routeMarkColorsStoreReducer = (
   state = DEFAULT_STORE_FORMAT,
   action,
 ) => {
-  const stateCopy = R.clone(state);
   switch (action.type) {
   case acts.LOAD_ROUTE_MARK_COLORS_REQUEST:
-    stateCopy.numOfActiveRequests += 1;
-    return stateCopy;
+    return {
+      ...state,
+      numOfActiveRequests: state.numOfActiveRequests + 1,
+    };
   case acts.LOAD_ROUTE_MARK_COLORS_FAILED:
-    stateCopy.numOfActiveRequests -= 1;
-    return stateCopy;
+    return {
+      ...state,
+      numOfActiveRequests: state.numOfActiveRequests - 1,
+    };
   case acts.LOAD_ROUTE_MARK_COLORS_SUCCESS:
-    stateCopy.routeMarkColors = action.routeMarkColors;
-    stateCopy.numOfActiveRequests -= 1;
-    return stateCopy;
+    return {
+      ...state,
+      routeMarkColors: action.routeMarkColors,
+      numOfActiveRequests: state.numOfActiveRequests - 1,
+    };
   default:
     return state;
   }
