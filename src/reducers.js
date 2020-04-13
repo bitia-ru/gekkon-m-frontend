@@ -98,7 +98,10 @@ const selectedPagesReducer = (state = {}, action) => {
     sectorsDefaultPages = R.map(sectorId => [sectorId, 1], action.sectorIds);
     return {
       ...state,
-      [action.spotId]: R.merge({ 0: 1 }, R.fromPairs(sectorsDefaultPages)),
+      [action.spotId]: {
+        0: 1,
+        ...(R.fromPairs(sectorsDefaultPages)),
+      },
     };
   case acts.SET_SELECTED_PAGE:
     return {
@@ -150,36 +153,41 @@ const selectedFiltersReducer = (state = {}, action) => {
       selectedFilters = JSON.parse(routeFilters);
     }
     if (selectedFilters[action.spotId] === undefined) {
-      const defaultFilters = R.merge(DEFAULT_FILTERS, { wasChanged: false });
+      const defaultFilters = {
+        ...DEFAULT_FILTERS,
+        wasChanged: false,
+      };
       const sectorsDefaultFilters = R.map(
-        sectorId => [sectorId, { ...defaultFilters }],
+        sectorId => [sectorId, defaultFilters],
         action.sectorIds,
       );
-      const spotFilters = R.merge(
-        { 0: { ...defaultFilters } },
-        R.fromPairs(sectorsDefaultFilters),
-      );
-      selectedFilters[action.spotId] = spotFilters;
+      selectedFilters[action.spotId] = {
+        0: defaultFilters,
+        ...(R.fromPairs(sectorsDefaultFilters)),
+      };
       localStorage.setItem('routeFilters', JSON.stringify(selectedFilters));
     }
-    return { ...selectedFilters };
+    return selectedFilters;
   case acts.SET_SELECTED_FILTER:
     selectedFilters = { ...state };
     if (action.sectorId === 0) {
       const spotSelectedFilters = { ...selectedFilters[action.spotId] };
-      selectedFilters[action.spotId] = R.map((filters) => {
-        const filtersCopy = { ...filters };
-        if (!filtersCopy.wasChanged) {
-          filtersCopy[action.filterName] = action.filterValue;
-        }
-        return filtersCopy;
-      }, spotSelectedFilters);
+      selectedFilters[action.spotId] = R.map(
+        (filters) => {
+          const filtersCopy = { ...filters };
+          if (!filtersCopy.wasChanged) {
+            filtersCopy[action.filterName] = action.filterValue;
+          }
+          return filtersCopy;
+        },
+        spotSelectedFilters,
+      );
     } else {
       selectedFilters[action.spotId][action.sectorId][action.filterName] = action.filterValue;
       selectedFilters[action.spotId][action.sectorId].wasChanged = true;
     }
     localStorage.setItem('routeFilters', JSON.stringify(selectedFilters));
-    return { ...selectedFilters };
+    return selectedFilters;
   case acts.LOAD_FROM_LOCAL_STORAGE_SELECTED_FILTERS:
     routeFilters = localStorage.getItem('routeFilters');
     if (routeFilters === undefined) {
