@@ -31,6 +31,14 @@ rules:
         - JSXText
         - JSXEmptyExpression
         - JSXSpreadChild
+  object-curly-newline:
+    - error
+    - ObjectExpression:
+        minProperties: 6
+        multiline: true
+      ObjectPattern:
+        minProperties: 6
+        multiline: true
   "react/jsx-first-prop-new-line": [1, multiline]
   "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   "react/jsx-wrap-multilines": [1, { "logical": "ignore" }]
