@@ -1,9 +1,4 @@
-import store from '../store';
-
-const getCurrentSpotOrSectorData = (spotId, sectorId) => {
-  const state = store.getState();
-  const { sectors } = state.sectorsStore;
-  const { spots } = state.spotsStore;
+const getCurrentSpotOrSectorData = (spots, sectors, spotId, sectorId) => {
   const sector = sectors[sectorId];
   const spot = spots[spotId];
   if (sectorId === 0 && spot) {

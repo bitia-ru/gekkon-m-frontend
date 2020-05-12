@@ -1,9 +1,6 @@
-import store from '../store';
 import getCurrentSpotOrSectorData from './getCurrentSpotOrSectorData';
 
-const getNumOfRoutes = (spotId, sectorId) => {
-  const state = store.getState();
-  const { sectors } = state.sectorsStore;
+const getNumOfRoutes = (sectors, spotId, sectorId) => {
   const sector = sectors[sectorId];
   const data = getCurrentSpotOrSectorData(spotId, sectorId);
   if (sectorId === 0) {
