@@ -9,8 +9,7 @@ import Button from '@/v1/components/Button/Button';
 import PERIOD_FILTERS from '@/v1/Constants/PeriodFilters';
 import { CATEGORIES } from '@/v1/Constants/Categories';
 import { DEFAULT_FILTERS } from '@/v1/Constants/DefaultFilters';
-import getFilters from '@/v1/utils/getFilters';
-import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
+import getFilters, { prepareFilters } from '@/v1/utils/getFilters';
 import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
 import './FilterBlock.css';
 import getViewMode from '@/v1/utils/getViewMode';
@@ -21,6 +20,12 @@ import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownL
 import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSelector';
 import DropDownListMultipleSelector
   from '@/v2/components/DropDownListMultipleSelector/DropDownListMultipleSelector';
+import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
+import {
+  LIKED_DEFAULT,
+  OUTDATED_DEFAULT,
+  PERSONAL_DEFAULT
+} from '@/v1/Constants/DefaultFilters';
 
 
 class FilterBlock extends Component {
@@ -39,7 +44,7 @@ class FilterBlock extends Component {
     this.state = {
       period,
       date,
-      filters: R.clone(filters),
+      filters: {...filters},
       categoryFrom,
       categoryTo,
     };
@@ -81,54 +86,44 @@ class FilterBlock extends Component {
     }
     setSelectedFilterProp(spotId, sectorId, 'period', period);
     setSelectedFilterProp(spotId, sectorId, 'date', date);
-    let filter = R.find(R.propEq('id', 'personal'))(filters);
+    let filter = R.find(R.propEq('id', 'personal'))(R.values(filters));
     const personal = filter.selected;
-    filter = R.find(R.propEq('id', 'outdated'))(filters);
+    filter = R.find(R.propEq('id', 'outdated'))(R.values(filters));
     let outdated = null;
     if (filter) {
       outdated = filter.selected;
       setSelectedFilterProp(spotId, sectorId, 'outdated', outdated);
     }
     setSelectedFilterProp(spotId, sectorId, 'personal', personal);
-    const resultFilters = R.filter(
-      e => R.contains(e.id, R.map(f => f.id, RESULT_FILTERS)),
-      filters,
-    );
     if (user) {
-      filter = R.find(R.propEq('id', 'liked'))(filters);
+      filter = R.find(R.propEq('id', 'liked'))(R.values(filters));
       const liked = filter.selected;
       setSelectedFilterProp(spotId, sectorId, 'liked', liked);
-      const result = R.map(e => e.value, R.filter(e => e.selected, resultFilters));
-      setSelectedFilterProp(spotId, sectorId, 'result', result);
     }
-    const filtersCopy = R.clone(getFilters(spotId, sectorId).filters);
     R.forEach(
-      (f) => {
-        const index = R.findIndex(R.propEq('id', f.id))(filtersCopy);
-        filtersCopy[index] = f;
+      (resultKey) => {
+        filter = R.find(R.propEq('id', resultKey))(R.values(filters));
+        const resultValue = filter.selected;
+        setSelectedFilterProp(spotId, sectorId, resultKey, resultValue);
       },
-      filters,
-    );
-    setSelectedFilterProp(
-      spotId,
-      sectorId,
-      'filters',
-      filtersCopy,
-    );
+      R.keys(RESULT_FILTERS),
+    )
     setSelectedPageProp(spotId, sectorId, 1);
   };
 
   setDefaultFilters = () => {
-    this.setState({ filters: DEFAULT_FILTERS.filters });
+    this.setState({
+      filters: prepareFilters(DEFAULT_FILTERS).filters,
+    });
   };
 
   setAllFiltersToDefault = (closeModal) => {
     this.setState({
-      filters: DEFAULT_FILTERS.filters,
       period: DEFAULT_FILTERS.period,
       date: undefined,
       categoryFrom: DEFAULT_FILTERS.categoryFrom,
       categoryTo: DEFAULT_FILTERS.categoryTo,
+      filters: prepareFilters(DEFAULT_FILTERS).filters,
     }, () => this.save(closeModal));
   };
 
@@ -244,15 +239,17 @@ class FilterBlock extends Component {
                       value={
                         R.join(
                           ', ',
-                          R.map(
-                            e => R.slice(0, -2, e.text),
-                            R.filter(e => e.selected, currentFilters),
+                          R.values(
+                            R.map(
+                              e => R.slice(0, -2, e.text),
+                              R.filter(e => e.selected, currentFilters),
+                            ),
                           ),
                         )
                       }
                       save={this.changeFilters}
                       setDefault={this.setDefaultFilters}
-                      items={currentFilters}
+                      items={R.values(currentFilters)}
                     />
                   </div>
                 </div>

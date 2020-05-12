@@ -1,4 +1,5 @@
 import moment from 'moment';
+import * as R from 'ramda';
 import store from '../store';
 import { avail } from './index';
 import { ApiUrl } from '../Environ';
@@ -8,21 +9,23 @@ import getFilters from './getFilters';
 import getPage from './getPage';
 import { BACKEND_DATE_FORMAT } from '../Constants/Date';
 import CARDS_PER_PAGE from '../Constants/RouteCardTable';
+import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
 
 const reloadRoutes = (spotId, sectorId) => {
   const state = store.getState();
   const user = state.usersStore.users[state.usersStore.currentUserId];
   const currentViewMode = getViewMode(spotId, sectorId);
+  const filters = getFilters(spotId, sectorId);
   const {
     categoryFrom: currentCategoryFrom,
     categoryTo: currentCategoryTo,
     period: currentPeriod,
     date: currentDate,
-    result: currentResult,
     personal: currentPersonal,
     outdated: currentOutdated,
     liked: currentLiked,
-  } = getFilters(spotId, sectorId);
+  } = filters;
+  const currentResult = R.keys(R.filter(e => e, R.pick(R.keys(RESULT_FILTERS), filters)));
   const currentPage = getPage(spotId, sectorId);
   const params = {
     filters: {
