@@ -40,7 +40,7 @@ class FilterBlock extends Component {
       period,
       date,
       filters,
-    } = getFilters(spotId, sectorId);
+    } = getFilters(this.props.selectedFilters, spotId, sectorId);
     this.state = {
       period,
       date,
@@ -278,6 +278,7 @@ FilterBlock.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  selectedFilters: state.selectedFilters,
   user: state.usersStore.users[state.usersStore.currentUserId],
 });
 

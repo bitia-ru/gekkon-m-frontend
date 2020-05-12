@@ -13,7 +13,7 @@ import './Content.css';
 import {
   setSelectedPage,
 } from '@/v1/actions';
-import reloadRoutes from '@/v1/utils/reloadRoutes';
+import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import getViewMode from '@/v1/utils/getViewMode';
 import getPage from '@/v1/utils/getPage';
 import getNumOfRoutes from '@/v1/utils/getNumOfRoutes';
@@ -21,12 +21,12 @@ import getArrayByIds from '@/v1/utils/getArrayByIds';
 
 class Content extends Component {
   componentDidMount() {
-    reloadRoutes(this.getSpotId(), this.getSectorId());
+    this.props.reloadRoutes(this.getSpotId(), this.getSectorId());
   }
 
   componentDidUpdate(prevProps) {
     if (this.needReload(prevProps)) {
-      reloadRoutes(this.getSpotId(), this.getSectorId());
+      this.props.reloadRoutes(this.getSpotId(), this.getSectorId());
     }
   }
 
@@ -77,8 +77,8 @@ class Content extends Component {
   };
 
   pagesList = () => {
-    const { numOfPages } = this.props;
-    const page = getPage(this.getSpotId(), this.getSectorId());
+    const { selectedPages, numOfPages } = this.props;
+    const page = getPage(selectedPages, this.getSpotId(), this.getSectorId());
     if (NUM_OF_DISPLAYED_PAGES >= numOfPages) {
       return R.range(1, numOfPages + 1);
     }
@@ -100,12 +100,12 @@ class Content extends Component {
       routeIds, routes,
     } = this.props;
     const {
-      numOfPages,
+      numOfPages, sectors, selectedViewModes, selectedPages,
     } = this.props;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
-    const page = getPage(spotId, sectorId);
-    const viewMode = getViewMode(spotId, sectorId);
+    const page = getPage(selectedPages, spotId, sectorId);
+    const viewMode = getViewMode(sectors, selectedViewModes, spotId, sectorId);
     return (
       <SectorContext.Consumer>
         {
@@ -113,7 +113,7 @@ class Content extends Component {
             const diagram = sector && sector.diagram && sector.diagram.url;
             const numOfRoutes = (viewMode === 'scheme'
               ? getArrayByIds(routeIds, routes).length
-              : getNumOfRoutes(spotId, sectorId)
+              : getNumOfRoutes(sectors, spotId, sectorId)
             );
             return (
               <div className="content-m">
@@ -168,6 +168,7 @@ Content.propTypes = {
 
 const mapStateToProps = state => ({
   numOfPages: getNumOfPages(state),
+  sectors: state.sectorsStore.sectors,
   selectedViewModes: state.selectedViewModes,
   selectedPages: state.selectedPages,
   selectedFilters: state.selectedFilters,
@@ -180,6 +181,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  reloadRoutes: (spotId, sectorId) => dispatch(reloadRoutesAction(spotId, sectorId)),
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
 });
 
