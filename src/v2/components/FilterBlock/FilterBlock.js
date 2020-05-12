@@ -78,36 +78,34 @@ class FilterBlock extends Component {
     } = this.props;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
+    let newFilters = {};
     if (categoryFrom !== null) {
-      setSelectedFilterProp(spotId, sectorId, 'categoryFrom', categoryFrom);
+      newFilters['categoryFrom'] = categoryFrom;
     }
     if (categoryTo !== null) {
-      setSelectedFilterProp(spotId, sectorId, 'categoryTo', categoryTo);
+      newFilters['categoryTo'] = categoryTo;
     }
-    setSelectedFilterProp(spotId, sectorId, 'period', period);
-    setSelectedFilterProp(spotId, sectorId, 'date', date);
+    newFilters['period'] = period;
+    newFilters['date'] = date;
     let filter = R.find(R.propEq('id', 'personal'))(R.values(filters));
     const personal = filter.selected;
     filter = R.find(R.propEq('id', 'outdated'))(R.values(filters));
-    let outdated = null;
     if (filter) {
-      outdated = filter.selected;
-      setSelectedFilterProp(spotId, sectorId, 'outdated', outdated);
+      newFilters['outdated'] = filter.selected;
     }
-    setSelectedFilterProp(spotId, sectorId, 'personal', personal);
+    newFilters['personal'] = personal;
     if (user) {
       filter = R.find(R.propEq('id', 'liked'))(R.values(filters));
-      const liked = filter.selected;
-      setSelectedFilterProp(spotId, sectorId, 'liked', liked);
+      newFilters['liked'] = filter.selected;
     }
     R.forEach(
       (resultKey) => {
         filter = R.find(R.propEq('id', resultKey))(R.values(filters));
-        const resultValue = filter.selected;
-        setSelectedFilterProp(spotId, sectorId, resultKey, resultValue);
+        newFilters[resultKey] = filter.selected;
       },
       R.keys(RESULT_FILTERS),
     )
+    setSelectedFilterProp(spotId, sectorId, newFilters);
     setSelectedPageProp(spotId, sectorId, 1);
   };
 

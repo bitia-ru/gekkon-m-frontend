@@ -25,12 +25,11 @@ export const setSelectedViewMode = (spotId, sectorId, viewMode) => ({
   viewMode,
 });
 
-export const setSelectedFilter = (spotId, sectorId, filterName, filterValue) => ({
+export const setSelectedFilter = (spotId, sectorId, filters) => ({
   type: acts.SET_SELECTED_FILTER,
   spotId,
   sectorId,
-  filterName,
-  filterValue,
+  filters,
 });
 
 export const setDefaultSelectedFilters = (spotId, sectorIds) => ({

@@ -75,18 +75,18 @@ const selectedFiltersReducer = (state = {}, action) => {
     }
     return R.clone(selectedFilters);
   case acts.SET_SELECTED_FILTER:
-    selectedFilters = R.clone(state);
+    selectedFilters = {...state};
     if (action.sectorId === 0) {
-      const spotSelectedFilters = R.clone(selectedFilters[action.spotId]);
+      const spotSelectedFilters = {...selectedFilters[action.spotId]};
       selectedFilters[action.spotId] = R.map((filters) => {
-        const filtersCopy = R.clone(filters);
+        const filtersCopy = {...filters};
         if (!filtersCopy.wasChanged) {
-          filtersCopy[action.filterName] = action.filterValue;
+          return action.filters;
         }
         return filtersCopy;
       }, spotSelectedFilters);
     } else {
-      selectedFilters[action.spotId][action.sectorId][action.filterName] = action.filterValue;
+      selectedFilters[action.spotId][action.sectorId] = action.filters;
       selectedFilters[action.spotId][action.sectorId].wasChanged = true;
     }
     return R.clone(selectedFilters);
