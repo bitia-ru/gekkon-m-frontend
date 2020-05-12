@@ -24,8 +24,8 @@ import { loadSector } from '@/v1/stores/sectors/utils';
 import { addRoute, loadRoute, updateRoute } from '@/v1/stores/routes/utils';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import { ApiUrl } from '@/v1/Environ';
-import reloadSector from '@/v1/utils/reloadSector';
-import reloadRoutes from '@/v1/utils/reloadRoutes';
+import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
+import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import './RoutesEditModal.css';
 
 class RoutesEditModal extends Component {
@@ -150,8 +150,8 @@ class RoutesEditModal extends Component {
         history.push(
           R.replace('new', response.data.payload.id, `${match.url}`),
         );
-        reloadSector(response.data.payload.sector_id);
-        reloadRoutes(
+        this.props.reloadSector(response.data.payload.sector_id);
+        this.props.reloadRoutes(
           sectors[response.data.payload.sector_id].spot_id, response.data.payload.sector_id,
         );
       },
@@ -579,6 +579,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  reloadSector: sectorId => dispatch(reloadSectorAction(sectorId)),
+  reloadRoutes: (spotId, sectorId) => dispatch(reloadRoutesAction(spotId, sectorId)),
   loadRouteMarkColors: () => dispatch(loadRouteMarkColors()),
   loadUsers: () => dispatch(loadUsers()),
   loadSector: (url, params, afterLoad) => dispatch(loadSector(url, params, afterLoad)),

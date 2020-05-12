@@ -1,5 +1,4 @@
 import * as R from 'ramda';
-import store from '../store';
 import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
 import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
 
@@ -30,9 +29,7 @@ export const prepareFilters = (filters) => {
   };
 };
 
-const getFilters = (spotId, sectorId) => {
-  const state = store.getState();
-  const { selectedFilters } = state;
+const getFilters = (selectedFilters, spotId, sectorId) => {
   if (selectedFilters && selectedFilters[spotId] && selectedFilters[spotId][sectorId]) {
     return prepareFilters(selectedFilters[spotId][sectorId]);
   }

@@ -1,8 +1,4 @@
-import store from '../store';
-
-const getPage = (spotId, sectorId) => {
-  const state = store.getState();
-  const { selectedPages } = state;
+const getPage = (selectedPages, spotId, sectorId) => {
   if (selectedPages && selectedPages[spotId] && selectedPages[spotId][sectorId]) {
     return selectedPages[spotId][sectorId];
   }

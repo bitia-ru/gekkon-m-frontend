@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import Main from './Main';
-import store from './store';
+import { configureStoreAsync, saveState } from './store';
 import './index.css';
 import './fonts.css';
 /* eslint-enable import/first */
@@ -54,11 +54,19 @@ document.removeEventListener = (type, listener, options) => {
   return originalRemoveEventListener(type, listener, modOptions);
 };
 
-ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <Main />
-    </BrowserRouter>
-  </Provider>,
-  document.getElementById('app'),
-);
+configureStoreAsync().then((result) => {
+  const store = result;
+  store.subscribe(() => {
+    saveState(store.getState());
+  });
+  ReactDOM.render(
+    (
+      <Provider store={store}>
+        <BrowserRouter>
+          <Main />
+        </BrowserRouter>
+      </Provider>
+    ),
+    document.getElementById('app'),
+  );
+});
