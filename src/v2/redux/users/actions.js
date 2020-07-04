@@ -71,3 +71,37 @@ export const loadUsers = () => (
     );
   }
 );
+
+export const updateUser = (id, params, afterSuccess, afterFail) => (
+  (dispatch) => {
+    dispatch({
+      type: acts.LOAD_USERS_REQUEST,
+    });
+
+    Api.patch(
+      `/v1/users/${id}`,
+      params,
+      {
+        type: 'form-multipart',
+        success(payload) {
+          dispatch({
+            type: acts.LOAD_USERS_SUCCESS,
+            users: [payload],
+          });
+          if (afterSuccess) {
+            afterSuccess(payload);
+          }
+        },
+        failed(error) {
+          dispatch({
+            type: acts.LOAD_USERS_FAILED,
+          });
+          if (afterFail) {
+            afterFail();
+          }
+          toastHttpError(error);
+        },
+      },
+    );
+  }
+);
