@@ -465,7 +465,7 @@ class SpotsShow extends Authorization {
     );
     const currentLiked = (
       (filters.liked === null || filters.liked === undefined)
-        ? selectedFilters[this.state.spotId][currentSectorId].liked
+        ? selectedFilters[spotId][currentSectorId].liked
         : filters.liked
     );
     const currentPage = (

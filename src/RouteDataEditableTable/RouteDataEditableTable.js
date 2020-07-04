@@ -1,4 +1,6 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import moment from 'moment';
@@ -8,6 +10,7 @@ import getColorStyle from '../Constants/RouteColorPicker';
 import { getUserName } from '../Constants/User';
 import { getCategoryColor } from '../Constants/Categories';
 import Category from '../Category/Category';
+import RouteContext from '../contexts/RouteContext';
 import './RouteDataEditableTable.css';
 
 const RouteDataEditableTable = ({
