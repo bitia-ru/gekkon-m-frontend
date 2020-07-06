@@ -90,16 +90,17 @@ const selectedFiltersReducer = (state = {}, action) => {
     if (action.sectorId === 0) {
       const spotSelectedFilters = { ...selectedFilters[action.spotId] };
       selectedFilters[action.spotId] = R.map(
-        filters => ({
-          ...filters,
-          [action.filterName]: (
-            filters.wasChanged ? filters[action.filterName] : action.filterValue
-          ),
-        }),
+        (filters) => {
+          const filtersCopy = { ...filters };
+          if (!filtersCopy.wasChanged) {
+            return action.filters;
+          }
+          return filtersCopy;
+        },
         spotSelectedFilters,
       );
     } else {
-      selectedFilters[action.spotId][action.sectorId][action.filterName] = action.filterValue;
+      selectedFilters[action.spotId][action.sectorId] = action.filters;
       selectedFilters[action.spotId][action.sectorId].wasChanged = true;
     }
     return selectedFilters;
