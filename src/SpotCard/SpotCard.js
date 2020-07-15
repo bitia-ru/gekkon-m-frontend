@@ -23,11 +23,14 @@ const SpotCard = ({
         <h1 className="climbing-card-m__header">
           {spot.name}
         </h1>
-        {
-          spot.photo && (
-            <img src={spot.photo.url} alt="" className="climbing-card-m__img" />
-          )
-        }
+        <div
+          style={{
+            height: 150,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundImage: spot.photo && `url(${spot.photo.url})`,
+          }}
+        />
       </Link>
     </article>
   </div>
