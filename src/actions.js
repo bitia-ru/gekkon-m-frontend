@@ -22,6 +22,11 @@ export const addRoute = (spotId, sectorId, route) => ({
   route,
 });
 
+export const loadSpots = spots => ({
+  type: acts.LOAD_SPOTS,
+  spots,
+});
+
 export const loadSectors = sectors => ({
   type: acts.LOAD_SECTORS,
   sectors,

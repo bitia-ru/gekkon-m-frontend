@@ -16,6 +16,7 @@ import {
   removeToken,
   increaseNumOfActiveRequests,
   decreaseNumOfActiveRequests,
+  loadSpots,
 } from '../actions';
 import { ApiUrl } from '../Environ';
 import SignUpForm from '../SignUpForm/SignUpForm';
@@ -47,7 +48,17 @@ class SpotsIndex extends Authorization {
   componentDidMount() {
     const {
       saveUser: saveUserProp,
+      loadSpots: loadSpotsProp,
     } = this.props;
+    this.props.increaseNumOfActiveRequests();
+    Axios.get(`${ApiUrl}/v1/spots`, { withCredentials: true })
+      .then((response) => {
+        this.props.decreaseNumOfActiveRequests();
+        loadSpotsProp(response.data.payload);
+      }).catch((error) => {
+      this.props.decreaseNumOfActiveRequests();
+      this.displayError(error);
+    });
     this.props.history.listen((location, action) => {
       if (action === 'POP') {
         this.setState({ profileFormVisible: (location.hash === '#profile') });
@@ -196,7 +207,11 @@ class SpotsIndex extends Authorization {
               )
               : ''
           }
-          <MainPageContent />
+          <MainPageContent
+            spots={
+              R.filter(spot => spot.data && spot.data.public)(Object.values(this.props.spots))
+            }
+          />
           <StickyBar loading={this.props.numOfActiveRequests > 0} />
         </div>
         <Footer
@@ -213,10 +228,12 @@ class SpotsIndex extends Authorization {
 const mapStateToProps = state => ({
   user: state.user,
   token: state.token,
+  spots: state.spots,
   numOfActiveRequests: state.numOfActiveRequests,
 });
 
 const mapDispatchToProps = dispatch => ({
+  loadSpots: spots => dispatch(loadSpots(spots)),
   saveUser: user => dispatch(saveUser(user)),
   saveToken: token => dispatch(saveToken(token)),
   removeToken: () => dispatch(removeToken()),
