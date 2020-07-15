@@ -42,6 +42,15 @@ const routesReducer = (state = {}, action) => {
   }
 };
 
+const spotsReducer = (state = [], action) => {
+  switch (action.type) {
+  case acts.LOAD_SPOTS:
+    return action.spots;
+  default:
+    return state;
+  }
+};
+
 const sectorsReducer = (state = [], action) => {
   switch (action.type) {
   case acts.LOAD_SECTORS:
@@ -212,6 +221,7 @@ const routeMarkColorsReducer = (state = [], action) => {
 
 export default combineReducers({
   routes: routesReducer,
+  spots: spotsReducer,
   sectors: sectorsReducer,
   user: userReducer,
   tab: tabReducer,
