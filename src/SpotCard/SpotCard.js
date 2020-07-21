@@ -19,7 +19,10 @@ const SpotCard = ({
       className="climbing-card-m"
       style={{ backgroundColor: getColor(spot) }}
     >
-      <Link to={`/spots/${spot.id}`} className="climbing-card-m__inner">
+      <Link
+        to={`/spots/${spot.id}/sectors/${spot.sectors[0].id}`}
+        className="climbing-card-m__inner"
+      >
         <h1 className="climbing-card-m__header">
           {spot.name}
         </h1>
