@@ -1,12 +1,18 @@
 import * as R from 'ramda';
-import * as acts from './constants/actions';
-import DEFAULT_STORE_FORMAT from './constants/defaultStoreFormat';
+import { acts } from './actions';
+import DEFAULT_STORE_FORMAT from '@/v1/stores/spots/constants/defaultStoreFormat';
+
 
 const spotsStoreReducer = (
   state = DEFAULT_STORE_FORMAT,
   action,
 ) => {
   switch (action.type) {
+  case acts.LOAD_SPOTS_SUCCESS:
+    return {
+      ...state,
+      spots: R.reduce((m, s) => ({ ...m, [s.id]: s }), {})(action.spots),
+    };
   case acts.LOAD_SPOTS_REQUEST:
     return {
       ...state,

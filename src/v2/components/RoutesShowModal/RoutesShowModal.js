@@ -36,7 +36,7 @@ import { ApiUrl } from '@/v1/Environ';
 import getFilters from '@/v1/utils/getFilters';
 import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
-import { reloadSpot as reloadSpotAction } from '@/v1/utils/reloadSpot';
+import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
 import './RoutesShowModal.css';
 
@@ -173,7 +173,7 @@ class RoutesShowModal extends Component {
             this.props.reloadRoutes(spotId, sectorId);
             setSelectedPageProp(spotId, sectorId, 1);
           } else {
-            this.props.reloadSpot(spotId);
+            this.props.loadSpot(spotId);
             this.props.reloadRoutes(spotId, 0);
             setSelectedPageProp(spotId, 0, 1);
           }
@@ -521,7 +521,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  reloadSpot: spotId => dispatch(reloadSpotAction(spotId)),
+  loadSpot: spotId => dispatch(loadSpotAction(spotId)),
   reloadSector: sectorId => dispatch(reloadSectorAction(sectorId)),
   reloadRoutes: (spotId, sectorId) => dispatch(reloadRoutesAction(spotId, sectorId)),
   loadRoute: (url, afterLoad) => dispatch(loadRoute(url, afterLoad)),

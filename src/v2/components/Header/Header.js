@@ -53,7 +53,7 @@ class Header extends Component {
       <SpotContext.Consumer>
         {
           ({ spot }) => {
-            const sectorIds = spot ? spots[spot.id].sectorIds : [];
+            const sectorIds = spot ? R.map(s => s.id)(spots[spot.id].sectors) : [];
             const currentSectors = getArrayByIds(sectorIds, sectors);
             return (
               <SectorContext.Consumer>
@@ -98,7 +98,7 @@ Header.propTypes = {
 
 const mapStateToProps = state => ({
   sectors: state.sectorsStore.sectors,
-  spots: state.spotsStore.spots,
+  spots: state.spotsStoreV2.spots,
 });
 
 export default withRouter(connect(mapStateToProps)(Header));
