@@ -21,29 +21,6 @@
     height: 100%;
 }
 
-.climbing-card-m_gravity {
-    background-color: #197BED;
-}
-
-.climbing-card-m_limestone {
-    background-color: #7AB914;
-}
-
-.climbing-card-m_bigwall {
-    background-color: #DD445F;
-}
-
-.climbing-card-m_tokyo {
-    background-color: #09BDA7;
-}
-
-.climbing-card-m__container-inner {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: -12px;
-    margin-right: -12px;
-}
-
 .climbing-card-m__col-xs-12 {
     width: 100%;
     max-width: 100%;

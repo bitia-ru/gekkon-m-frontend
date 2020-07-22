@@ -6,10 +6,10 @@ import routeMarkColorsStoreReducer from './stores/route_mark_colors/reducers';
 import usersStoreReducer from './stores/users/reducers';
 import routesStoreReducer from './stores/routes/reducers';
 import sectorsStoreReducer from './stores/sectors/reducers';
-import spotsStoreReducer from './stores/spots/reducers';
 import newsStoreReducer from './stores/news/reducers';
 import { default as usersReducerV2 } from '@/v2/redux/users/reducer';
 import { default as userSessionReducerV2 } from '@/v2/redux/user_session/reducer';
+import { default as spotsStoreReducerV2 } from '@/v2/redux/spots/reducer';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -116,7 +116,7 @@ export default combineReducers({
   selectedViewModes: selectedViewModesReducer,
   routeMarkColorsStore: routeMarkColorsStoreReducer,
   usersStore: usersStoreReducer,
-  spotsStore: spotsStoreReducer,
+  spotsStoreV2: spotsStoreReducerV2,
   sectorsStore: sectorsStoreReducer,
   routesStore: routesStoreReducer,
   newsStore: newsStoreReducer,
