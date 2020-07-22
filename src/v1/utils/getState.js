@@ -6,7 +6,7 @@ const getState = state => (
       store => store.numOfActiveRequests,
       [
         state.usersStore,
-        state.spotsStore,
+        state.spotsStoreV2,
         state.sectorsStore,
         state.routesStore,
         state.routeMarkColorsStore,

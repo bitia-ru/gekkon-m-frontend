@@ -10,7 +10,7 @@ import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import SpotContext from '@/v1/contexts/SpotContext';
 import SectorContext from '@/v1/contexts/SectorContext';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
-import { reloadSpot as reloadSpotAction } from '@/v1/utils/reloadSpot';
+import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import getCurrentSector from '@/v1/utils/getCurrentSector';
 import getCurrentSpotOrSectorData from '@/v1/utils/getCurrentSpotOrSectorData';
 import MainScreen from '@/v2/layouts/MainScreen/MainScreen';
@@ -26,7 +26,7 @@ class SpotsShow extends React.PureComponent {
 
   componentDidMount() {
     const sectorId = this.getSectorId();
-    this.props.reloadSpot(this.getSpotId());
+    this.props.loadSpot(this.getSpotId());
     if (sectorId !== 0) {
       this.props.reloadSector(sectorId);
     }
@@ -50,7 +50,7 @@ class SpotsShow extends React.PureComponent {
       this.props.reloadSector(id);
       history.push(`${R.replace(/\/sectors\/[0-9]*/, '', match.url)}/sectors/${id}`);
     } else {
-      this.props.reloadSpot(this.getSpotId());
+      this.props.loadSpot(this.getSpotId());
       history.push(R.replace(/\/sectors\/[0-9]*/, '', match.url));
     }
   };
@@ -127,12 +127,12 @@ class SpotsShow extends React.PureComponent {
 
 const mapStateToProps = state => ({
   routes: state.routesStore.routes,
-  spots: state.spotsStore.spots,
+  spots: state.spotsStoreV2.spots,
   sectors: state.sectorsStore.sectors,
 });
 
 const mapDispatchToProps = dispatch => ({
-  reloadSpot: spotId => dispatch(reloadSpotAction(spotId)),
+  loadSpot: spotId => dispatch(loadSpotAction(spotId)),
   reloadSector: sectorId => dispatch(reloadSectorAction(sectorId)),
 });
 

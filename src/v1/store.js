@@ -19,7 +19,7 @@ export const saveState = (state) => {
     data.routes = state.routesStore.routes;
     data.filtrationResults = state.routesStore.filtrationResults;
 
-    data.spots = state.spotsStore.spots;
+    data.spots = state.spotsStoreV2.spots;
 
     data.sectors = state.sectorsStore.sectors;
 
@@ -56,8 +56,8 @@ const getDataFromLocalForagePromise = () => (
           state.routesStore.routes = data.routes;
           state.routesStore.filtrationResults = data.filtrationResults;
 
-          state.spotsStore = SPOTS_DEFAULT_STORE_FORMAT;
-          state.spotsStore.spots = data.spots;
+          state.spotsStoreV2 = SPOTS_DEFAULT_STORE_FORMAT;
+          state.spotsStoreV2.spots = data.spots;
 
           state.sectorsStore = SECTORS_DEFAULT_STORE_FORMAT;
           state.sectorsStore.sectors = data.sectors;
