@@ -15,15 +15,16 @@ export const prepareFilters = (filters) => {
   return {
     ...filters,
     filters: R.map(
-      e => (
-        {
+      e => {
+        const filter = filters[e] || R.find(R.propEq('id', e))(DEFAULT_FILTERS);
+        return {
           clickable: true,
           id: e,
-          selected: filters[e],
-          text: `${filtersLookUp[e]} ${filters[e] ? ' ✓' : ''}`,
+          selected: filter,
+          text: `${filtersLookUp[e]} ${filter ? ' ✓' : ''}`,
           value: e,
         }
-      ),
+      },
       R.concat(R.keys(RESULT_FILTERS), ['personal', 'outdated', 'liked']),
     ),
   };
