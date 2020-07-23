@@ -4,13 +4,13 @@ import bcrypt from 'bcryptjs';
 import * as R from 'ramda';
 import SALT_ROUNDS from '../Constants/Bcrypt';
 import { ApiUrl } from '../Environ';
-import { CLIENT_ID, REDIRECT_URI } from '../Constants/Vk';
 import RE_EMAIL from '../Constants/Constraints';
 import store from '../store';
 import {
   updateUser, signIn, removeVk, sendResetPasswordMail, logOut,
 } from '../stores/users/utils';
 import showToastr from '@/v2/utils/showToastr';
+import { enterWithVk } from '@/v2/utils/vk';
 
 export default class BaseComponent extends React.Component {
   constructor(props) {
@@ -98,10 +98,7 @@ export default class BaseComponent extends React.Component {
   };
 
   enterWithVk = (type) => {
-    this.w = window.open(`https://oauth.vk.com/authorize?client_id=${CLIENT_ID}&scope=email%2Cphotos&redirect_uri=${REDIRECT_URI}&response_type=code&v=5.74&state=${JSON.stringify({
-      method: type,
-    })}`, 'VK', 'resizable,scrollbars,status');
-    window.addEventListener('message', this.afterVkEnter);
+    enterWithVk(type);
   };
 
   afterVkEnter = (ev) => {
