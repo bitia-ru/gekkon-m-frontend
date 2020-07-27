@@ -16,7 +16,10 @@ export const loadNews = params => (
         dispatch(loadNewsSuccess(response.data));
       }).catch((error) => {
         dispatch(loadNewsFailed());
-        toastHttpError(error);
+
+        if (error.response?.status !== 501) {
+          toastHttpError(error);
+        }
       });
   }
 );
