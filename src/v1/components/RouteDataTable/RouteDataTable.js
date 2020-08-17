@@ -76,33 +76,6 @@ const RouteDataTable = ({ route, user }) => {
           }
         </div>
       </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Дата накрутки:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          {
-            route.installed_at
-              ? (
-                moment(route.installed_at).format('DD.MM.YYYY')
-              )
-              : ''
-          }
-        </div>
-      </div>
-      <div className="route-m__table-row">
-        <div className="route-m__table-item route-m__table-item_header">
-          Дата cкрутки:
-        </div>
-        <div className="route-m__table-item route-m__table-item-right">
-          {
-            (() => {
-              const kind = R.find(R.propEq('title', route.kind), ROUTE_KINDS);
-              return kind ? kind.text : '';
-            })()
-          }
-        </div>
-      </div>
       {
         route.installed_at && (<>
           <div className="route-m__table-row">
