@@ -38,6 +38,7 @@ import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
+import showToastr from '@/v2/utils/showToastr';
 import './RoutesShowModal.css';
 
 class RoutesShowModal extends Component {
@@ -65,6 +66,24 @@ class RoutesShowModal extends Component {
     return (
       match.params.route_id
         ? parseInt(match.params.route_id, 10)
+        : null
+    );
+  };
+
+  getSectorId = () => {
+    const { match } = this.props;
+    return (
+      match.params.sector_id
+        ? parseInt(match.params.sector_id, 10)
+        : null
+    );
+  };
+
+  getSpotId = () => {
+    const { match } = this.props;
+    return (
+      match.params.id
+        ? parseInt(match.params.id, 10)
         : null
     );
   };

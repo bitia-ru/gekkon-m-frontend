@@ -50,7 +50,7 @@ module.exports = () => ({
     }),
     new webpack.EnvironmentPlugin({
       API_URL: '/api',
-      SENTRY_DSN: '',
+      SENTRY_DSN: 'https://dc2e6ebcb5dd4d66a373d0331098cdae:905d88eaf1ae4f479b389fd2739afada@bugs.bitia.ru/18',
       CLIENT_ID: '',
     }),
     new FaviconsWebpackPlugin({
