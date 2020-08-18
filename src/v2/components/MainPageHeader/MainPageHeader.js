@@ -6,6 +6,12 @@ import Button from '@/v1/components/Button/Button';
 import { notReady, notExist } from '@/v1/utils';
 import './MainPageHeader.css';
 import { currentUser } from '@/v2/redux/user_session/utils';
+import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
+import {
+  TELEGRAM_LINK,
+  INSTA_LINK,
+  VK_LINK,
+} from '@/v1/Constants/SocialLinks';
 
 const bgImage = require('./images/main-page-header.jpg');
 
@@ -29,7 +35,13 @@ class MainPageHeader extends Component {
     const {
       user, history,
     } = this.props;
+
     const { bgImageLoaded, posterPhotoLoaded } = this.state;
+
+    const socialLinks = require(
+      '@/../img/social-links-sprite/social-links-sprite.svg',
+    );
+
     return (
       <header
         style={bgImageLoaded ? { backgroundImage: `url(${bgImage})` } : {}}
@@ -40,7 +52,7 @@ class MainPageHeader extends Component {
             <h1 className="first-section-m__header">Не можешь вспомнить свою первую 6С?</h1>
             <p className="first-section-m__descr">Не пытайся запоминать боль, записывай</p>
             {
-              (!notReady(user) && notExist(user)) && (
+              (!notReady(user) && notExist(user)) ? (
                 <>
                   <Button
                     size="big"
@@ -55,6 +67,26 @@ class MainPageHeader extends Component {
                     onClick={() => history.push('#signin')}
                   />
                 </>
+              ) : (
+                <ul className="social-links">
+                  <li>
+                    <SocialLinkButton
+                      dark
+                      href={TELEGRAM_LINK}
+                      xlinkHref={`${socialLinks}#icon-telegram`}
+                    />
+                  </li>
+                  <li>
+                    <SocialLinkButton dark href={VK_LINK} xlinkHref={`${socialLinks}#icon-vk`} />
+                  </li>
+                  <li>
+                    <SocialLinkButton
+                      dark
+                      href={INSTA_LINK}
+                      xlinkHref={`${socialLinks}#icon-inst`}
+                    />
+                  </li>
+                </ul>
               )
             }
             <div className="first-section-m__image">

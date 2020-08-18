@@ -5,10 +5,9 @@ import { Link, withRouter } from 'react-router-dom';
 import { currentUser } from '../../redux/user_session/utils';
 import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import {
+  TELEGRAM_LINK,
   INSTA_LINK,
   VK_LINK,
-  FACEBOOK_LINK,
-  TWITTER_LINK,
 } from '@/v1/Constants/SocialLinks';
 import { notReady, notExist } from '@/v1/utils';
 import { closeUserSession } from '@/v2/utils/auth';
@@ -17,9 +16,11 @@ import './Footer.css';
 class Footer extends React.PureComponent {
   render() {
     const { user, history } = this.props;
+
     const socialLinks = require(
-      '../../../../img/social-links-sprite/social-links-sprite.svg',
+      '@/../img/social-links-sprite/social-links-sprite.svg',
     );
+
     return (
       <footer className="footer-m">
         <div className="footer-m__container">
@@ -30,8 +31,8 @@ class Footer extends React.PureComponent {
             <ul className="social-links">
               <li>
                 <SocialLinkButton
-                  href={INSTA_LINK}
-                  xlinkHref={`${socialLinks}#icon-inst`}
+                  href={TELEGRAM_LINK}
+                  xlinkHref={`${socialLinks}#icon-telegram`}
                 />
               </li>
               <li>
@@ -39,14 +40,8 @@ class Footer extends React.PureComponent {
               </li>
               <li>
                 <SocialLinkButton
-                  href={FACEBOOK_LINK}
-                  xlinkHref={`${socialLinks}#icon-facebook`}
-                />
-              </li>
-              <li>
-                <SocialLinkButton
-                  href={TWITTER_LINK}
-                  xlinkHref={`${socialLinks}#icon-twitter`}
+                  href={INSTA_LINK}
+                  xlinkHref={`${socialLinks}#icon-inst`}
                 />
               </li>
             </ul>
