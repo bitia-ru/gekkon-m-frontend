@@ -105,7 +105,20 @@ class RouteCard extends Component {
                   }
                 </span>
                 <span className="card-m__complexity">
-                  <Category category={route.category} size="small" position="right" />
+                  <Category
+                    category={route.category}
+                    size="small"
+                    position="right"
+                    color={route.marks_color?.color || 'rgba(0, 0, 0, 0)'}
+                  />
+                  {
+                    route.holds_color && (
+                      <div
+                        className="card-m__route_holds_color"
+                        style={{ backgroundColor: route.holds_color?.color || 'rgba(0, 0, 0, 0)' }}
+                      />
+                    )
+                  }
                 </span>
               </div>
             </div>
