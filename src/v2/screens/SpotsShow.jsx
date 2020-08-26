@@ -68,7 +68,7 @@ class SpotsShow extends React.PureComponent {
     return (
       <Switch>
         <Route
-          path={[`${match.path}/:route_id/edit`, `${match.path}/new`]}
+          path={[`${match.path}/routes/:route_id/edit`, `${match.path}/routes/new`]}
           render={() => (
             <RoutesEditModal
               onClose={this.closeRoutesModal}
