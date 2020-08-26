@@ -56,12 +56,6 @@ const withModals = (BaseComponent) => {
       window.removeEventListener('keydown', this.onKeyDown);
     }
 
-    onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        this.closeForm();
-      }
-    };
-
     modalArgs = (name) => {
       const { modals } = this.state;
       return modals[name] ? modals[name].args : null;
