@@ -237,6 +237,7 @@
 
 .route-m__route-count:not(:last-child) {
     margin-right: 34px;
+    min-width: 40px;
 }
 
 .route-m__route-information {
