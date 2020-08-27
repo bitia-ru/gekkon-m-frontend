@@ -1,0 +1,49 @@
+name: DeployForMaster
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install SSH key
+        env:
+          SSH_KEY_GPG_PASSPHRASE: ${{ secrets.ssh_key_gpg_passphrase }}
+        run: |
+          mkdir -p ~/.ssh
+          gpg --quiet --batch --yes --decrypt --passphrase="${SSH_KEY_GPG_PASSPHRASE}" \
+            --output ~/.ssh/id_rsa.deploy deploy/secrets/deploy.id_rsa.gpg
+          chmod 600 ~/.ssh/id_rsa.deploy
+          cat << EOF >>~/.ssh/config
+          Host deploy
+            StrictHostKeyChecking no
+            IdentityFile ~/.ssh/id_rsa.deploy
+            HostName almagest.infra.crags.ru
+            User almagest
+          EOF
+      - name: Deploy
+        run: |
+          cat << EOF >deploy_script.DeployForMaster.sh
+            cd services/gekkon-production/frontend_mobile && \
+              git fetch && \
+              git reset --hard HEAD && \
+              git checkout master && \
+              git reset --hard origin/master && \
+              cd .. && \
+              docker-compose build frontend_mobile && \
+              docker-compose up -d
+          EOF
+          ssh deploy "$(cat deploy_script.DeployForMaster.sh)"
+      - name: Purge CloudFlare cache
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.cloudflare_zone }}
+          CLOUDFLARE_PURGE_TOKEN: ${{ secrets.cloudflare_purge_token }}
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/purge_cache" \
+            -d '{ "purge_everything": true }' \
+            -H "Authorization: Bearer $CLOUDFLARE_PURGE_TOKEN" \
+            -H "Content-Type: application/json"
