@@ -22,14 +22,14 @@ class FilterControl extends Component {
     const {
       setSelectedFilter: setSelectedFilterProp,
       setSelectedViewMode: setSelectedViewModeProp,
+      selectedFilters,
     } = this.props;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
-    let date = '';
     setSelectedViewModeProp(spotId, sectorId, viewMode);
     if (viewMode === 'scheme') {
-      date = getFilters(spotId, sectorId).date;
-      setSelectedFilterProp(spotId, sectorId, 'date', date);
+      const filters = getFilters(selectedFilters, spotId, sectorId);
+      setSelectedFilterProp(spotId, sectorId, filters);
     }
   };
 
@@ -65,15 +65,22 @@ FilterControl.propTypes = {
   viewMode: PropTypes.string.isRequired,
   numOfRoutes: PropTypes.number.isRequired,
   history: PropTypes.object,
+  setSelectedFilter: PropTypes.func,
+  setSelectedViewMode: PropTypes.func,
+  selectedFilters: PropTypes.object,
 };
+
+const mapStateToProps = state => ({
+  selectedFilters: state.selectedFilters,
+});
 
 const mapDispatchToProps = dispatch => ({
   setSelectedViewMode: (spotId, sectorId, viewMode) => (
     dispatch(setSelectedViewMode(spotId, sectorId, viewMode))
   ),
-  setSelectedFilter: (spotId, sectorId, filterName, filterValue) => (
-    dispatch(setSelectedFilter(spotId, sectorId, filterName, filterValue))
+  setSelectedFilter: (spotId, sectorId, filters) => (
+    dispatch(setSelectedFilter(spotId, sectorId, filters))
   ),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(FilterControl));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilterControl));
