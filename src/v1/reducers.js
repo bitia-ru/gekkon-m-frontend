@@ -86,8 +86,8 @@ const selectedFiltersReducer = (state = {}, action) => {
     }
     return selectedFilters;
   case acts.SET_SELECTED_FILTER:
-    selectedFilters = { ...state };
     if (action.sectorId === 0) {
+      selectedFilters = { ...state };
       const spotSelectedFilters = { ...selectedFilters[action.spotId] };
       selectedFilters[action.spotId] = R.map(
         (filters) => {
@@ -99,11 +99,15 @@ const selectedFiltersReducer = (state = {}, action) => {
         },
         spotSelectedFilters,
       );
-    } else {
-      selectedFilters[action.spotId][action.sectorId] = action.filters;
-      selectedFilters[action.spotId][action.sectorId].wasChanged = true;
+      return selectedFilters;
     }
-    return selectedFilters;
+    return {
+      ...state,
+      [action.spotId]: {
+        ...state[action.spotId],
+        [action.sectorId]: { ...action.filters, wasChanged: true },
+      },
+    };
   default:
     return state;
   }

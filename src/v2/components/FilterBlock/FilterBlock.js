@@ -171,7 +171,8 @@ class FilterBlock extends Component {
     } = this.state;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
-    const viewMode = getViewMode(spotId, sectorId);
+    const { sectors, selectedViewModes } = this.props;
+    const viewMode = getViewMode(sectors, selectedViewModes, spotId, sectorId);
     const formatter = (
       viewMode === 'scheme'
         ? dateToTextFormatter
@@ -275,16 +276,20 @@ class FilterBlock extends Component {
 }
 
 FilterBlock.propTypes = {
+  sectors: PropTypes.object,
+  selectedViewModes: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   selectedFilters: state.selectedFilters,
+  sectors: state.sectorsStore.sectors,
+  selectedViewModes: state.selectedViewModes,
   user: state.usersStore.users[state.usersStore.currentUserId],
 });
 
 const mapDispatchToProps = dispatch => ({
-  setSelectedFilter: (spotId, sectorId, filterName, filterValue) => (
-    dispatch(setSelectedFilter(spotId, sectorId, filterName, filterValue))
+  setSelectedFilter: (spotId, sectorId, filters) => (
+    dispatch(setSelectedFilter(spotId, sectorId, filters))
   ),
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
 });
