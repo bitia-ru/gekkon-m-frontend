@@ -20,7 +20,7 @@ class DatePickerSelector extends React.PureComponent {
     } = this.props;
     return (
       <>
-        <div className="field-select-m__container">
+        <div className={css(styles.fieldSelectMContainer)}>
           <div
             role="button"
             tabIndex="0"
@@ -48,7 +48,10 @@ class DatePickerSelector extends React.PureComponent {
   }
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+  fieldSelectMContainer: {
+    position: 'relative',
+  },
 });
 
 DatePickerSelector.propTypes = {
