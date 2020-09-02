@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ViewModeSwitcher from '@/v1/components/ViewModeSwitcher/ViewModeSwitcher';
 import getFilters from '@/v1/utils/getFilters';
-import './FilterControl.css';
 import { setSelectedFilter, setSelectedViewMode } from '@/v1/actions';
 import { StyleSheet, css } from '../../aphrodite';
 
@@ -40,8 +39,12 @@ class FilterControl extends Component {
     } = this.props;
     return (
       <>
-        <button type="button" className="btn-filter" onClick={() => history.push('#filters')}>
-          <span className="btn-filter__icon">
+        <button
+          type="button"
+          className={css(styles.btnFilter)}
+          onClick={() => history.push('#filters')}
+        >
+          <span className={css(styles.btnFilterIcon)}>
             <svg aria-hidden="true">
               <use xlinkHref={`${require('./images/filter-icon.svg')}#icon-filter`} />
             </svg>
@@ -49,7 +52,7 @@ class FilterControl extends Component {
           Фильтры
         </button>
         <div className={css(styles.contentMNav)}>
-          <div className="content-m__info-block">{`Всего трасс: ${numOfRoutes}`}</div>
+          <div>{`Всего трасс: ${numOfRoutes}`}</div>
           <ViewModeSwitcher
             onViewModeChange={this.onViewModeChange}
             viewMode={viewMode}
@@ -68,6 +71,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: '26px',
     marginBottom: '26px',
+  },
+  btnFilter: {
+    backgroundColor: '#ffffff',
+    color: '#1f1f1f',
+    width: '100%',
+    lineHeight: '24px',
+    fontSize: '24px',
+    fontFamily: 'GilroyRegular, sans-serif',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: '2px solid #DDE2EF',
+    padding: '12px',
+    boxSizing: 'border-box',
+  },
+  btnFilterIcon: {
+    width: '20px',
+    height: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '24px',
+    '> svg': {
+      fill: '#1f1f1f',
+      width: '100%',
+      height: '100%',
+    },
   },
 });
 
