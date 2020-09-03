@@ -11,7 +11,7 @@ import {
 } from '@/v1/Constants/SocialLinks';
 import { notReady, notExist } from '@/v1/utils';
 import { closeUserSession } from '@/v2/utils/auth';
-import './Footer.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 class Footer extends React.PureComponent {
   render() {
@@ -22,10 +22,10 @@ class Footer extends React.PureComponent {
     );
 
     return (
-      <footer className="footer-m">
-        <div className="footer-m__container">
-          <div className="footer-m__social">
-            <h3 className="footer__header">
+      <footer className={css(styles.footerM)}>
+        <div className={css(styles.footerMContainer)}>
+          <div className={css(styles.footerMSocial)}>
+            <h3 className={css(styles.footerMHeader)}>
               Соцсети
             </h3>
             <ul className="social-links">
@@ -47,12 +47,12 @@ class Footer extends React.PureComponent {
             </ul>
           </div>
 
-          <div className="footer-m__col-6">
-            <div className="footer-m__item">
-              <h3 className="footer-m__header">
+          <div className={css(styles.footerMCol6)}>
+            <div className={css(styles.footerMItem)}>
+              <h3 className={css(styles.footerMHeader)}>
                 Аккаунт
               </h3>
-              <ul className="footer-m__list">
+              <ul className={css(styles.footerMList)}>
                 {
                   !notReady(user) && (
                     <>
@@ -60,22 +60,22 @@ class Footer extends React.PureComponent {
                         notExist(user)
                           ? (
                             <>
-                              <li className="footer-m__list-item">
+                              <li className={css(styles.footerMListItem)}>
                                 <a
                                   onClick={() => history.push('#signin')}
                                   role="link"
                                   tabIndex={0}
-                                  className="footer-m__list-link"
+                                  className={css(styles.footerMListLink)}
                                 >
                                   Вход
                                 </a>
                               </li>
-                              <li className="footer-m__list-item">
+                              <li className={css(styles.footerMListItem)}>
                                 <a
                                   onClick={() => history.push('#signup')}
                                   role="link"
                                   tabIndex={0}
-                                  className="footer-m__list-link"
+                                  className={css(styles.footerMListLink)}
                                 >
                                   Регистрация
                                 </a>
@@ -83,12 +83,12 @@ class Footer extends React.PureComponent {
                             </>
                           )
                           : (
-                            <li className="footer-m__list-item">
+                            <li className={css(styles.footerMListItem)}>
                               <a
                                 onClick={closeUserSession}
                                 role="link"
                                 tabIndex={0}
-                                className="footer-m__list-link"
+                                className={css(styles.footerMListLink)}
                               >
                                 Выход
                               </a>
@@ -101,19 +101,19 @@ class Footer extends React.PureComponent {
               </ul>
             </div>
           </div>
-          <div className="footer-m__col-6">
-            <div className="footer-m__item footer-m__col-6">
-              <h3 className="footer-m__header">
+          <div className={css(styles.footerMCol6)}>
+            <div className={css(styles.footerMItem, styles.footerMCol6)}>
+              <h3 className={css(styles.footerMHeader)}>
                 Разделы
               </h3>
-              <ul className="footer-m__list">
-                <li className="footer-m__list-item">
-                  <Link to="/" className="footer-m__list-link">Скалодромы</Link>
+              <ul className={css(styles.footerMList)}>
+                <li className={css(styles.footerMListItem)}>
+                  <Link to="/" className={css(styles.footerMListLink)}>Скалодромы</Link>
                 </li>
-                <li className="footer-m__list-item">
+                <li className={css(styles.footerMListItem)}>
                   <Link
                     to="/crags"
-                    className="footer-m__list-link footer-m__list-link-disabled"
+                    className={css(styles.footerMListLink, styles.footerMListLinkDisabled)}
                   >
                     Скалы
                   </Link>
@@ -121,26 +121,26 @@ class Footer extends React.PureComponent {
               </ul>
             </div>
           </div>
-          <div className="footer-m__col-6">
-            <div className="footer-m__item footer-m__col-6">
-              <h3 className="footer-m__header">
+          <div className={css(styles.footerMCol6)}>
+            <div className={css(styles.footerMItem, styles.footerMCol6)}>
+              <h3 className={css(styles.footerMHeader)}>
                 Информация
               </h3>
-              <ul className="footer-m__list">
-                <li className="footer-m__list-item">
-                  <Link to="/about" className="footer-m__list-link">О нас</Link>
+              <ul className={css(styles.footerMList)}>
+                <li className={css(styles.footerMListItem)}>
+                  <Link to="/about" className={css(styles.footerMListLink)}>О нас</Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="footer-m__col-6">
-            <div className="footer-m__item footer-m__col-6">
-              <h3 className="footer-m__header">
+          <div className={css(styles.footerMCol6)}>
+            <div className={css(styles.footerMItem, styles.footerMCol6)}>
+              <h3 className={css(styles.footerMHeader)}>
                 Помощь
               </h3>
-              <ul className="footer-m__list">
-                <li className="footer-m__list-item">
-                  <Link to="/faq" className="footer-m__list-link">FAQ</Link>
+              <ul className={css(styles.footerMList)}>
+                <li className={css(styles.footerMListItem)}>
+                  <Link to="/faq" className={css(styles.footerMListLink)}>FAQ</Link>
                 </li>
               </ul>
             </div>
@@ -150,6 +150,70 @@ class Footer extends React.PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  footerM: {
+    width: '100%',
+    paddingTop: '64px',
+    paddingBottom: '64px',
+    backgroundColor: '#1A1A1A',
+    color: '#FCFCFC',
+    position: 'relative',
+  },
+  footerMContainer: {
+    display: 'flex',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    boxSizing: 'border-box',
+  },
+  footerMSocial: {
+    flexBasis: '100%',
+    maxWidth: '100%',
+    marginBottom: '36px',
+  },
+  footerMHeader: {
+    fontSize: '18px',
+    fontWeight: 'normal',
+    color: '#FCFCFC',
+    marginTop: 0,
+    marginBottom: '20px',
+  },
+  footerMItem: {
+    boxSizing: 'border-box',
+    width: '100%',
+    paddingRight: '20px',
+    marginBottom: '40px',
+  },
+  footerMList: {
+    paddingLeft: 0,
+    margin: 0,
+    marginTop: '-6px',
+  },
+  footerMListItem: { listStyle: 'none' },
+  footerMListLink: {
+    color: '#878787',
+    textDecoration: 'none',
+    lineHeight: '1.3em',
+    paddingTop: '6px',
+    paddingBottom: '6px',
+    display: 'block',
+    transition: 'color .4s ease-out',
+    ':hover': { color: '#FCFCFC' },
+  },
+  footerMListLinkDisabled: {
+    color: '#444444',
+    pointerEvents: 'none',
+  },
+  footerMCol6: {
+    maxWidth: '50%',
+    width: '100%',
+  },
+});
 
 Footer.propTypes = {
   user: PropTypes.object,
