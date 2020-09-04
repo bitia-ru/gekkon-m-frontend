@@ -8,7 +8,6 @@ import { ROUTE_KINDS } from '@/v1/Constants/Route';
 import { DATE_FORMAT } from '@/v1/Constants/Date';
 import { getUserName } from '@/v1/Constants/User';
 import RouteContext from '@/v1/contexts/RouteContext';
-import './RouteDataEditableTable.css';
 import CategorySelector from '@/v2/components/CategorySelector/CategorySelector';
 import RouteColorPickerSelector
   from '@/v2/components/RouteColorPickerSelector/RouteColorPickerSelector';
@@ -16,6 +15,7 @@ import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSel
 import DropDownPersonListSelector
   from '@/v2/components/DropDownPersonListSelector/DropDownPersonListSelector';
 import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownListSelector';
+import { css, StyleSheet } from '@/v2/aphrodite';
 
 const RouteDataEditableTable = ({
   sectors,
@@ -23,8 +23,18 @@ const RouteDataEditableTable = ({
   routeMarkColors,
   users,
 }) => {
-  const fieldSelectClass = 'field-select-m__select field-select-m__select-transparent field-select-m__select_small route-m__link route-m__link_edit';
-  const dateClass = 'field-select-m__select field-select-m__select-transparent field-select-m__select_small';
+  const fieldSelectClass = css(
+    styles.fieldSelectMSelect,
+    styles.fieldSelectMSelectTransparent,
+    styles.fieldSelectMSelectSmall,
+    styles.routeMLink,
+    styles.routeMLinkEdit,
+  );
+  const dateClass = css(
+    styles.fieldSelectMSelect,
+    styles.fieldSelectMSelectTransparent,
+    styles.fieldSelectMSelectSmall,
+  );
   return (
     <RouteContext.Consumer>
       {
@@ -86,7 +96,7 @@ const RouteDataEditableTable = ({
                       {
                         sector.kind === 'mixed'
                           ? (
-                            <div className="route-m__field-select">
+                            <div className={css(styles.fieldSelectMSelect)}>
                               <DropDownListSelector
                                 value={
                                   route.kind
@@ -101,7 +111,13 @@ const RouteDataEditableTable = ({
                                     );
                                   }
                                 }
-                                fieldSelectClass="field-select-m__select field-select-m__select-transparent field-select-m__select_small"
+                                fieldSelectClass={
+                                  css(
+                                    styles.fieldSelectMSelect,
+                                    styles.fieldSelectMSelectTransparent,
+                                    styles.fieldSelectMSelectSmall,
+                                  )
+                                }
                               />
                             </div>
                           )
@@ -119,7 +135,7 @@ const RouteDataEditableTable = ({
                     Накручена:
                   </div>
                   <div className="route-m__table-item route-m__table-item-right">
-                    <div className="field-select-m route-m__field-select">
+                    <div>
                       <DatePickerSelector
                         clearable
                         formatter={d => moment(d).format(DATE_FORMAT)}
@@ -137,7 +153,7 @@ const RouteDataEditableTable = ({
                     Скручена:
                   </div>
                   <div className="route-m__table-item route-m__table-item-right">
-                    <div className="field-select-m route-m__field-select">
+                    <div>
                       <DatePickerSelector
                         clearable
                         formatter={d => moment(d).format(DATE_FORMAT)}
@@ -181,6 +197,95 @@ const RouteDataEditableTable = ({
     </RouteContext.Consumer>
   );
 };
+
+const styles = StyleSheet.create({
+  fieldSelectMSelect: {
+    width: '100%',
+    height: '54px',
+    lineHeight: '1.3em',
+    display: 'flex',
+    alignItems: 'center',
+    border: '2px solid #DDE2EF',
+    borderRadius: 0,
+    padding: '14px 40px 14px 20px',
+    backgroundColor: '#ffffff',
+    outline: 'none',
+    transition: 'box-shadow .4s ease-out',
+    fontFamily: 'GilroyRegular',
+    fontSize: '14px',
+    boxSizing: 'border-box',
+    position: 'relative',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    ':before': {
+      content: '\'\'',
+      position: 'absolute',
+      right: '20px',
+      top: '50%',
+      width: '14px',
+      height: '9px',
+      transform: 'translateY(-50%)',
+      backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2214%22%20height%3D%229%22%20viewBox%3D%220%200%2014%209%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M7%209L0.0717972%20-1.30507e-06L13.9282%20-9.36995e-08L7%209Z%22%20fill%3D%22%231A1A1A%22/%3E%0A%3C/svg%3E%0A")',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '100% auto',
+      pointerEvents: 'none',
+      zIndex: 2,
+    },
+    ':after': {
+      width: '45px',
+      height: '100%',
+      backgroundColor: '#ffffff',
+      position: 'absolute',
+      content: '\'\'',
+      right: 0,
+      top: 0,
+      zIndex: 1,
+    },
+    ':focus': { boxShadow: '0px 0px 0px 2px rgba(0, 108, 235, 0.7)' },
+  },
+  fieldSelectMSelectTransparent: {
+    border: '2px solid transparent',
+    transition: 'box-shadow .4s ease-out, border .4s ease-out',
+    ':before': {
+      opacity: 0,
+      transition: 'opacity .4s ease-out',
+    },
+    ':hover': {
+      border: '2px solid #DDE2EF',
+      ':before': { opacity: 1 },
+    },
+    ':focus': {
+      border: '2px solid #DDE2EF',
+      ':before': { opacity: 1 }
+    },
+  },
+  fieldSelectMSelectSmall: {
+    height: '29px',
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: '7px',
+    paddingRight: '16px',
+    width: '100%',
+    maxWidth: '220px',
+    fontSize: '14px',
+    ':before': {
+      width: '6px',
+      height: '4px',
+      right: '5px',
+    },
+    ':after': { width: '15px' },
+  },
+  routeMLink: {
+    color: '#006CEB',
+    textDecoration: 'none',
+    ':hover': { textDecoration: 'underline' },
+  },
+  routeMLinkEdit: {
+    width: '100%',
+    ':hover': { textDecoration: 'none' },
+  },
+});
 
 RouteDataEditableTable.propTypes = {
   sectors: PropTypes.object.isRequired,
