@@ -25,7 +25,6 @@ import { addRoute, loadRoute, updateRoute } from '@/v2/redux/routes/actions';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
-import './RoutesEditModal.css';
 import { css, StyleSheet } from '../../aphrodite';
 
 class RoutesEditModal extends Component {
@@ -509,8 +508,8 @@ class RoutesEditModal extends Component {
                       />
                     </div>
                     <div className="route-m__item">
-                      <div className="collapsable-block-m">
-                        <button type="button" className="collapsable-block-m__header">
+                      <div>
+                        <button type="button" className={css(styles.collapsableBlockMHeader)}>
                           Описание
                         </button>
                         <textarea
@@ -565,6 +564,23 @@ const styles = StyleSheet.create({
     height: '100%',
     overflowY: 'auto',
     backgroundColor: '#FFFFFF',
+  },
+  collapsableBlockMHeader: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    boxShadow: 'none',
+    outline: 'none',
+    padding: 0,
+    width: '100%',
+    textAlign: 'left',
+    position: 'relative',
+    paddingRight: '15px',
+    paddingBottom: '16px',
+    cursor: 'pointer',
+    fontSize: '18px',
+    color: '#1f1f1f',
+    fontFamily: 'GilroyBold',
+    lineHeight: '1.3em',
   },
 });
 

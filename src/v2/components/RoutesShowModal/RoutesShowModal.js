@@ -33,14 +33,13 @@ import {
   removeRoute,
 } from '@/v2/redux/routes/actions';
 import getFilters from '@/v1/utils/getFilters';
-import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
+import reloadRoutesAction from '@/v2/utils/reloadRoutes';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
 import showToastr from '@/v2/utils/showToastr';
 import withModals from '@/v2/modules/modalable';
 import RouteAscents from '../../forms/RouteAscents/RouteAscents';
-import './RoutesShowModal.css';
 import { StyleSheet, css } from '../../aphrodite';
 import { ModalContainerContext } from '../../modules/modalable';
 
@@ -357,7 +356,7 @@ class RoutesShowModal extends Component {
                     <div className="route-m__container">
                       <div className="route-m__block">
                         <div className="route-m__close">
-                          <CloseButton onClick={() => onClose()}/>
+                          <CloseButton onClick={() => onClose()} />
                         </div>
                       </div>
                       {
@@ -389,7 +388,7 @@ class RoutesShowModal extends Component {
                         {
                           showLoadPhotoMsg && (
                             <div className="route-m__route-descr">
-                              <div className="route-m__route-photo-placeholder"/>
+                              <div className={css(styles.routeMRoutePhotoPlaceholder)} />
                             </div>
                           )
                         }
@@ -420,7 +419,7 @@ class RoutesShowModal extends Component {
                                 !user
                                   ? null
                                   : afterChange => this.onLikeChange(
-                                  routeId, afterChange,
+                                    routeId, afterChange,
                                   )
                               }
                             />
@@ -444,9 +443,9 @@ class RoutesShowModal extends Component {
                     </div>
                     <div className="route-m__container">
                       {
-                        (user && avail(user)) && <div className="track-m__notice">
-                          <NoticeButton onClick={this.showNoticeForm}/>
-                          <div className="track-m__notice-tooltip">
+                        (user && avail(user)) && <div className={css(styles.trackMNotice)}>
+                          <NoticeButton onClick={this.showNoticeForm} />
+                          <div className={css(styles.trackMNoticeTooltip)}>
                             {
                               false && showTooltip && <Tooltip
                                 text="Сообщить об ошибке"
@@ -455,16 +454,16 @@ class RoutesShowModal extends Component {
                           </div>
                         </div>
                       }
-                      <RouteDataTable route={route} user={user}/>
+                      <RouteDataTable route={route} user={user} />
                     </div>
                     {
                       route.description && (
                         <div className="route-m__item">
-                          <div className="collapsable-block-m">
-                            <button type="button" className="collapsable-block-m__header">
+                          <div>
+                            <button type="button" className={css(styles.collapsableBlockMHeader)}>
                               Описание
                             </button>
-                            <div className="collapsable-block-m__content">
+                            <div className={css(styles.collapsableBlockMContent)}>
                               {route.description}
                             </div>
                           </div>
@@ -545,11 +544,56 @@ const styles = StyleSheet.create({
   },
   scrollable: { overflowY: 'auto' },
   unscrollable: { overflowY: 'hidden' },
+  collapsableBlockMHeader: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    boxShadow: 'none',
+    outline: 'none',
+    padding: 0,
+    width: '100%',
+    textAlign: 'left',
+    position: 'relative',
+    paddingRight: '15px',
+    paddingBottom: '16px',
+    cursor: 'pointer',
+    fontSize: '18px',
+    color: '#1f1f1f',
+    fontFamily: 'GilroyBold',
+    lineHeight: '1.3em',
+  },
+  collapsableBlockMContent: {
+    color: '#1f1f1f',
+    fontSize: '16px',
+    lineHeight: '1.3em',
+    marginBottom: '18px',
+  },
+  trackMNotice: {
+    width: '16px',
+    height: '16px',
+    position: 'absolute',
+    right: '14px',
+    top: '14px',
+  },
+  trackMNoticeTooltip: {
+    position: 'absolute',
+    content: '\'\'',
+    right: 'calc(100% + 12px)',
+    top: '50%',
+    transform: 'translateY(-50%)',
+  },
+  routeMRoutePhotoPlaceholder: {
+    width: '118px',
+    height: '118px',
+    position: 'relative',
+    backgroundImage: 'url(./photo-placeholder.svg)',
+    backgroundSize: 'contain',
+  },
 });
 
 RoutesShowModal.propTypes = {
   user: PropTypes.object,
   routes: PropTypes.object.isRequired,
+  sectors: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   openEdit: PropTypes.func.isRequired,
   history: PropTypes.object,
