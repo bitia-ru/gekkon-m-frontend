@@ -14,6 +14,7 @@ module.exports = () => ({
   devServer: {
     historyApiFallback: true,
   },
+  devtool: 'source-map',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
