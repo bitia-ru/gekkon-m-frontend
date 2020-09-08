@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import Button from '@/v1/components/Button/Button';
 import RouteDataEditableTable from '@/v2/components/RouteDataEditableTable/RouteDataEditableTable';
-import RouteView from '@/v1/components/RouteView/RouteView';
+import RouteView from '@/v2/components/RouteView/RouteView';
 import RouteEditor from '@/v2/components/RouteEditor/RouteEditor';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import ButtonHandler from '@/v1/components/ButtonHandler/ButtonHandler';
