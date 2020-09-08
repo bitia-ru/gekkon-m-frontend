@@ -12,7 +12,7 @@ import {
 import RouteContext from '@/v1/contexts/RouteContext';
 import Trash from '@/v2/components/Trash/Trash';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
-import './RouteEditor.css';
+import { css, StyleSheet } from '@/v2/aphrodite';
 
 export default class RouteEditor extends Component {
   constructor(props) {
@@ -305,11 +305,11 @@ export default class RouteEditor extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="route-editor">
+                <div className={css(styles.routeEditor)}>
                   <div
                     role="button"
                     tabIndex="0"
-                    className="route-editor__img-container"
+                    className={css(styles.routeEditorImgContainer)}
                     ref={(ref) => {
                       this.imageContainerRef = ref;
                       return true;
@@ -324,7 +324,7 @@ export default class RouteEditor extends Component {
                     }}
                   >
                     <img
-                      className="route-editor__img"
+                      className={css(styles.routeEditorImg)}
                       src={routePhoto}
                       alt={route.name}
                       onLoad={onImageLoad}
@@ -365,6 +365,21 @@ export default class RouteEditor extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  routeEditor: {
+    overflow: 'hidden',
+    height: '100%',
+  },
+  routeEditorImgContainer: {
+    height: '100%',
+    display: 'inline-block',
+    transform: 'translateX(-50%)',
+    left: '50%',
+    position: 'relative',
+  },
+  routeEditorImg: { height: '100%' }
+});
 
 RouteEditor.propTypes = {
   routeImageLoading: PropTypes.bool,
