@@ -29,20 +29,6 @@ class ResetPasswordForm extends Component {
     this.mouseOver = false;
   }
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.closeForm();
-    }
-  };
-
   resetErrors = () => {
     this.setState({ errors: {} });
   };
