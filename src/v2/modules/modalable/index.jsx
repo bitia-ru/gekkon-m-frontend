@@ -42,8 +42,6 @@ const withModals = (BaseComponent) => {
 
         processLocation(this.props.history.location);
       }
-
-      window.addEventListener('keydown', this.onKeyDown);
     }
 
     componentWillUnmount(...args) {
@@ -52,8 +50,6 @@ const withModals = (BaseComponent) => {
       if (this.modalWrapperRouterHistoryListenerUnlisten) {
         this.modalWrapperRouterHistoryListenerUnlisten();
       }
-
-      window.removeEventListener('keydown', this.onKeyDown);
     }
 
     modalArgs = (name) => {
