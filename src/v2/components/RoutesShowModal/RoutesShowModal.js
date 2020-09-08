@@ -10,7 +10,7 @@ import RouteStatus from '@/v1/components/RouteStatus/RouteStatus';
 import CommentForm from '@/v1/components/CommentForm/CommentForm';
 import Counter from '@/v1/components/Counter/Counter';
 import RouteDataTable from '@/v1/components/RouteDataTable/RouteDataTable';
-import RouteView from '@/v1/components/RouteView/RouteView';
+import RouteView from '@/v2/components/RouteView/RouteView';
 import RouteEditor from '@/v2/components/RouteEditor/RouteEditor';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
