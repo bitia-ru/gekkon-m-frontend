@@ -1,0 +1,16 @@
+.route-editor {
+    overflow: hidden;
+    height: 100%;
+}
+
+.route-editor__img-container {
+    height: 100%;
+    display: inline-block;
+    transform: translateX(-50%);
+    left: 50%;
+    position: relative;
+}
+
+.route-editor__img {
+    height: 100%;
+}
