@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import { StyleSheet, css } from '../../aphrodite';
+import { css } from '../../aphrodite';
+import styles from './styles';
 
 class LoadingIndicator extends React.PureComponent {
   constructor(props) {
@@ -34,17 +35,17 @@ class LoadingIndicator extends React.PureComponent {
     const isLoading = handlers.length > 0;
 
     return (
-      <div className={css(style.container)} ref={() => { window.loadingIndicator = this; }}>
-        <div className={css(style.wrapper)}>
+      <div className={css(styles.container)} ref={() => { window.loadingIndicator = this; }}>
+        <div className={css(styles.wrapper)}>
           {children}
         </div>
 
-        <div className={css(style.indicatorContainer)}>
+        <div className={css(styles.indicatorContainer)}>
           <div
             className={
               css(
-                style.indicator,
-                isLoading ? style.indicatorActive : (!showAlways && style.hideIndicator),
+                styles.indicator,
+                isLoading ? styles.indicatorActive : (!showAlways && styles.hideIndicator),
               )
             }
           />
@@ -53,46 +54,6 @@ class LoadingIndicator extends React.PureComponent {
     );
   }
 }
-
-const style = StyleSheet.create({
-  container: {
-    height: '100%',
-  },
-  wrapper: {
-    height: '100%',
-    marginBottom: '-3px',
-  },
-  indicatorContainer: {
-    position: 'fixed',
-    bottom: 0,
-    height: '3px',
-    width: '100%',
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
-    zIndex: 999,
-  },
-  indicator: {
-    backgroundColor: '#006CEB',
-    height: '100%',
-    width: '100%',
-    transition: 'width 0.5s ease-out,opacity 0.5s linear',
-  },
-  indicatorActive: {
-    opacity: 1,
-    animationName: [{
-      '0%': {
-        width: 0,
-      },
-    }],
-    animationDuration: '20s',
-    animationTimingFunction: 'cubic-bezier(0, 0.78, 1, 0.53)',
-    animationDelay: '0s',
-    animationIterationCount: 'infinite',
-  },
-  hideIndicator: {
-    opacity: 0,
-  },
-});
 
 LoadingIndicator.propTypes = {
   showAlways: PropTypes.bool,
