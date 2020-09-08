@@ -11,7 +11,7 @@ import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import ButtonHandler from '@/v1/components/ButtonHandler/ButtonHandler';
 import { DEFAULT_CATEGORY } from '@/v1/Constants/Categories';
 import { NUM_OF_DAYS } from '@/v1/Constants/Route';
-import RoutePhotoCropper from '@/v1/components/RoutePhotoCropper/RoutePhotoCropper';
+import RoutePhotoCropper from '@/v2/components/RoutePhotoCropper/RoutePhotoCropper';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import ShowSchemeButton from '@/v1/components/ShowSchemeButton/ShowSchemeButton';
 import SchemeModal from '@/v1/components/SchemeModal/SchemeModal';
