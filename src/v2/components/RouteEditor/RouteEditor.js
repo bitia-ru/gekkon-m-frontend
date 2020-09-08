@@ -281,8 +281,23 @@ export default class RouteEditor extends Component {
       <RouteContext.Consumer>
         {
           ({ route }) => (
-            <div className="modal-block-m modal-block-m_dark modal-block-m__image-container">
-              <div className="modal-block-m__inner modal-block-m__image-container-inner">
+            <div
+              className={
+                css(
+                  styles.modalBlockM,
+                  styles.modalBlockMDark,
+                  styles.modalBlockMImageContainer,
+                )
+              }
+            >
+              <div
+                className={
+                  css(
+                    styles.modalBlockMInner,
+                    styles.modalBlockMImageContainerInner,
+                  )
+                }
+              >
                 <Trash
                   setRef={(ref) => {
                     this.topTrashRef = ref;
@@ -298,9 +313,9 @@ export default class RouteEditor extends Component {
                   active={bottomTrashActive}
                   bottom
                 />
-                <div className="modal-block-m__container modal-block-m__fixed-top">
-                  <div className="modal-block-m__header">
-                    <div className="modal-block-m__header-btn">
+                <div className={css(styles.modalBlockMContainer, styles.modalBlockMFixedTop)}>
+                  <div className={css(styles.modalBlockMHeader)}>
+                    <div className={css(styles.modalBlockMHeaderBtn)}>
                       <CloseButton onClick={hide} light />
                     </div>
                   </div>
@@ -367,6 +382,62 @@ export default class RouteEditor extends Component {
 }
 
 const styles = StyleSheet.create({
+  modalBlockM: {
+    backgroundColor: '#ffffff',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 20,
+  },
+  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
+  modalBlockMImageContainer: {
+    width: '100%',
+    height: '100vh',
+    paddingBottom: 0,
+    overflow: 'hidden',
+  },
+  modalBlockMInner: {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    paddingBottom: '50px',
+    boxSizing: 'border-box',
+  },
+  modalBlockMImageContainerInner: {
+    position: 'relative',
+    width: '100%',
+    height: '100vh',
+    paddingBottom: 0,
+    overflow: 'hidden',
+  },
+  modalBlockMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  modalBlockMFixedTop: {
+    position: 'fixed',
+    zIndex: 20,
+    left: 0,
+    top: 0,
+    background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.425) 55%, rgba(0, 0, 0, 0) 100%)'
+  },
+  modalBlockMHeader: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  modalBlockMHeaderBtn: {
+    width: '16px',
+    height: '16px',
+    position: 'static',
+    zIndex: 20,
+    marginLeft: '18px',
+  },
   routeEditor: {
     overflow: 'hidden',
     height: '100%',
