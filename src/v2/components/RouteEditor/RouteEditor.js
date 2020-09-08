@@ -10,7 +10,7 @@ import {
   SHOW_TRASH_DELAY,
 } from '@/v1/Constants/Route';
 import RouteContext from '@/v1/contexts/RouteContext';
-import Trash from '@/v1/components/Trash/Trash';
+import Trash from '@/v2/components/Trash/Trash';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import './RouteEditor.css';
 
