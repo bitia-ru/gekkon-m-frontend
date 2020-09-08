@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import Marker from '@/v1/components/Marker/Marker';
 import MARKER_RADIUS from '@/v1/Constants/Marker';
 import RouteContext from '@/v1/contexts/RouteContext';
-import './RouteView.css';
+import { css, StyleSheet } from '@/v2/aphrodite';
 
 export default class RouteView extends Component {
   onContextMenu = (event) => {
@@ -21,17 +21,17 @@ export default class RouteView extends Component {
         {
           ({ route }) => (
             <div className="route-m__route-image-wrapper">
-              <div className="route-editor">
+              <div className={css(styles.routeEditor)}>
                 <div
                   role="button"
                   tabIndex="0"
                   style={{ outline: 'none' }}
-                  className="route-editor__img-container"
+                  className={css(styles.routeEditorImgContainer)}
                   onContextMenu={this.onContextMenu}
                   onClick={onClick}
                 >
                   <img
-                    className="route-editor__img"
+                    className={css(styles.routeEditorImg)}
                     src={routePhoto}
                     alt={route.name}
                     onLoad={onImageLoad}
@@ -68,6 +68,21 @@ export default class RouteView extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  routeEditor: {
+    overflow: 'hidden',
+    height: '100%',
+  },
+  routeEditorImgContainer: {
+    height: '100%',
+    display: 'inline-block',
+    transform: 'translateX(-50%)',
+    left: '50%',
+    position: 'relative',
+  },
+  routeEditorImg: { height: '100%' }
+});
 
 RouteView.propTypes = {
   routeImageLoading: PropTypes.bool,
