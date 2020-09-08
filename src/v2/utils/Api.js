@@ -12,7 +12,7 @@ Axios.interceptors.request.use((config) => {
 
 const Api = {
   get(url, options) {
-    window.loadingIndicator && window.loadingIndicator.startLoading();
+    const loadingHandler = window.loadingIndicator?.startLoading();
 
     return Axios.get(
       `${ApiUrl}${url}`,
@@ -21,7 +21,10 @@ const Api = {
         withCredentials: true,
       },
     ).then((response) => {
-      window.loadingIndicator && window.loadingIndicator.stopLoading();
+      if (loadingHandler) {
+        // eslint-disable-next-line no-unused-expressions
+        window.loadingIndicator?.stopLoading(loadingHandler);
+      }
 
       if (!options.success) {
         return;
@@ -33,7 +36,10 @@ const Api = {
         options.success(response.data);
       }
     }).catch((error) => {
-      window.loadingIndicator && window.loadingIndicator.stopLoading();
+      if (loadingHandler) {
+        // eslint-disable-next-line no-unused-expressions
+        window.loadingIndicator?.stopLoading(loadingHandler);
+      }
 
       if (!options.failed) {
         return;
@@ -68,7 +74,7 @@ const Api = {
       };
     }
 
-    window.loadingIndicator && window.loadingIndicator.startLoading();
+    const loadingHandler = window.loadingIndicator?.startLoading();
 
     Axios({
       ...options,
@@ -78,7 +84,10 @@ const Api = {
       config,
       withCredentials: true,
     }).then((response) => {
-      window.loadingIndicator && window.loadingIndicator.stopLoading();
+      if (loadingHandler) {
+        // eslint-disable-next-line no-unused-expressions
+        window.loadingIndicator?.stopLoading(loadingHandler);
+      }
 
       if (!options.success) {
         return;
@@ -86,7 +95,10 @@ const Api = {
 
       options.success(response.data.payload);
     }).catch((error) => {
-      window.loadingIndicator && window.loadingIndicator.stopLoading();
+      if (loadingHandler) {
+        // eslint-disable-next-line no-unused-expressions
+        window.loadingIndicator?.stopLoading(loadingHandler);
+      }
 
       if (!options.failed) {
         return;
