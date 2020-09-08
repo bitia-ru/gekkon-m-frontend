@@ -261,31 +261,38 @@ export default class RoutePhotoCropper extends Component {
     const {
       src, left, top, width,
     } = this.state;
-    const cornerClass = 'modal-block-m__crop-corner';
     return (
-      <div className="sticky-bar">
-        <div className="modal-block-m modal-block-m_dark modal-block-m__crop-container">
-          <div className="modal-block-m__inner modal-block-m__crop-inner">
-            <div className="modal-block-m__container">
-              <div className="modal-block-m__header">
-                <div className="modal-block-m__header-btn">
+      <div>
+        <div
+          className={
+            css(
+              styles.modalBlockM,
+              styles.modalBlockMDark,
+              styles.modalBlockMCropContainer,
+            )
+          }
+        >
+          <div className={css(styles.modalBlockMInner, styles.modalBlockMCropInner)}>
+            <div className={css(styles.modalBlockMContainer)}>
+              <div className={css(styles.modalBlockMHeader)}>
+                <div className={css(styles.modalBlockMHeaderBtn)}>
                   <button
                     type="button"
                     className={css(styles.turnM)}
                     onClick={() => this.rotate()}
                   />
                 </div>
-                <div className="modal-block-m__header-btn">
+                <div className={css(styles.modalBlockMHeaderBtn)}>
                   <CloseButton onClick={this.getCropped} light />
                 </div>
               </div>
             </div>
-            <div className="modal-block-m__img">
+            <div className={css(styles.modalBlockMImg)}>
               {
                 src
                   ? (
                     <div
-                      className="modal-block-m__img-inner"
+                      className={css(styles.modalBlockMImgInner)}
                       ref={(ref) => { this.imageContainerRef = ref; }}
                       onTouchMove={this.onTouchMove}
                       onTouchStart={e => this.startMoveCrop(e, 'all')}
@@ -297,7 +304,7 @@ export default class RoutePhotoCropper extends Component {
                         alt=""
                       />
                       <div
-                        className="modal-block-m__crop"
+                        className={css(styles.modalBlockMCrop)}
                         style={
                           {
                             left: `${left}%`,
@@ -312,7 +319,12 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'left_top')}
-                          className={`${cornerClass} modal-block-m__crop-corner_left-top`}
+                          className={
+                            css(
+                              styles.modalBlockMCropCorner,
+                              styles.modalBlockMCropCornerLeftTop,
+                            )
+                          }
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -320,7 +332,12 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'right_top')}
-                          className={`${cornerClass} modal-block-m__crop-corner_right-top`}
+                          className={
+                            css(
+                              styles.modalBlockMCropCorner,
+                              styles.modalBlockMCropCornerRightTop,
+                            )
+                          }
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -328,7 +345,12 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'right_bottom')}
-                          className={`${cornerClass} modal-block-m__crop-corner_right-bottom`}
+                          className={
+                            css(
+                              styles.modalBlockMCropCorner,
+                              styles.modalBlockMCropCornerRightBottom
+                            )
+                          }
                           onContextMenu={this.onContextMenu}
                         />
                         <div
@@ -336,7 +358,12 @@ export default class RoutePhotoCropper extends Component {
                           tabIndex="0"
                           style={{ outline: 'none' }}
                           onTouchStart={e => this.startMoveCrop(e, 'left_bottom')}
-                          className={`${cornerClass} modal-block-m__crop-corner_left-bottom`}
+                          className={
+                            css(
+                              styles.modalBlockMCropCorner,
+                              styles.modalBlockMCropCornerLeftBottom
+                            )
+                          }
                           onContextMenu={this.onContextMenu}
                         />
                       </div>
@@ -345,7 +372,7 @@ export default class RoutePhotoCropper extends Component {
                   : ''
               }
             </div>
-            <div className="modal-block-m__btn">
+            <div className={css(styles.modalBlockMBtn)}>
               <Button
                 size="big"
                 buttonStyle="normal"
@@ -362,6 +389,109 @@ export default class RoutePhotoCropper extends Component {
 }
 
 const styles = StyleSheet.create({
+  modalBlockM: {
+    backgroundColor: '#ffffff',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 20,
+  },
+  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
+  modalBlockMCropContainer: {
+    height: '100vh',
+    overflow: 'hidden',
+  },
+  modalBlockMInner: {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    paddingBottom: '50px',
+    boxSizing: 'border-box',
+  },
+  modalBlockMCropInner: {
+    width: '100%',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    paddingBottom: 0,
+    overflow: 'hidden',
+  },
+  modalBlockMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  modalBlockMHeader: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  modalBlockMHeaderBtn: {
+    width: '16px',
+    height: '16px',
+    position: 'static',
+    zIndex: 20,
+    marginLeft: '18px',
+  },
+  modalBlockMImg: {
+    width: '100%',
+    maxWidth: '100%',
+    height: 'calc(100vh - 108px)',
+    overflow: 'hidden',
+    display: 'flex',
+    justifyContent: 'center',
+    '> img': {
+      width: 'auto',
+      height: '100%',
+      maxHeight: '100%',
+    },
+  },
+  modalBlockMImgInner: {
+    position: 'relative',
+    height: '100%',
+  },
+  modalBlockMCrop: {
+    position: 'absolute',
+    content: '\'\'',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '200px',
+    height: '354px',
+    border: '2px dashed #ffffff',
+    boxShadow: '0 0 0 9999em rgba(0, 0, 0, 0.5)',
+  },
+  modalBlockMCropCorner: {
+    width: '2.25vw',
+    height: '2.25vw',
+    border: '2px solid #ffffff',
+    position: 'absolute',
+    content: '\'\'',
+  },
+  modalBlockMCropCornerLeftTop: {
+    top: '-1.7vw',
+    left: '-1.7vw',
+  },
+  modalBlockMCropCornerRightTop: {
+    top: '-1.7vw',
+    right: '-1.7vw',
+  },
+  modalBlockMCropCornerRightBottom: {
+    bottom: '-1.7vw',
+    right: '-1.7vw',
+  },
+  modalBlockMCropCornerLeftBottom: {
+    bottom: '-1.7vw',
+    left: '-1.7vw',
+  },
+  modalBlockMBtn: {
+    position: 'relative',
+    zIndex: 10,
+  },
   turnM: {
     width: '100%',
     height: '100%',
