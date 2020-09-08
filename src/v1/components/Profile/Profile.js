@@ -46,18 +46,7 @@ export default class Profile extends Component {
         avatar,
       },
     });
-    window.addEventListener('keydown', this.onKeyDown);
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.closeForm();
-    }
-  };
 
   saveStartFieldsValues = (user) => {
     this.setState({
