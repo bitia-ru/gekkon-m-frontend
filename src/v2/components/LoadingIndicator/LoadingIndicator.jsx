@@ -1,28 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import { StyleSheet, css } from '../../aphrodite';
-
 
 class LoadingIndicator extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      counter: 0,
+      lastHandler: 0,
+      handlers: [],
     };
   }
 
   startLoading = () => {
-    this.setState({ counter: this.state.counter + 1 });
+    const { lastHandler, handlers } = this.state;
+    const newHandler = lastHandler + 1;
+    this.setState({
+      lastHandler: newHandler,
+      handlers: [...handlers, newHandler],
+    });
+    return newHandler;
   };
 
-  stopLoading = () => {
-    this.setState({ counter: this.state.counter - 1 });
+  stopLoading = (handler) => {
+    const { handlers } = this.state;
+    this.setState({ handlers: R.filter(e => e !== handler)(handlers) });
   };
 
   render() {
     const { children, showAlways } = this.props;
-    const isLoading = this.state.counter > 0;
+    const { handlers } = this.state;
+    const isLoading = handlers.length > 0;
 
     return (
       <div className={css(style.container)} ref={() => { window.loadingIndicator = this; }}>
@@ -87,12 +96,11 @@ const style = StyleSheet.create({
 
 LoadingIndicator.propTypes = {
   showAlways: PropTypes.bool,
-  isLoading: PropTypes.bool,
+  children: PropTypes.array,
 };
 
 LoadingIndicator.defaultProps = {
   showAlways: false,
-  isLoading: false,
 };
 
 export default LoadingIndicator;
