@@ -17,10 +17,10 @@ import { currentUser } from '@/v2/redux/user_session/utils';
 import { updateUsers as updateUsersAction } from '../../redux/users/actions';
 import { enterWithVk } from '../../utils/vk';
 import closeForm from '@/v2/utils/closeForm';
-import './Profile.css';
 import { ModalContext } from '@/v2/modules/modalable';
 import showToastr from '@/v2/utils/showToastr';
 import toastHttpError from '@/v2/utils/toastHttpError';
+import { css, StyleSheet } from '@/v2/aphrodite';
 
 class Profile extends Component {
   constructor(props) {
@@ -338,9 +338,9 @@ class Profile extends Component {
           user && <ModalContext.Consumer>
             {
               () => (
-                <form action="#" method="post" encType="multipart/form-data" className="form">
-                  <div className="modal-block-m__avatar-block">
-                    <div className="modal-block-m__avatar modal-block-m__avatar_login">
+                <form action="#" method="post" encType="multipart/form-data">
+                  <div className={css(styles.modalBlockMAvatarBlock)}>
+                    <div className={css(styles.modalBlockMAvatar, styles.modalBlockMAvatarLogin)}>
                       {
                         (avatar !== null)
                           ? (
@@ -358,7 +358,7 @@ class Profile extends Component {
                         avatar !== null
                           ? (
                             <button
-                              className="modal-block-m__avatar-delete"
+                              className={css(styles.modalBlockMAvatarDelete)}
                               type="button"
                               title="Удалить"
                               onClick={this.removeAvatar}
@@ -368,7 +368,7 @@ class Profile extends Component {
                       }
                     </div>
                   </div>
-                  <div className="modal-block-m__padding-wrapper">
+                  <div className={css(styles.modalBlockMPaddingWrapper)}>
                     <FormField
                       placeholder="Имя"
                       id="name"
@@ -423,10 +423,10 @@ class Profile extends Component {
                       errorText={this.errorText('phone')}
                       value={phone}
                     />
-                    <div className="modal-block-m__allow">
-                      <div className="modal-block-m__allow-title">Разрешить вход через:</div>
-                      <div className="modal-block-m__social">
-                        <ul className="social-links">
+                    <div className={css(styles.modalBlockMAllow)}>
+                      <div className={css(styles.modalBlockMAllowTitle)}>Разрешить вход через:</div>
+                      <div>
+                        <ul className={css(styles.socialLinks)}>
                           <li>
                             <SocialLinkButton
                               onClick={
@@ -462,6 +462,95 @@ class Profile extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  modalBlockMAvatarBlock: {
+    padding: '30px',
+    paddingTop: 0,
+    backgroundColor: '#E8F2F9',
+  },
+  modalBlockMAvatar: {
+    width: '64px',
+    height: '64px',
+    borderRadius: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    position: 'relative',
+    cursor: 'pointer',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    '> img': {
+      borderRadius: '50%',
+      width: '64px',
+      height: '64px',
+      objectFit: 'cover',
+    },
+    '> input': {
+      position: 'absolute',
+      zIndex: 0,
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      width: '100%',
+      height: '100%',
+      opacity: 0,
+      cursor: 'pointer',
+      fontSize: 0,
+    },
+  },
+  modalBlockMAvatarLogin: {
+    backgroundColor: '#7AC767',
+    backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M22.9803%208.71882C22.9803%2013.1523%2019.3843%2016.7484%2014.9508%2016.7484C10.5172%2016.7484%206.9212%2013.1277%206.9212%208.71882C6.9212%204.30995%2010.5173%200.713867%2014.9508%200.713867C19.3842%200.713867%2022.9803%204.28535%2022.9803%208.71882ZM20.8621%208.71882C20.8621%205.46755%2018.202%202.80747%2014.9508%202.80747C11.6995%202.80747%209.03941%205.4675%209.03941%208.71877C9.03941%2011.97%2011.6995%2014.6301%2014.9508%2014.6301C18.202%2014.6301%2020.8621%2011.9701%2020.8621%208.71882ZM28.9409%2029.2854H1.0591C0.467973%2029.2854%200%2028.8174%200%2028.2263C0%2022.6597%204.53203%2018.1523%2010.0739%2018.1523H19.9261C25.4926%2018.1523%2030%2022.6844%2030%2028.2263C30%2028.8174%2029.532%2029.2854%2028.9409%2029.2854ZM19.9261%2020.2706H10.0739C6.0345%2020.2706%202.70933%2023.3002%202.19211%2027.1671H27.8079C27.2906%2023.2755%2023.9655%2020.2706%2019.9261%2020.2706Z%22%20fill%3D%22%23F7F7F7%22/%3E%0A%3C/svg%3E%0A")',
+  },
+  modalBlockMAvatarDelete: {
+    width: '16px',
+    height: '16px',
+    padding: 0,
+    borderRadius: '50%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    position: 'absolute',
+    content: '\'\'',
+    top: '6px',
+    right: 0,
+    border: 'none',
+    boxShadow: 'none',
+    display: 'none',
+    outline: 'none',
+    backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Crect%20width%3D%222.40413%22%20height%3D%2221.6372%22%20transform%3D%22matrix%280.707111%20-0.707103%200.707111%200.707103%200.142578%201.8418%29%22%20fill%3D%22%23C4C4C4%22/%3E%0A%3Crect%20width%3D%222.40413%22%20height%3D%2221.6372%22%20transform%3D%22matrix%280.707111%200.707103%20-0.707111%200.707103%2015.4419%200.140625%29%22%20fill%3D%22%23C4C4C4%22/%3E%0A%3C/svg%3E%0A")',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: '8px 8px',
+  },
+  modalBlockMPaddingWrapper: {
+    paddingTop: '34px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+  },
+  modalBlockMAllow: {
+    marginTop: '17px',
+    marginBottom: '20px',
+  },
+  modalBlockMAllowTitle: {
+    fontSize: '14px',
+    color: '#1f1f1f',
+    fontFamily: 'GilroyRegular, sans-serif',
+    marginBottom: '10px'
+  },
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
+});
 
 Profile.propTypes = {
   user: PropTypes.object.isRequired,
