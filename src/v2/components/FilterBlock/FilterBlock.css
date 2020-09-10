@@ -172,24 +172,6 @@
     fill: #006CEB;
 }
 
-.modal-block-m__settings {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 12px;
-    margin-bottom: -4px;
-}
-
-.modal-block-m__link {
-    color: #006CEB;
-    font-size: 14px;
-    text-decoration: none;
-    font-family: GilroyRegular, sans-serif;
-}
-
-.modal-block-m__link:hover {
-    text-decoration: underline;
-}
-
 .modal-block-m__close {
     width: 16px;
     height: 16px;
