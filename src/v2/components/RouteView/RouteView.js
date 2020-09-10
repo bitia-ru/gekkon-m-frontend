@@ -20,7 +20,7 @@ export default class RouteView extends Component {
       <RouteContext.Consumer>
         {
           ({ route }) => (
-            <div className="route-m__route-image-wrapper">
+            <div className={css(styles.routeMRouteImageWrapper)}>
               <div className={css(styles.routeEditor)}>
                 <div
                   role="button"
@@ -70,6 +70,20 @@ export default class RouteView extends Component {
 }
 
 const styles = StyleSheet.create({
+  routeMRouteImageWrapper: {
+    position: 'relative',
+    zIndex: 2,
+    height: '100%',
+    overflow: 'hidden',
+    transform: 'translateX(-50%)',
+    left: '50%',
+    display: 'inline-block',
+    '> img': {
+      height: '100%',
+      width: 'auto',
+      zIndex: 2,
+    },
+  },
   routeEditor: {
     overflow: 'hidden',
     height: '100%',
@@ -81,7 +95,7 @@ const styles = StyleSheet.create({
     left: '50%',
     position: 'relative',
   },
-  routeEditorImg: { height: '100%' }
+  routeEditorImg: { height: '100%' },
 });
 
 RouteView.propTypes = {
