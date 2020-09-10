@@ -21,11 +21,10 @@ import { avail } from '@/v1/utils';
 import { loadRouteMarkColors } from '@/v1/stores/route_mark_colors/utils';
 import { loadUsers } from '@/v1/stores/users/utils';
 import { loadSector } from '@/v1/stores/sectors/utils';
-import { addRoute, loadRoute, updateRoute } from '@/v1/stores/routes/utils';
+import { addRoute, loadRoute, updateRoute } from '@/v2/redux/routes/actions';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
-import { ApiUrl } from '@/v1/Environ';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
-import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
+import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import './RoutesEditModal.css';
 
 class RoutesEditModal extends Component {
@@ -64,7 +63,7 @@ class RoutesEditModal extends Component {
       const params = {};
       params.numOfDays = NUM_OF_DAYS;
       loadSectorProp(
-        `${ApiUrl}/v1/sectors/${sectorId}`,
+        sectorId,
         params,
         (response) => {
           this.afterSectorIsLoaded(response.data.payload);
@@ -76,9 +75,9 @@ class RoutesEditModal extends Component {
     }
     if (routeId) {
       loadRouteProp(
-        `${ApiUrl}/v1/routes/${this.getRouteId()}`,
-        (response) => {
-          const route = response.data.payload;
+        this.getRouteId(),
+        (payload) => {
+          const route = payload;
           const routeCopy = R.clone(route);
           if (route.photo) {
             routeCopy.photo = routeCopy.photo.url;
@@ -129,7 +128,7 @@ class RoutesEditModal extends Component {
     const routeId = this.getRouteId();
     this.setState({ isWaiting: true });
     updateRouteProp(
-      `${ApiUrl}/v1/routes/${routeId}`,
+      routeId,
       params,
       () => history.push(R.replace('/edit', '', `${match.url}`)),
       () => this.setState({ isWaiting: false }),
@@ -572,7 +571,7 @@ RoutesEditModal.propTypes = {
 
 const mapStateToProps = state => ({
   sectors: state.sectorsStore.sectors,
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
   user: state.usersStore.users[state.usersStore.currentUserId],
   users: getArrayByIds(state.usersStore.sortedUserIds, state.usersStore.users),
   routeMarkColors: state.routeMarkColorsStore.routeMarkColors,
