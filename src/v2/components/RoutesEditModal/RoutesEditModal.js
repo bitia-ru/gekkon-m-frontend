@@ -393,40 +393,42 @@ class RoutesEditModal extends Component {
                 )
                 : (
                   <div className={css(styles.routeM)}>
-                    <div className="route-m__container">
-                      <div className="route-m__block">
-                        <div className="route-m__close">
+                    <div className={css(styles.routeMContainer)}>
+                      <div className={css(styles.routeMBlock)}>
+                        <div className={css(styles.routeMClose)}>
                           <CloseButton onClick={() => onClose()} />
                         </div>
                       </div>
-                      <h1 className="route-m__title" style={{ marginTop: '0px' }}>
+                      <h1 className={css(styles.routeMTitle)} style={{ marginTop: '0px' }}>
                         №
                         {' '}
                         <input
                           type="text"
                           onChange={event => this.onRouteParamChange(event.target.value, 'number')}
-                          className="route-m__title-input route-m__title-input_dark"
+                          className={css(styles.routeMTitleInput, styles.routeMTitleInputDark)}
                           value={route.number === null ? '' : route.number}
                         />
-                        <span className="route-m__title-place-wrapper">
-                          <span className="route-m__title-place-edit">(“</span>
+                        <span className={css(styles.routeMTitlePlaceWrapper)}>
+                          <span className={css(styles.routeMTitlePlaceEdit)}>(“</span>
                           <input
                             type="text"
                             onChange={event => this.onRouteParamChange(event.target.value, 'name')}
-                            className="route-m__title-input"
+                            className={css(styles.routeMTitleInput)}
                             value={route.name === null ? '' : route.name}
                           />
-                          <span className="route-m__title-place-edit">”)</span>
+                          <span className={css(styles.routeMTitlePlaceEdit)}>”)</span>
                         </span>
                       </h1>
                     </div>
-                    <div className="route-m__route-block">
-                      <div className="route-m__route">
+                    <div>
+                      <div className={css(styles.routeMRoute)}>
                         {
                           (!route.photo || !routeImageLoading) && (
-                            <div className="route-m__route-descr">
-                              <div className="route-m__route-descr-picture" />
-                              <div className="route-m__route-descr-text">Загрузите фото трассы</div>
+                            <div className={css(styles.routeMRouteDescr)}>
+                              <div className={css(styles.routeMRouteDescrPicture)} />
+                              <div className={css(styles.routeMRouteDescrText)}>
+                                Загрузите фото трассы
+                              </div>
                             </div>
                           )
                         }
@@ -450,9 +452,9 @@ class RoutesEditModal extends Component {
                           onClick={() => this.setState({ schemeModalVisible: true })}
                         />
                       </div>
-                      <div className="route-m__route-footer">
-                        <div className="route-m__route-footer-container">
-                          <div className="route-m__route-footer-toggles">
+                      <div className={css(styles.routeMRouteFooter)}>
+                        <div className={css(styles.routeMRouteFooterContainer)}>
+                          <div className={css(styles.routeMRouteFooterToggles)}>
                             {
                               route.photo && (
                                 <ButtonHandler
@@ -463,7 +465,7 @@ class RoutesEditModal extends Component {
                               )
                             }
                           </div>
-                          <div className="route-m__route-footer-toggles">
+                          <div className={css(styles.routeMRouteFooterToggles)}>
                             <input
                               type="file"
                               hidden
@@ -500,20 +502,20 @@ class RoutesEditModal extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="route-m__container">
+                    <div className={css(styles.routeMContainer)}>
                       <RouteDataEditableTable
                         onRouteParamChange={this.onRouteParamChange}
                         routeMarkColors={routeMarkColors}
                         users={users}
                       />
                     </div>
-                    <div className="route-m__item">
+                    <div className={css(styles.routeMItem)}>
                       <div>
                         <button type="button" className={css(styles.collapsableBlockMHeader)}>
                           Описание
                         </button>
                         <textarea
-                          className="route-m__descr-edit"
+                          className={css(styles.routeMDescrEdit)}
                           onChange={
                             event => this.onRouteParamChange(event.target.value, 'description')
                           }
@@ -521,8 +523,8 @@ class RoutesEditModal extends Component {
                         />
                       </div>
                     </div>
-                    <div className="route-m__route-controls">
-                      <div className="route-m__btn-delete">
+                    <div className={css(styles.routeMRouteControls)}>
+                      <div className={css(styles.routeMBtnDelete)}>
                         <Button
                           size="big"
                           buttonStyle="gray"
@@ -531,7 +533,7 @@ class RoutesEditModal extends Component {
                           onClick={cancel}
                         />
                       </div>
-                      <div className="track-m__btn-save">
+                      <div className={css(styles.routeMBtnSave)}>
                         <Button
                           size="big"
                           buttonStyle="normal"
@@ -564,6 +566,155 @@ const styles = StyleSheet.create({
     height: '100%',
     overflowY: 'auto',
     backgroundColor: '#FFFFFF',
+  },
+  routeMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+    position: 'relative',
+  },
+  routeMBlock: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+  },
+  routeMClose: {
+    width: '16px',
+    height: '16px',
+    marginLeft: 'auto',
+  },
+  routeMTitle: {
+    color: '#1f1f1f',
+    fontSize: '28px',
+    fontFamily: 'GilroyBold, sans-serif',
+    marginBottom: '26px',
+    marginTop: '36px',
+  },
+  routeMTitleInput: {
+    border: 'none',
+    fontSize: '30px',
+    color: '#797979',
+    fontFamily: 'GilroyBold, sans-serif',
+    outline: 'none',
+    maxWidth: 'calc(100% - 70px)',
+    cursor: 'pointer',
+    borderBottom: '2px solid transparent',
+    display: 'inline-block',
+    lineHeight: '35px',
+    height: '35px',
+    boxSizing: 'border-box',
+    ':hover': { borderBottom: '2px solid #E3E3E3' },
+  },
+  routeMTitleInputDark: {
+    color: '#1f1f1f',
+    marginLeft: '5px',
+  },
+  routeMTitlePlaceEdit: { color: '#797979' },
+  routeMTitlePlaceWrapper: {
+    display: 'block',
+    marginTop: '4px',
+    overflow: 'hidden',
+  },
+  routeMRoute: {
+    width: '100%',
+    height: 'calc(100vh * 0.7)',
+    backgroundColor: '#E2E2E2',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  routeMRouteDescr: {
+    position: 'absolute',
+    content: '\'\'',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    zIndex: 1,
+  },
+  routeMRouteDescrPicture: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    border: '4px solid #797979',
+    position: 'relative',
+    ':before': {
+      position: 'absolute',
+      content: '\'\'',
+      width: '4px',
+      height: '14px',
+      left: '50%',
+      top: '50%',
+      backgroundColor: '#797979',
+      transform: 'translate(-50%, -50%)',
+    },
+    ':after': {
+      position: 'absolute',
+      content: '\'\'',
+      width: '4px',
+      height: '14px',
+      left: '50%',
+      top: '50%',
+      backgroundColor: '#797979',
+      transform: 'translate(-50%, -50%) rotate(90deg)',
+    },
+  },
+  routeMRouteDescrText: {
+    fontFamily: 'GilroyBold, sans-serif',
+    fontSize: '18px',
+    color: '#797979',
+    marginTop: '20px',
+  },
+  routeMRouteFooter: {
+    padding: '16px 24px',
+    backgroundColor: '#F8F8F8',
+  },
+  routeMRouteFooterContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  routeMRouteFooterToggles: {
+    display: 'flex',
+    marginLeft: '-6px',
+    marginRight: '-6px',
+  },
+  routeMItem: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    paddingTop: '16px',
+    borderTop: '1px solid #E2E2E2',
+  },
+  routeMDescrEdit: {
+    width: '100%',
+    height: '150px',
+    border: '1px solid #DDE2EF',
+    outline: 'none',
+    transition: 'box-shadow .4s ease-out',
+    resize: 'none',
+    padding: '20px 20px',
+    boxSizing: 'border-box',
+    color: '#3F3F3F',
+    fontSize: '16px',
+    fontFamily: 'GilroyRegular, sans-serif',
+    overflowX: 'hidden',
+    marginBottom: '18px',
+    ':focus': { boxShadow: '0px 0px 0px 2px rgba(0, 108, 235, 0.7)' },
+  },
+  routeMRouteControls: {
+    padding: '12px 24px',
+    display: 'flex',
+    borderTop: '1px solid #E2E2E2',
+  },
+  routeMBtnDelete: {
+    maxWidth: 'calc(40% - 12px)',
+    width: '100%',
+    marginRight: '12px',
+  },
+  routeMBtnSave: {
+    maxWidth: '60%',
+    width: '100%',
   },
   collapsableBlockMHeader: {
     backgroundColor: 'transparent',
