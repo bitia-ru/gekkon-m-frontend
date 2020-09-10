@@ -31,10 +31,6 @@
     margin-top: 36px;
 }
 
-.route-m__title-number {
-    line-height: 35px;
-}
-
 .route-m__title-input {
     border: none;
     font-size: 30px;
@@ -57,17 +53,6 @@
 .route-m__title-input_dark {
     color: #1f1f1f;
     margin-left: 5px;
-}
-
-.route-m__title-place {
-    color: #797979;
-    white-space: nowrap;
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 35px;
-    line-height: 34px;
-    display: block;
 }
 
 .route-m__title-place-edit {
@@ -224,70 +209,10 @@
     border-top: 1px solid #E2E2E2;
 }
 
-.route-m__btn-save {
-    max-width: 60%;
-    width: 100%;
-}
-
 .route-m__btn-delete {
     max-width: calc(40% - 12px);
     width: 100%;
     margin-right: 12px;
-}
-
-.route-m__route-count:not(:last-child) {
-    margin-right: 34px;
-    min-width: 40px;
-}
-
-.route-m__route-information {
-    display: flex;
-}
-
-.route-m__route-toggles {
-    position: absolute;
-    content: '';
-    right: 24px;
-    bottom: 24px;
-    display: flex;
-    z-index: 3;
-}
-
-.route-m__route-toggles-item:not(:first-child) {
-    margin-left: 6px;
-}
-
-.route-m__route-toggles-item:not(:last-child) {
-    margin-right: 6px;
-}
-
-.route-m__enter-comment {
-    padding: 12px 24px;
-    padding-bottom: 0;
-    box-sizing: border-box;
-    width: 100%;
-    position: relative;
-    background-color: #ffffff;
-    align-self: flex-end;
-    border-top: 1px solid #E2E2E2;
-}
-
-.route-m__link {
-    color: #006CEB;
-    text-decoration: none;
-}
-
-.route-m__link:hover {
-    text-decoration: underline;
-}
-
-.route-m__link_edit {
-    width: 250px;
-    width: 100%;
-}
-
-.route-m__link_edit:hover {
-    text-decoration: none;
 }
 
 .route-m__route-footer-toggles {
