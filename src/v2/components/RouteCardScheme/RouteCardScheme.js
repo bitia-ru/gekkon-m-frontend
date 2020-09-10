@@ -95,11 +95,11 @@ RouteCardScheme.propTypes = {
 
 const mapStateToProps = state => ({
   routeIds: (
-    state.routesStore.filtrationResults[0]
-      ? state.routesStore.filtrationResults[0].routeIds
+    state.routesStoreV2.filtrationResults[0]
+      ? state.routesStoreV2.filtrationResults[0].routeIds
       : []
   ),
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
 });
 
 export default withRouter(connect(mapStateToProps)(RouteCardScheme));

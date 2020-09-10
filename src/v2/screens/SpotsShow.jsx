@@ -128,7 +128,7 @@ class SpotsShow extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
   spots: state.spotsStoreV2.spots,
   sectors: state.sectorsStore.sectors,
 });

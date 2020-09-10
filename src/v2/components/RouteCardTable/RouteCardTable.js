@@ -69,10 +69,10 @@ RouteCardTable.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
   routeIds: (
-    state.routesStore.filtrationResults[0]
-      ? state.routesStore.filtrationResults[0].routeIds
+    state.routesStoreV2.filtrationResults[0]
+      ? state.routesStoreV2.filtrationResults[0].routeIds
       : []
   ),
   user: state.usersStore.users[state.usersStore.currentUserId],

@@ -31,10 +31,9 @@ import {
   addAscent,
   updateAscent,
   removeRoute,
-} from '@/v1/stores/routes/utils';
-import { ApiUrl } from '@/v1/Environ';
+} from '@/v2/redux/routes/actions';
 import getFilters from '@/v1/utils/getFilters';
-import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
+import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
@@ -58,7 +57,7 @@ class RoutesShowModal extends Component {
 
   componentDidMount() {
     const { loadRoute: loadRouteProp } = this.props;
-    loadRouteProp(`${ApiUrl}/v1/routes/${this.getRouteId()}`);
+    loadRouteProp(this.getRouteId());
   }
 
   getRouteId = () => {
@@ -185,7 +184,7 @@ class RoutesShowModal extends Component {
     const spotId = sectors[sectorId].spot_id;
     if (window.confirm('Удалить трассу?')) {
       removeRouteProp(
-        `${ApiUrl}/v1/routes/${routeId}`,
+        routeId,
         () => {
           if (R.contains('sectors', match.url)) {
             this.props.reloadSector(sectorId);
@@ -243,7 +242,7 @@ class RoutesShowModal extends Component {
     if (!window.confirm('Удалить комментарий?')) {
       return;
     }
-    removeCommentProp(`${ApiUrl}/v1/route_comments/${comment.id}`);
+    removeCommentProp(comment.id);
   };
 
   onLikeChange = (routeId, afterChange) => {
@@ -256,7 +255,7 @@ class RoutesShowModal extends Component {
     const route = routes[routeId];
     const like = R.find(R.propEq('user_id', user.id))(getArrayFromObject(route.likes));
     if (like) {
-      removeLikeProp(`${ApiUrl}/v1/likes/${like.id}`, afterChange);
+      removeLikeProp(like.id, afterChange);
     } else {
       const params = { like: { user_id: user.id, route_id: routeId } };
       addLikeProp(params, afterChange);
@@ -282,7 +281,7 @@ class RoutesShowModal extends Component {
         result = 'red_point';
       }
       const params = { ascent: { result } };
-      updateAscentProp(`${ApiUrl}/v1/ascents/${ascent.id}`, params);
+      updateAscentProp(ascent.id, params);
     } else {
       const result = 'red_point';
       const params = { ascent: { result, user_id: user.id, route_id: routeId } };
@@ -551,7 +550,7 @@ RoutesShowModal.propTypes = {
 
 const mapStateToProps = state => ({
   selectedFilters: state.selectedFilters,
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
   user: state.usersStore.users[state.usersStore.currentUserId],
 });
 

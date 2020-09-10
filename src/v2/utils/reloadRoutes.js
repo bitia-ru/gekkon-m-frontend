@@ -1,8 +1,7 @@
 import moment from 'moment';
 import * as R from 'ramda';
 import { avail } from '@/v1/utils/index';
-import { ApiUrl } from '@/v1/Environ';
-import { loadRoutes } from '@/v1/stores/routes/utils';
+import { loadRoutes } from '@/v2/redux/routes/actions';
 import getViewMode from '@/v1/utils/getViewMode';
 import getFilters from '@/v1/utils/getFilters';
 import getPage from '@/v1/utils/getPage';
@@ -10,7 +9,7 @@ import { BACKEND_DATE_FORMAT } from '@/v1/Constants/Date';
 import CARDS_PER_PAGE from '@/v1/Constants/RouteCardTable';
 import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
 
-export const reloadRoutes = (spotId, sectorId) => (
+const reloadRoutes = (spotId, sectorId) => (
   (dispatch, getState) => {
     const state = getState();
     const user = state.usersStore.users[state.usersStore.currentUserId];
@@ -76,9 +75,11 @@ export const reloadRoutes = (spotId, sectorId) => (
       params.offset = (currentPage - 1) * CARDS_PER_PAGE;
     }
     if (sectorId === 0) {
-      dispatch(loadRoutes(`${ApiUrl}/v1/spots/${spotId}/routes`, params));
+      dispatch(loadRoutes(`/v1/spots/${spotId}/routes`, params));
     } else {
-      dispatch(loadRoutes(`${ApiUrl}/v1/sectors/${sectorId}/routes`, params));
+      dispatch(loadRoutes(`/v1/sectors/${sectorId}/routes`, params));
     }
   }
 );
+
+export default reloadRoutes;
