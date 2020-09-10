@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Category from '@/v1/components/Category/Category';
+import Category from '@/v2/components/Category/Category';
 import { CATEGORIES_ITEMS, getCategoryColor } from '@/v1/Constants/Categories';
 import { css, StyleSheet } from '@/v2/aphrodite';
 import DropDownList from '@/v1/components/DropDownList/DropDownList';
