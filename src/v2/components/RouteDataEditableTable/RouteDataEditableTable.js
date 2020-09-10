@@ -43,9 +43,9 @@ const RouteDataEditableTable = ({
           const name = route.author ? getUserName(route.author) : 'Неизвестен';
           return (
             <>
-              <div className="route-m__table">
-                <div className="route-m__table-row">
-                  <div className="route-m__table-item route-m__table-item_header">
+              <div className={css(styles.routeMTable)}>
+                <div className={css(styles.routeMTableRow)}>
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                     Категория:
                   </div>
                   <CategorySelector
@@ -53,11 +53,11 @@ const RouteDataEditableTable = ({
                     onChangeCategory={category => onRouteParamChange(category, 'category')}
                   />
                 </div>
-                <div className="route-m__table-row">
-                  <div className="route-m__table-item route-m__table-item_header">
+                <div className={css(styles.routeMTableRow)}>
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                     Зацепы:
                   </div>
-                  <div className="route-m__table-item route-m__table-item-right">
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                     <RouteColorPickerSelector
                       color={route.holds_color}
                       fieldSelectClass={fieldSelectClass}
@@ -70,11 +70,11 @@ const RouteDataEditableTable = ({
                     />
                   </div>
                 </div>
-                <div className="route-m__table-row">
-                  <div className="route-m__table-item route-m__table-item_header">
+                <div className={css(styles.routeMTableRow)}>
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                     Маркировка:
                   </div>
-                  <div className="route-m__table-item route-m__table-item-right">
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                     <RouteColorPickerSelector
                       color={route.marks_color}
                       fieldSelectClass={fieldSelectClass}
@@ -88,11 +88,11 @@ const RouteDataEditableTable = ({
                   </div>
                 </div>
                 {
-                  sector && <div className="route-m__table-row">
-                    <div className="route-m__table-item route-m__table-item_header">
+                  sector && <div className={css(styles.routeMTableRow)}>
+                    <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                       Тип:
                     </div>
-                    <div className="route-m__table-item route-m__table-item-right">
+                    <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                       {
                         sector.kind === 'mixed'
                           ? (
@@ -130,11 +130,11 @@ const RouteDataEditableTable = ({
                     </div>
                   </div>
                 }
-                <div className="route-m__table-row">
-                  <div className="route-m__table-item route-m__table-item_header">
+                <div className={css(styles.routeMTableRow)}>
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                     Накручена:
                   </div>
-                  <div className="route-m__table-item route-m__table-item-right">
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                     <div>
                       <DatePickerSelector
                         clearable
@@ -148,11 +148,11 @@ const RouteDataEditableTable = ({
                     </div>
                   </div>
                 </div>
-                <div className="route-m__table-row">
-                  <div className="route-m__table-item route-m__table-item_header">
+                <div className={css(styles.routeMTableRow)}>
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                     Скручена:
                   </div>
-                  <div className="route-m__table-item route-m__table-item-right">
+                  <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                     <div>
                       <DatePickerSelector
                         clearable
@@ -169,11 +169,11 @@ const RouteDataEditableTable = ({
                 {
                   (!route.data.personal)
                     ? (
-                      <div className="route-m__table-row">
-                        <div className="route-m__table-item route-m__table-item_header">
+                      <div className={css(styles.routeMTableRow)}>
+                        <div className={css(styles.routeMTableItem, styles.routeMTableItemHeader)}>
                           Накрутчик:
                         </div>
-                        <div className="route-m__table-item route-m__table-item-right">
+                        <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
                           <DropDownPersonListSelector
                             name={name}
                             users={users}
@@ -199,6 +199,23 @@ const RouteDataEditableTable = ({
 };
 
 const styles = StyleSheet.create({
+  routeMTable: {
+    marginBottom: '22px',
+    paddingTop: '22px',
+  },
+  routeMTableRow: {
+    display: 'flex',
+    padding: '5px 0 5px',
+  },
+  routeMTableItem: {
+    width: '50%',
+    fontSize: '14px',
+  },
+  routeMTableItemHeader: { color: '#828282' },
+  routeMTableItemRight: {
+    paddingLeft: '20px',
+    boxSizing: 'border-box',
+  },
   fieldSelectMSelect: {
     width: '100%',
     height: '54px',
