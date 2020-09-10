@@ -28,9 +28,13 @@ class CategoryRangeSelector extends React.PureComponent {
             style={{ outline: 'none' }}
           >
             <span className={css(styles.fieldSelectMPlaceholder)}>От</span>
-            <Category category={categoryFrom} color={getCategoryColor(categoryFrom)} />
+            <span className={css(styles.categoryWrapper)}>
+              <Category category={categoryFrom} color={getCategoryColor(categoryFrom)} />
+            </span>
             <span className={css(styles.fieldSelectMPlaceholder)}>до</span>
-            <Category category={categoryTo} color={getCategoryColor(categoryTo)} />
+            <span className={css(styles.categoryWrapper)}>
+              <Category category={categoryTo} color={getCategoryColor(categoryTo)} />
+            </span>
           </div>
         </div>
         {
@@ -98,6 +102,7 @@ const styles = StyleSheet.create({
     ':focus': { boxShadow: '0px 0px 0px 2px rgba(0, 108, 235, 0.7)' },
   },
   fieldSelectMPlaceholder: { marginRight: '10px' },
+  categoryWrapper: { marginRight: '20px' },
 });
 
 CategoryRangeSelector.propTypes = {
