@@ -13,7 +13,7 @@ import './Content.css';
 import {
   setSelectedPage,
 } from '@/v1/actions';
-import { reloadRoutes as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
+import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import getViewMode from '@/v1/utils/getViewMode';
 import getPage from '@/v1/utils/getPage';
 import getNumOfRoutes from '@/v1/utils/getNumOfRoutes';
@@ -172,10 +172,10 @@ const mapStateToProps = state => ({
   selectedViewModes: state.selectedViewModes,
   selectedPages: state.selectedPages,
   selectedFilters: state.selectedFilters,
-  routes: state.routesStore.routes,
+  routes: state.routesStoreV2.routes,
   routeIds: (
-    state.routesStore.filtrationResults[0]
-      ? state.routesStore.filtrationResults[0].routeIds
+    state.routesStoreV2.filtrationResults[0]
+      ? state.routesStoreV2.filtrationResults[0].routeIds
       : []
   ),
 });
