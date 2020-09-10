@@ -208,6 +208,7 @@ class FilterBlock extends Component {
                           <>
                             <span className="field-select-m__title">Дата</span>
                             <DatePickerSelector
+                              clearable
                               formatter={formatter}
                               date={date || DEFAULT_FILTERS.date}
                               onChange={this.changeDate}
