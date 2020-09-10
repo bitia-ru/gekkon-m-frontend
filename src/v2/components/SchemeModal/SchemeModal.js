@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Scheme from '@/v1/components/Scheme/Scheme';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
-import './SchemeModal.css';
+import { StyleSheet, css } from '@/v2/aphrodite';
 
 const SchemeModal = ({ close, currentRoute }) => (
   <div className="modal-block-m modal-block-m_dark">
@@ -14,7 +14,7 @@ const SchemeModal = ({ close, currentRoute }) => (
           </div>
         </div>
       </div>
-      <div className="modal-block-m__map">
+      <div className={css(styles.modalBlockMMap)}>
         <Scheme
           currentRoutes={[currentRoute]}
           showCards={false}
@@ -23,6 +23,10 @@ const SchemeModal = ({ close, currentRoute }) => (
     </div>
   </div>
 );
+
+const styles = StyleSheet.create({
+  modalBlockMMap: { width: '100%' },
+});
 
 SchemeModal.propTypes = {
   currentRoute: PropTypes.object.isRequired,
