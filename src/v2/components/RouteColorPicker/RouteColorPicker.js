@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import Button from '@/v1/components/Button/Button';
 import getColorStyle from '@/v1/Constants/RouteColorPicker';
-import './RouteColorPicker.css';
 import { StyleSheet, css } from '@/v2/aphrodite';
 
 export default class RouteColorPicker extends Component {
