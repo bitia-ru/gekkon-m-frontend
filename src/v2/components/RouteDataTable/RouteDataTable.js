@@ -7,7 +7,6 @@ import { ROUTE_KINDS } from '@/v1/Constants/Route';
 import getColorStyle from '@/v1/Constants/RouteColorPicker';
 import { getCategoryColor } from '@/v1/Constants/Categories';
 import Category from '@/v2/components/Category/Category';
-import './RouteDataTable.css';
 import { StyleSheet, css } from '@/v2/aphrodite';
 
 const RouteDataTable = ({ route, user }) => {
