@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoPageHeader from '@/v1/components/InfoPageHeader/InfoPageHeader';
+import InfoPageHeader from '@/v2/components/InfoPageHeader/InfoPageHeader';
 import InfoPageContent from '@/v1/components/InfoPageContent/InfoPageContent';
 import { TITLE, TITLES, ABOUT_DATA } from '@/v1/Constants/About';
 import MainScreen from '@/v2/layouts/MainScreen/MainScreen';
