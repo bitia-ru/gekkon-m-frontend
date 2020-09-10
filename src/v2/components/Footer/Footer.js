@@ -28,7 +28,7 @@ class Footer extends React.PureComponent {
             <h3 className={css(styles.footerMHeader)}>
               Соцсети
             </h3>
-            <ul className="social-links">
+            <ul className={css(styles.socialLinks)}>
               <li>
                 <SocialLinkButton
                   href={TELEGRAM_LINK}
@@ -152,6 +152,19 @@ class Footer extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
   footerM: {
     width: '100%',
     paddingTop: '64px',

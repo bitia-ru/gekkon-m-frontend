@@ -70,7 +70,7 @@ class MainPageHeader extends Component {
                   />
                 </>
               ) : (
-                <ul className="social-links">
+                <ul className={css(styles.socialLinks)}>
                   <li>
                     <SocialLinkButton
                       dark
@@ -116,6 +116,19 @@ class MainPageHeader extends Component {
 }
 
 const styles = StyleSheet.create({
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
   firstSectionM: {
     backgroundColor: '#F2F1EB',
     width: '100%',
