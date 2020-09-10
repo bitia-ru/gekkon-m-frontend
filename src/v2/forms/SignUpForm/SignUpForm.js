@@ -18,7 +18,7 @@ import Modal from '../../layouts/Modal';
 import { ModalContext } from '@/v2/modules/modalable';
 import showToastr from '@/v2/utils/showToastr';
 import toastHttpError from '@/v2/utils/toastHttpError';
-import './SignUpForm.css';
+import { StyleSheet, css } from '@/v2/aphrodite';
 
 class SignUpForm extends Component {
   constructor(props) {
@@ -164,7 +164,7 @@ class SignUpForm extends Component {
   firstTabContent = (closeModal) => {
     const { phone, passwordFromSms, isWaiting } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Ваш телефон"
           id="your-phone"
@@ -201,7 +201,7 @@ class SignUpForm extends Component {
       email, password, repeatPassword, isWaiting,
     } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Ваш email"
           id="your-email"
@@ -275,7 +275,7 @@ class SignUpForm extends Component {
           {
             ({ closeModal }) => (
               <>
-                <h3 className="modal-block-m__title modal-block-m__title_form">
+                <h3 className={css(styles.modalBlockMTitle, styles.modalBlockMTitleForm)}>
                   Регистрация
                 </h3>
                 <TabBar
@@ -289,11 +289,11 @@ class SignUpForm extends Component {
                   activeTab={2}
                   titleList={['Телефон', 'Email']}
                 />
-                <div className="modal-block-m__or">
-                  <div className="modal-block-m__or-inner">или</div>
+                <div className={css(styles.modalBlockMOr)}>
+                  <div className={css(styles.modalBlockMOrInner)}>или</div>
                 </div>
-                <div className="modal-block-m__social">
-                  <ul className="social-links">
+                <div>
+                  <ul className={css(styles.socialLinks)}>
                     <li>
                       <SocialLinkButton
                         onClick={() => enterWithVk('signUp')}
@@ -311,6 +311,61 @@ class SignUpForm extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  modalBlockMTitle: {
+    fontSize: '18px',
+    color: '#1F1F1F',
+    marginTop: 0,
+    fontFamily: 'GilroyBold, sans-serif',
+    marginBottom: '36px',
+  },
+  modalBlockMTitleForm: {
+    fontSize: '24px',
+    fontFamily: 'GilroyBold, sans-serif',
+    lineHeight: '24px',
+    textAlign: 'center',
+    marginTop: '50px',
+  },
+  modalBlockMOr: {
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '17px',
+    marginBottom: '17px',
+    ':before': {
+      position: 'absolute',
+      content: '\'\'',
+      width: '100%',
+      left: 0,
+      right: 0,
+      top: '50%',
+      height: '1px',
+      backgroundColor: '#DEDCDC',
+      zIndex: 1,
+    },
+  },
+  modalBlockMOrInner: {
+    paddingLeft: '12px',
+    paddingRight: '12px',
+    backgroundColor: '#ffffff',
+    position: 'relative',
+    zIndex: 3,
+  },
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
+});
 
 SignUpForm.propTypes = {
 };
