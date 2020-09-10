@@ -5,11 +5,11 @@ import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import { StyleSheet, css } from '@/v2/aphrodite';
 
 const SchemeModal = ({ close, currentRoute }) => (
-  <div className="modal-block-m modal-block-m_dark">
-    <div className="modal-block-m__inner modal-block-m__inner_no-pb">
-      <div className="modal-block-m__container">
-        <div className="modal-block-m__header">
-          <div className="modal-block-m__header-btn">
+  <div className={css(styles.modalBlockM, styles.modalBlockMDark)}>
+    <div className={css(styles.modalBlockMInner)}>
+      <div className={css(styles.modalBlockMContainer)}>
+        <div className={css(styles.modalBlockMHeader)}>
+          <div className={css(styles.modalBlockMHeaderBtn)}>
             <CloseButton onClick={close} light />
           </div>
         </div>
@@ -25,6 +25,42 @@ const SchemeModal = ({ close, currentRoute }) => (
 );
 
 const styles = StyleSheet.create({
+  modalBlockM: {
+    backgroundColor: '#ffffff',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 20,
+  },
+  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
+  modalBlockMInner: {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    paddingBottom: '50px',
+    boxSizing: 'border-box',
+  },
+  modalBlockMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  modalBlockMHeader: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  modalBlockMHeaderBtn: {
+    width: '16px',
+    height: '16px',
+    position: 'static',
+    zIndex: 20,
+    marginLeft: '18px',
+  },
   modalBlockMMap: { width: '100%' },
 });
 
