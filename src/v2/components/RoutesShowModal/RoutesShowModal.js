@@ -38,10 +38,9 @@ import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
 import showToastr from '@/v2/utils/showToastr';
-import withModals from '@/v2/modules/modalable';
+import withModals, { ModalContainerContext } from '@/v2/modules/modalable';
 import RouteAscents from '../../forms/RouteAscents/RouteAscents';
 import { StyleSheet, css } from '../../aphrodite';
-import { ModalContainerContext } from '../../modules/modalable';
 
 class RoutesShowModal extends Component {
   constructor(props) {
@@ -353,9 +352,9 @@ class RoutesShowModal extends Component {
                       css(styles.routeM, isModalShown ? styles.unscrollable : styles.scrollable)
                     }
                   >
-                    <div className="route-m__container">
-                      <div className="route-m__block">
-                        <div className="route-m__close">
+                    <div className={css(styles.routeMContainer)}>
+                      <div className={css(styles.routeMBlock)}>
+                        <div className={css(styles.routeMClose)}>
                           <CloseButton onClick={() => onClose()} />
                         </div>
                       </div>
@@ -366,15 +365,18 @@ class RoutesShowModal extends Component {
                           />
                         )
                       }
-                      <h1 className="route-m__title" style={user ? {} : { marginTop: '0px' }}>
-                        <span className="route-m__title-number">
+                      <h1
+                        className={css(styles.routeMTitle)}
+                        style={user ? {} : { marginTop: '0px' }}
+                      >
+                        <span className={css(styles.routeMTitleNumber)}>
                           {this.getRouteNumber(route)}
                         </span>
                         {
                           route.name && (
-                            <span className="route-m__title-place-wrapper">
-                              <span className="route-m__title-place">
-                                <span className="route-m__title-place">
+                            <span className={css(styles.routeMTitlePlaceWrapper)}>
+                              <span className={css(styles.routeMTitlePlace)}>
+                                <span className={css(styles.routeMTitlePlace)}>
                                   {`(“${route.name}”)`}
                                 </span>
                               </span>
@@ -383,11 +385,11 @@ class RoutesShowModal extends Component {
                         }
                       </h1>
                     </div>
-                    <div className="route-m__route-block">
-                      <div className="route-m__route">
+                    <div>
+                      <div className={css(styles.routeMRoute)}>
                         {
                           showLoadPhotoMsg && (
-                            <div className="route-m__route-descr">
+                            <div className={css(styles.routeMRouteDescr)}>
                               <div className={css(styles.routeMRoutePhotoPlaceholder)} />
                             </div>
                           )
@@ -409,9 +411,9 @@ class RoutesShowModal extends Component {
                           onClick={() => this.setState({ schemeModalVisible: true })}
                         />
                       </div>
-                      <div className="route-m__route-footer">
-                        <div className="route-m__route-information">
-                          <div className="route-m__route-count">
+                      <div className={css(styles.routeMRouteFooter)}>
+                        <div className={css(styles.routeMRouteInformation)}>
+                          <div className={css(styles.routeMRouteCount)}>
                             <LikeButton
                               numOfLikes={numOfLikes}
                               isLiked={like !== undefined}
@@ -424,14 +426,14 @@ class RoutesShowModal extends Component {
                               }
                             />
                           </div>
-                          <div className="route-m__route-count">
+                          <div className={css(styles.routeMRouteCount)}>
                             <Counter
                               number={numOfRedpoints}
                               text="redpoints"
                               type={currentUserHasRedpoints() && 'redpoints'}
                             />
                           </div>
-                          <div className="route-m__route-count">
+                          <div className={css(styles.routeMRouteCount)}>
                             <Counter
                               number={numOfFlash}
                               text="flash"
@@ -441,7 +443,7 @@ class RoutesShowModal extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="route-m__container">
+                    <div className={css(styles.routeMContainer)}>
                       {
                         (user && avail(user)) && <div className={css(styles.trackMNotice)}>
                           <NoticeButton onClick={this.showNoticeForm} />
@@ -458,7 +460,7 @@ class RoutesShowModal extends Component {
                     </div>
                     {
                       route.description && (
-                        <div className="route-m__item">
+                        <div className={css(styles.routeMItem)}>
                           <div>
                             <button type="button" className={css(styles.collapsableBlockMHeader)}>
                               Описание
@@ -472,8 +474,8 @@ class RoutesShowModal extends Component {
                     }
                     {
                       (user && this.canEditRoute(user, route)) && (
-                        <div className="route-m__route-controls">
-                          <div className="route-m__btn-delete">
+                        <div className={css(styles.routeMRouteControls)}>
+                          <div className={css(styles.routeMBtnDelete)}>
                             <Button
                               size="big"
                               buttonStyle="gray"
@@ -482,7 +484,7 @@ class RoutesShowModal extends Component {
                               onClick={this.removeRoute}
                             />
                           </div>
-                          <div className="route-m__btn-save">
+                          <div className={css(styles.routeMBtnSave)}>
                             <Button
                               size="big"
                               buttonStyle="normal"
@@ -494,7 +496,7 @@ class RoutesShowModal extends Component {
                         </div>
                       )
                     }
-                    <div className="route-m__item">
+                    <div className={css(styles.routeMItem)}>
                       <CommentBlock
                         startAnswer={this.startAnswer}
                         user={user}
@@ -502,7 +504,7 @@ class RoutesShowModal extends Component {
                         comments={route.comments || []}
                       />
                     </div>
-                    <div className="route-m__enter-comment">
+                    <div className={css(styles.routeMEnterComment)}>
                       <CommentForm
                         quoteComment={quoteComment}
                         setTextareaRef={this.setTextareaRef}
@@ -541,6 +543,105 @@ const styles = StyleSheet.create({
   routeM: {
     height: '100%',
     backgroundColor: '#FFFFFF',
+  },
+  routeMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+    position: 'relative',
+  },
+  routeMBlock: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+  },
+  routeMClose: {
+    width: '16px',
+    height: '16px',
+    marginLeft: 'auto',
+  },
+  routeMTitle: {
+    color: '#1f1f1f',
+    fontSize: '28px',
+    fontFamily: 'GilroyBold, sans-serif',
+    marginBottom: '26px',
+    marginTop: '36px',
+  },
+  routeMTitleNumber: { lineHeight: '35px' },
+  routeMTitlePlaceWrapper: {
+    display: 'block',
+    marginTop: '4px',
+    overflow: 'hidden',
+  },
+  routeMTitlePlace: {
+    color: '#797979',
+    whiteSpace: 'nowrap',
+    width: 'auto',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    height: '35px',
+    lineHeight: '34px',
+    display: 'block',
+  },
+  routeMRoute: {
+    width: '100%',
+    height: 'calc(100vh * 0.7)',
+    backgroundColor: '#E2E2E2',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  routeMRouteDescr: {
+    position: 'absolute',
+    content: '\'\'',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    zIndex: 1,
+  },
+  routeMRouteFooter: {
+    padding: '16px 24px',
+    backgroundColor: '#F8F8F8',
+  },
+  routeMRouteInformation: { display: 'flex' },
+  routeMRouteCount: {
+    ':not(:last-child)': {
+      marginRight: '34px',
+      minWidth: '40px',
+    },
+  },
+  routeMItem: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    paddingTop: '16px',
+    borderTop: '1px solid #E2E2E2',
+  },
+  routeMRouteControls: {
+    padding: '12px 24px',
+    display: 'flex',
+    borderTop: '1px solid #E2E2E2',
+  },
+  routeMBtnDelete: {
+    maxWidth: 'calc(40% - 12px)',
+    width: '100%',
+    marginRight: '12px',
+  },
+  routeMBtnSave: {
+    maxWidth: '60%',
+    width: '100%',
+  },
+  routeMEnterComment: {
+    padding: '12px 24px',
+    paddingBottom: 0,
+    boxSizing: 'border-box',
+    width: '100%',
+    position: 'relative',
+    backgroundColor: '#ffffff',
+    alignSelf: 'flex-end',
+    borderTop: '1px solid #E2E2E2',
   },
   scrollable: { overflowY: 'auto' },
   unscrollable: { overflowY: 'hidden' },
