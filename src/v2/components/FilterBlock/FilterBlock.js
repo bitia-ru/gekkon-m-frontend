@@ -11,7 +11,6 @@ import { CATEGORIES } from '@/v1/Constants/Categories';
 import { DEFAULT_FILTERS } from '@/v1/Constants/DefaultFilters';
 import getFilters, { prepareFilters } from '@/v1/utils/getFilters';
 import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
-import './FilterBlock.css';
 import getViewMode from '@/v1/utils/getViewMode';
 import { ModalContext } from '@/v2/modules/modalable';
 import Modal from '@/v2/layouts/Modal';
