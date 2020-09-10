@@ -8,7 +8,7 @@ import RouteDataEditableTable from '@/v2/components/RouteDataEditableTable/Route
 import RouteView from '@/v2/components/RouteView/RouteView';
 import RouteEditor from '@/v2/components/RouteEditor/RouteEditor';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
-import ButtonHandler from '@/v1/components/ButtonHandler/ButtonHandler';
+import ButtonHandler from '@/v2/components/ButtonHandler/ButtonHandler';
 import { DEFAULT_CATEGORY } from '@/v1/Constants/Categories';
 import { NUM_OF_DAYS } from '@/v1/Constants/Route';
 import RoutePhotoCropper from '@/v2/components/RoutePhotoCropper/RoutePhotoCropper';
