@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Category from '@/v2/components/Category/Category';
 import { CATEGORIES_ITEMS, getCategoryColor } from '@/v1/Constants/Categories';
 import { css, StyleSheet } from '@/v2/aphrodite';
-import DropDownList from '@/v1/components/DropDownList/DropDownList';
+import DropDownList from '@/v2/components/DropDownList/DropDownList';
 
 class CategoryRangeSelector extends React.PureComponent {
   constructor(props) {
