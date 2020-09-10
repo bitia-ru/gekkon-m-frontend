@@ -6,7 +6,7 @@ import { getUserName } from '@/v1/Constants/User';
 import { ROUTE_KINDS } from '@/v1/Constants/Route';
 import getColorStyle from '@/v1/Constants/RouteColorPicker';
 import { getCategoryColor } from '@/v1/Constants/Categories';
-import Category from '@/v1/components/Category/Category';
+import Category from '@/v2/components/Category/Category';
 import './RouteDataTable.css';
 
 const RouteDataTable = ({ route, user }) => {
