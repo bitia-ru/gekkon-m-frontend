@@ -102,7 +102,7 @@ class MainMenu extends React.PureComponent {
             <h3 className={css(styles.mMenuHeader)}>
               Соцсети
             </h3>
-            <ul className="social-links">
+            <ul className={css(styles.socialLinks)}>
               <li>
                 <SocialLinkButton
                   onClick={() => enterWithVk('logIn')}
@@ -119,6 +119,19 @@ class MainMenu extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
   mMenu: {
     width: '100%',
     backgroundColor: '#ffffff',
