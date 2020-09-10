@@ -9,7 +9,6 @@ import Button from '@/v1/components/Button/Button';
 import FormField from '@/v1/components/FormField/FormField';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import { PASSWORD_MIN_LENGTH } from '@/v1/Constants/User';
-import './ResetPasswordForm.css';
 import SALT_ROUNDS from '@/v1/Constants/Bcrypt';
 import RE_EMAIL from '@/v1/Constants/Constraints';
 import Modal from '../../layouts/Modal';
@@ -17,6 +16,7 @@ import Api from '@/v2/utils/Api';
 import { ModalContext } from '@/v2/modules/modalable';
 import showToastr from '@/v2/utils/showToastr';
 import toastHttpError from '@/v2/utils/toastHttpError';
+import { StyleSheet, css } from '@/v2/aphrodite';
 
 class ResetPasswordForm extends Component {
   constructor(props) {
@@ -160,7 +160,7 @@ class ResetPasswordForm extends Component {
   firstTabContent = () => {
     const { phone, passwordFromSms, isWaiting } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Ваш телефон"
           id="your-phone"
@@ -196,7 +196,7 @@ class ResetPasswordForm extends Component {
       email, password, repeatPassword, isWaiting,
     } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Email / логин"
           id="your-email"
@@ -244,7 +244,7 @@ class ResetPasswordForm extends Component {
           {
             ({ closeModal }) => (
               <>
-                <h3 className="modal-block__title modal-block-m__title_form">
+                <h3 className={css(styles.modalBlockMTitleForm)}>
                   Установка нового пароля
                 </h3>
                 <TabBar
@@ -261,6 +261,16 @@ class ResetPasswordForm extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  modalBlockMTitleForm: {
+    fontSize: '24px',
+    fontFamily: 'GilroyBold, sans-serif',
+    lineHeight: '24px',
+    textAlign: 'center',
+    marginTop: '50px',
+  },
+});
 
 ResetPasswordForm.propTypes = {
 };
