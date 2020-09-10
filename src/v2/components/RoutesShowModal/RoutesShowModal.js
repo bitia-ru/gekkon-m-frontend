@@ -17,7 +17,7 @@ import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import ShowSchemeButton from '@/v1/components/ShowSchemeButton/ShowSchemeButton';
 import SchemeModal from '@/v2/components/SchemeModal/SchemeModal';
 import NoticeButton from '@/v1/components/NoticeButton/NoticeButton';
-import NoticeForm from '@/v1/components/NoticeForm/NoticeForm';
+import NoticeForm from '@/v2/components/NoticeForm/NoticeForm';
 import Tooltip from '@/v1/components/Tooltip/Tooltip';
 import { avail, notAvail } from '@/v1/utils';
 import RouteContext from '@/v1/contexts/RouteContext';
