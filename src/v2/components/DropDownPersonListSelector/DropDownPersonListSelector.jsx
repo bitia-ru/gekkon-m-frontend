@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css, StyleSheet } from '@/v2/aphrodite';
-import DropDownPersonList from '@/v1/components/DropDownPersonList/DropDownPersonList';
+import DropDownPersonList from '@/v2/components/DropDownPersonList/DropDownPersonList';
 
 class DropDownPersonListSelector extends React.PureComponent {
   constructor(props) {
