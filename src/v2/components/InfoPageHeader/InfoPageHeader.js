@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './InfoPageHeader.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 export default class InfoPageHeader extends Component {
   constructor(props) {
@@ -25,16 +25,47 @@ export default class InfoPageHeader extends Component {
     const { bgImageLoaded } = this.state;
     return (
       <header
-        className="header-m"
+        className={css(styles.headerM)}
         style={bgImageLoaded ? { backgroundImage: `url(${image})` } : {}}
       >
-        <div className="header-m__about">
-          <h1 className="header-m__header">{title}</h1>
+        <div className={css(styles.headerMAbout)}>
+          <h1 className={css(styles.headerMHeader)}>{title}</h1>
         </div>
       </header>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  headerM: {
+    backgroundColor: '#F2F1EB',
+    width: '100%',
+    minHeight: '602px',
+    maxWidth: '100%',
+    position: 'relative',
+    fontFamily: 'GilroyRegular, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+  },
+  headerMHeader: {
+    fontFamily: 'GilroyBold',
+    fontSize: '36px',
+    lineHeight: '44px',
+    marginBottom: '24px',
+    marginTop: 0,
+    color: '#ffffff',
+  },
+  headerMAbout: {
+    width: '100%',
+    paddingTop: '174px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    boxSizing: 'border-box',
+  },
+});
 
 InfoPageHeader.propTypes = {
   image: PropTypes.string.isRequired,
