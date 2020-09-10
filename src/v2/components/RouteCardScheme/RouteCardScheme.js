@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import RouteCard from '@/v1/components/RouteCard/RouteCard';
 import Scheme from '@/v1/components/Scheme/Scheme';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
-import './RouteCardScheme.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 class RouteCardScheme extends Component {
   constructor(props) {
@@ -30,9 +30,9 @@ class RouteCardScheme extends Component {
     const { selectedRouteId } = this.state;
     const route = routes[selectedRouteId];
     return (
-      <div className="content-m__inner-map" style={{ display: 'flex' }}>
-        <div className="content-m__col-xs-12">
-          <div className="content-m__map">
+      <div className={css(styles.contentMInnerMap)}>
+        <div className={css(styles.contentMColXs12)}>
+          <div>
             <Scheme
               currentRoutes={getArrayByIds(routeIds, routes)}
               diagram={diagram}
@@ -41,7 +41,7 @@ class RouteCardScheme extends Component {
           </div>
         </div>
         <div
-          className="content-m__col-xs-12 content-m__col-sm-6 content-m__center-sm"
+          className={css(styles.contentMColSm6, styles.contentMColXs12)}
           ref={(ref) => { this.cardRef = ref; }}
         >
           {
@@ -49,7 +49,7 @@ class RouteCardScheme extends Component {
               role="button"
               tabIndex={0}
               style={{ outline: 'none' }}
-              className="content-m__inner-map-card"
+              className={css(styles.contentMInnerMapCard)}
               onClick={() => onRouteClick(route.id)}
             >
               <RouteCard
@@ -62,6 +62,29 @@ class RouteCardScheme extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  contentMInnerMapCard: {
+    marginTop: '20px',
+    display: 'flex',
+  },
+  contentMInnerMap: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  contentMColSm6: {
+    '@media screen and (mix-width: 720px)': {
+      width: 'calc(50% - 24px)',
+      maxWidth: '50%',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  contentMColXs12: {
+    width: '100%',
+    maxWidth: '100%',
+  },
+});
 
 RouteCardScheme.propTypes = {
   diagram: PropTypes.string,
