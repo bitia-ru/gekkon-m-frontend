@@ -120,7 +120,7 @@ export default class DatePicker extends Component {
   };
 
   render() {
-    const { hide } = this.props;
+    const { hide, clearable } = this.props;
     return (
       <div
         role="button"
@@ -215,11 +215,15 @@ export default class DatePicker extends Component {
                   }
                 </div>
               </div>
-              <Button
-                customClass="calendar__button"
-                title="Сбросить дату"
-                onClick={this.removeDate}
-              />
+              {
+                clearable && (
+                  <Button
+                    customClass="calendar__button"
+                    title="Сбросить дату"
+                    onClick={this.removeDate}
+                  />
+                )
+              }
             </div>
           </div>
         </div>
@@ -232,6 +236,7 @@ DatePicker.propTypes = {
   date: PropTypes.object,
   hide: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
+  clearable: PropTypes.bool,
 };
 
 DatePicker.defaultProps = {

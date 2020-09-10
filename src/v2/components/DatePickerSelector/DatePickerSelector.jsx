@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment/moment';
-import DatePicker from '@/v1/components/DatePicker/DatePicker';
+import DatePicker from '@/v2/components/DatePicker/DatePicker';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
 class DatePickerSelector extends React.PureComponent {
@@ -16,7 +16,7 @@ class DatePickerSelector extends React.PureComponent {
   render() {
     const { expanded } = this.state;
     const {
-      date, formatter, onChange, dateClass,
+      date, formatter, onChange, dateClass, clearable,
     } = this.props;
     return (
       <>
@@ -35,6 +35,7 @@ class DatePickerSelector extends React.PureComponent {
           expanded
             ? (
               <DatePicker
+                clearable={clearable}
                 hide={() => this.setState({ expanded: false })}
                 date={date ? moment(date) : null}
                 onSelect={onChange}
@@ -55,6 +56,7 @@ DatePickerSelector.propTypes = {
   formatter: PropTypes.func,
   onChange: PropTypes.func,
   dateClass: PropTypes.string,
+  clearable: PropTypes.bool,
 };
 
 export default DatePickerSelector;

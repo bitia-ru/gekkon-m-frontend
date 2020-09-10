@@ -121,6 +121,7 @@ const RouteDataEditableTable = ({
                   <div className="route-m__table-item route-m__table-item-right">
                     <div className="field-select-m route-m__field-select">
                       <DatePickerSelector
+                        clearable
                         formatter={d => moment(d).format(DATE_FORMAT)}
                         date={route.installed_at}
                         onChange={
@@ -138,6 +139,7 @@ const RouteDataEditableTable = ({
                   <div className="route-m__table-item route-m__table-item-right">
                     <div className="field-select-m route-m__field-select">
                       <DatePickerSelector
+                        clearable
                         formatter={d => moment(d).format(DATE_FORMAT)}
                         date={route.installed_until}
                         onChange={
