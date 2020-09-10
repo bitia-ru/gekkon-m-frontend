@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import RouteCardView from '@/v1/components/RouteCardView/RouteCardView';
+import RouteCardView from '@/v2/components/RouteCardView/RouteCardView';
 import FilterControl from '@/v2/components/FilterControl/FilterControl';
 import Pagination from '@/v1/components/Pagination/Pagination';
 import NUM_OF_DISPLAYED_PAGES from '@/v1/Constants/Pagination';
