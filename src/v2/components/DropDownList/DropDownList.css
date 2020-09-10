@@ -1,0 +1,65 @@
+.dropdown-list {
+    background-color: #ffffff;
+    display: block;
+}
+
+.dropdown-list__inner {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    min-width: 100%;
+    box-sizing: border-box;
+    display: block;
+    z-index: 10;
+}
+
+.dropdown-list__item {
+    list-style: none;
+    line-height: 1.3em;
+    color: #1f1f1f;
+    font-family: GilroyRegular;
+    font-size: 16px;
+    padding: 16px 20px;
+    max-width: 100%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    height: 54px;
+    box-sizing: border-box;
+}
+
+.dropdown-list__item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-list__buttons-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 10px;
+}
+
+.dropdown-list__button-cancel {
+    padding: 0;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    background-color: transparent;
+    border: none;
+    color: #C2C3C8;
+    font-size: 14px;
+    font-family: GilroyRegular, sans-serif;
+    width: 100%;
+    transition: .4s ease-out;
+    position: relative;
+    margin-top: 10px;
+}
+
+.dropdown-list__button-cancel:hover {
+    background-color: #C6C7CC;
+    color: #1f1f1f;
+}
+
+.dropdown-list__save-btn {
+    padding-right: 16px;
+    padding-left: 16px;
+}

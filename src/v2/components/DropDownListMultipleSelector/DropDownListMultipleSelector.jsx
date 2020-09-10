@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DropDownList from '@/v1/components/DropDownList/DropDownList';
+import DropDownList from '@/v2/components/DropDownList/DropDownList';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
 class DropDownListMultipleSelector extends React.PureComponent {
