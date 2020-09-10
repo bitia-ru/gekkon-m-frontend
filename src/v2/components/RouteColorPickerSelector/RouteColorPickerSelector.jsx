@@ -26,9 +26,9 @@ class RouteColorPickerSelector extends React.PureComponent {
             onClick={() => this.setState({ expanded: true })}
             className={fieldSelectClass}
           >
-            <div className="mark-color-picker__info">
+            <div className={css(styles.markColorPickerInfo)}>
               <div
-                className="mark-color-picker__color"
+                className={css(styles.markColorPickerColor)}
                 style={getColorStyle(color)}
               />
             </div>
@@ -50,7 +50,15 @@ class RouteColorPickerSelector extends React.PureComponent {
   }
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+  markColorPickerInfo: { cursor: 'pointer' },
+  markColorPickerColor: {
+    display: 'inline-block',
+    width: '60px',
+    height: '20px',
+    verticalAlign: 'middle',
+    marginLeft: '15px',
+  },
 });
 
 RouteColorPickerSelector.propTypes = {
