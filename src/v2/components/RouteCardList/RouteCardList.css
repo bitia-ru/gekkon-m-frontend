@@ -1,0 +1,32 @@
+.table-m {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.table-m__header {
+    display: flex;
+    padding: 12px 18px;
+    background-color: #ffffff;
+    border: 2px solid #D1D5E2;
+}
+
+.table-m__header-item {
+    font-size: 16px;
+    color: #A5A4A4;
+    line-height: 16px;
+    width: 40%;
+}
+
+.table-m__header-item_number {
+    width: 20%;
+}
+
+.table-m__header-item_level {
+    width: 50%;
+    text-align: center;
+}
+
+.table-m__header-item_hook {
+    text-align: right;
+    width: 30%;
+}
