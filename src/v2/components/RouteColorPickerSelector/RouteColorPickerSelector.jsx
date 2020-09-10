@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css, StyleSheet } from '@/v2/aphrodite';
 import getColorStyle from '@/v1/Constants/RouteColorPicker';
-import RouteColorPicker from '@/v1/components/RouteColorPicker/RouteColorPicker';
+import RouteColorPicker from '@/v2/components/RouteColorPicker/RouteColorPicker';
 
 class RouteColorPickerSelector extends React.PureComponent {
   constructor(props) {
