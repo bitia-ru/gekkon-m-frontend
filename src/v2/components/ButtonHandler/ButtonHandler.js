@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, css } from '@/v2/aphrodite';
 
 const ButtonHandler = ({ title, xlinkHref, onClick }) => (
-  <div className="route-m__route-footer-item">
+  <div className={css(styles.routeMRouteFooterItem)}>
     <button type="button" className={css(styles.btnHandler)} title={title} onClick={onClick}>
       <svg aria-hidden="true">
         <use xlinkHref={xlinkHref} />
@@ -13,6 +13,10 @@ const ButtonHandler = ({ title, xlinkHref, onClick }) => (
 );
 
 const styles = StyleSheet.create({
+  routeMRouteFooterItem: {
+    marginLeft: '6px',
+    marginRight: '6px',
+  },
   btnHandler: {
     backgroundСolor: '#E4E4E4',
     border: 'none',
@@ -38,8 +42,8 @@ const styles = StyleSheet.create({
       height: '100%',
       fill: '#4F4F4F',
       transition: 'fill .4s ease-out',
-    }
-  }
+    },
+  },
 });
 
 ButtonHandler.propTypes = {
