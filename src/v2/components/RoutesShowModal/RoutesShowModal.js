@@ -15,7 +15,7 @@ import RouteEditor from '@/v2/components/RouteEditor/RouteEditor';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import ShowSchemeButton from '@/v1/components/ShowSchemeButton/ShowSchemeButton';
-import SchemeModal from '@/v1/components/SchemeModal/SchemeModal';
+import SchemeModal from '@/v2/components/SchemeModal/SchemeModal';
 import NoticeButton from '@/v1/components/NoticeButton/NoticeButton';
 import NoticeForm from '@/v1/components/NoticeForm/NoticeForm';
 import Tooltip from '@/v1/components/Tooltip/Tooltip';

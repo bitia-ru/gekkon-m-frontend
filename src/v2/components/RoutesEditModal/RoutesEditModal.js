@@ -14,7 +14,7 @@ import { NUM_OF_DAYS } from '@/v1/Constants/Route';
 import RoutePhotoCropper from '@/v2/components/RoutePhotoCropper/RoutePhotoCropper';
 import ScrollToTopOnMount from '@/v1/components/ScrollToTopOnMount';
 import ShowSchemeButton from '@/v1/components/ShowSchemeButton/ShowSchemeButton';
-import SchemeModal from '@/v1/components/SchemeModal/SchemeModal';
+import SchemeModal from '@/v2/components/SchemeModal/SchemeModal';
 import RouteContext from '@/v1/contexts/RouteContext';
 import NewRoute from '@/v1/Constants/NewRoute';
 import { avail } from '@/v1/utils';
