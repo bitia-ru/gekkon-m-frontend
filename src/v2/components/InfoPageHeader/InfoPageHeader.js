@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import MainNav from '../MainNav/MainNav';
-import Logo from '../Logo/Logo';
 import './InfoPageHeader.css';
 
 export default class InfoPageHeader extends Component {
@@ -22,7 +20,7 @@ export default class InfoPageHeader extends Component {
 
   render() {
     const {
-      showMenu, image, title,
+      image, title,
     } = this.props;
     const { bgImageLoaded } = this.state;
     return (
@@ -30,10 +28,6 @@ export default class InfoPageHeader extends Component {
         className="header-m"
         style={bgImageLoaded ? { backgroundImage: `url(${image})` } : {}}
       >
-        <div className="header-m__top">
-          <Logo />
-          <MainNav showMenu={showMenu} />
-        </div>
         <div className="header-m__about">
           <h1 className="header-m__header">{title}</h1>
         </div>
@@ -45,5 +39,4 @@ export default class InfoPageHeader extends Component {
 InfoPageHeader.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  showMenu: PropTypes.func.isRequired,
 };
