@@ -9,7 +9,6 @@ import Button from '@/v1/components/Button/Button';
 import FormField from '@/v1/components/FormField/FormField';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import CheckBox from '@/v1/components/CheckBox/CheckBox';
-import './LogInForm.css';
 import RE_EMAIL from '@/v1/Constants/Constraints';
 import { createUserSession } from '../../utils/auth';
 import { enterWithVk } from '../../utils/vk';
@@ -17,6 +16,7 @@ import { ModalContext } from '../../modules/modalable';
 import Api from '@/v2/utils/Api';
 import Modal from '../../layouts/Modal';
 import showToastr from '@/v2/utils/showToastr';
+import { StyleSheet, css } from '@/v2/aphrodite';
 
 class LogInForm extends Component {
   constructor(props) {
@@ -192,7 +192,7 @@ class LogInForm extends Component {
       isWaiting, phone, passwordEnter, rememberMe,
     } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Телефон"
           id="phone"
@@ -220,7 +220,7 @@ class LogInForm extends Component {
           isWaiting={isWaiting}
           onClick={() => this.checkAndSubmit('phone', phone, passwordEnter)}
         />
-        <div className="modal-block__settings">
+        <div>
           <CheckBox
             id="rememberMeTab1"
             onChange={this.onRememberMeChange}
@@ -231,7 +231,6 @@ class LogInForm extends Component {
             role="link"
             tabIndex="0"
             style={{ outline: 'none' }}
-            className="modal-block__link"
             onClick={() => this.resetPassword('phone')}
           >
             Забыли пароль?
@@ -246,7 +245,7 @@ class LogInForm extends Component {
       isWaiting, email, password, rememberMe,
     } = this.state;
     return (
-      <form action="#" className="form">
+      <form action="#">
         <FormField
           placeholder="Email / логин"
           id="email"
@@ -295,7 +294,7 @@ class LogInForm extends Component {
             )
           }
         />
-        <div className="modal-block-m__settings">
+        <div className={css(styles.modalBlockMSettings)}>
           <CheckBox
             id="rememberMeTab2"
             onChange={this.onRememberMeChange}
@@ -306,7 +305,7 @@ class LogInForm extends Component {
             role="link"
             tabIndex="0"
             style={{ outline: 'none' }}
-            className="modal-block-m__link"
+            className={css(styles.modalBlockMLink)}
             onClick={() => this.resetPassword('email')}
           >
             Забыли пароль?
@@ -326,7 +325,7 @@ class LogInForm extends Component {
           {
             ({ closeModal }) => (
               <>
-                <h3 className="modal-block__title modal-block-m__title_form">
+                <h3 className={css(styles.modalBlockMTitleForm)}>
                   Вход в систему
                 </h3>
                 <TabBar
@@ -340,11 +339,11 @@ class LogInForm extends Component {
                   activeTab={2}
                   titleList={['Телефон', 'Email / логин']}
                 />
-                <div className="modal-block-m__or">
-                  <div className="modal-block-m__or-inner">или</div>
+                <div className={css(styles.modalBlockMOr)}>
+                  <div className={css(styles.modalBlockMOrInner)}>или</div>
                 </div>
-                <div className="modal-block-m__social">
-                  <ul className="social-links">
+                <div>
+                  <ul className={css(styles.socialLinks)}>
                     <li>
                       <SocialLinkButton
                         onClick={() => enterWithVk('logIn')}
@@ -362,6 +361,67 @@ class LogInForm extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  modalBlockMSettings: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '12px',
+    marginBottom: '-4px',
+  },
+  modalBlockMLink: {
+    color: '#006CEB',
+    fontSize: '14px',
+    textDecoration: 'none',
+    fontFamily: 'GilroyRegular, sans-serif',
+    ':hover': { textDecoration: 'underline' },
+  },
+  modalBlockMTitleForm: {
+    fontSize: '24px',
+    fontFamily: 'GilroyBold, sans-serif',
+    lineHeight: '24px',
+    textAlign: 'center',
+    marginTop: '50px',
+  },
+  modalBlockMOr: {
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '17px',
+    marginBottom: '17px',
+    ':before': {
+      position: 'absolute',
+      content: '\'\'',
+      width: '100%',
+      left: 0,
+      right: 0,
+      top: '50%',
+      height: '1px',
+      backgroundColor: '#DEDCDC',
+      zIndex: 1,
+    },
+  },
+  modalBlockMOrInner: {
+    paddingLeft: '12px',
+    paddingRight: '12px',
+    backgroundColor: '#ffffff',
+    position: 'relative',
+    zIndex: 3,
+  },
+  socialLinks: {
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    '> li': {
+      listStyleType: 'none',
+      marginRight: '8px',
+      marginLeft: '8px',
+    },
+    '> li:first-child': { marginLeft: 0 },
+    '> li:last-child': { marginRight: 0 },
+  },
+});
 
 LogInForm.propTypes = {
 };
