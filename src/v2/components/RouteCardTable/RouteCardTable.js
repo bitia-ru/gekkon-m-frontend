@@ -7,7 +7,7 @@ import RouteCard from '@/v1/components/RouteCard/RouteCard';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
 import AddRouteButton from '@/v1/components/AddRouteButton/AddRouteButton';
-import './RouteCardTable.css';
+import { css, StyleSheet } from '../../aphrodite';
 
 const RouteCardTable = ({
   user, routes, addRoute, onRouteClick, routeIds,
@@ -15,7 +15,7 @@ const RouteCardTable = ({
   <SectorContext.Consumer>
     {
       ({ sector }) => (
-        <div className="content-m__inner-card">
+        <div className={css(styles.contentMInnerCard)}>
           {
             (sector && user) && <AddRouteButton onClick={addRoute} />
           }
@@ -25,7 +25,7 @@ const RouteCardTable = ({
               role="button"
               tabIndex="0"
               style={{ outline: 'none' }}
-              className="content-m__col-sm-6 content-m__col-xs-12"
+              className={css(styles.contentMColSm6, styles.contentMColXs12)}
               onClick={() => onRouteClick(route.id)}
             >
               <RouteCard route={route} />
@@ -37,6 +37,28 @@ const RouteCardTable = ({
   </SectorContext.Consumer>
 );
 
+const styles = StyleSheet.create({
+  contentMInnerCard: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '@media screen and (mix-width: 720px)': {
+      marginLeft: '-12px',
+      marginRight: '-12px',
+    },
+  },
+  contentMColSm6: {
+    '@media screen and (mix-width: 720px)': {
+      width: 'calc(50% - 24px)',
+      maxWidth: '50%',
+      marginLeft: '12px',
+      marginRight: '12px',
+    },
+  },
+  contentMColXs12: {
+    width: '100%',
+    maxWidth: '100%',
+  },
+});
 
 RouteCardTable.propTypes = {
   user: PropTypes.object,

@@ -7,7 +7,7 @@ import RouteRow from '@/v1/components/RouteRow/RouteRow';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
 import AddRouteButton from '@/v1/components/AddRouteButton/AddRouteButton';
-import './RouteCardList.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 const RouteCardList = ({
   user,
@@ -20,18 +20,24 @@ const RouteCardList = ({
     {
       ({ sector }) => (
         <>
-          <div className="content-m__inner-card">
+          <div className={css(styles.contentMInnerCard)}>
             {
               (sector && user) && <AddRouteButton onClick={addRoute} />
             }
           </div>
-          <div className="content-m__inner-table">
-            <div className="content-m__col-sm-12">
-              <div className="table-m">
-                <div className="table-m__header">
-                  <div className="table-m__header-item table-m__header-item_number">№</div>
-                  <div className="table-m__header-item table-m__header-item_level">Категория</div>
-                  <div className="table-m__header-item table-m__header-item_hook">Зацепы</div>
+          <div className={css(styles.contentMInnerTable)}>
+            <div className={css(styles.contentMColSm12)}>
+              <div className={css(styles.tableM)}>
+                <div className={css(styles.tableMHeader)}>
+                  <div className={css(styles.tableMHeaderItem, styles.tableMHeaderItemNumber)}>
+                    №
+                  </div>
+                  <div className={css(styles.tableMHeaderItem, styles.tableMHeaderItemLevel)}>
+                    Категория
+                  </div>
+                  <div className={css(styles.tableMHeaderItem, styles.tableMHeaderItemHook)}>
+                    Зацепы
+                  </div>
                 </div>
                 {
                   R.map(
@@ -53,6 +59,56 @@ const RouteCardList = ({
     }
   </SectorContext.Consumer>
 );
+
+const styles = StyleSheet.create({
+  contentMInnerCard: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '@media screen and (mix-width: 720px)': {
+      marginLeft: '-12px',
+      marginRight: '-12px',
+    },
+  },
+  contentMInnerTable: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginLeft: '-15px',
+    marginRight: '-15px',
+  },
+  contentMColSm12: {
+    '@media screen and (max-width: 800px)': {
+      width: 'calc(100% - 24px)',
+      marginLeft: '12px',
+      marginRight: '12px',
+      display: 'flex',
+    },
+  },
+  tableM: {
+    width: '100%',
+    marginBottom: '20px',
+  },
+  tableMHeader: {
+    display: 'flex',
+    padding: '12px 18px',
+    backgroundColor: '#ffffff',
+    border: '2px solid #D1D5E2',
+  },
+  tableMHeaderItem: {
+    fontSize: '16px',
+    color: '#A5A4A4',
+    lineHeight: '16px',
+    width: '40%',
+  },
+  tableMHeaderItemNumber: { width: '20%' },
+  tableMHeaderItemLevel: {
+    width: '50%',
+    textAlign: 'center',
+  },
+  tableMHeaderItemHook: {
+    textAlign: 'right',
+    width: '30%',
+  },
+});
 
 RouteCardList.propTypes = {
   user: PropTypes.object,
