@@ -19,7 +19,7 @@ class CategorySelector extends React.PureComponent {
     const { category, onChangeCategory } = this.props;
     return (
       <>
-        <div className="route-m__table-item route-m__table-item-right">
+        <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
           <Category
             category={category}
             color={getCategoryColor(category)}
@@ -42,7 +42,15 @@ class CategorySelector extends React.PureComponent {
   }
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+  routeMTableItem: {
+    width: '50%',
+    fontSize: '14px',
+  },
+  routeMTableItemRight: {
+    paddingLeft: '20px',
+    boxSizing: 'border-box',
+  },
 });
 
 CategorySelector.propTypes = {
