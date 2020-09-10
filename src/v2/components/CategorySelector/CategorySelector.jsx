@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Category from '@/v2/components/Category/Category';
 import { getCategoryColor } from '@/v1/Constants/Categories';
 import { css, StyleSheet } from '@/v2/aphrodite';
-import CategorySlider from '@/v1/components/CategorySlider/CategorySlider';
+import CategorySlider from '@/v2/components/CategorySlider/CategorySlider';
 
 class CategorySelector extends React.PureComponent {
   constructor(props) {
