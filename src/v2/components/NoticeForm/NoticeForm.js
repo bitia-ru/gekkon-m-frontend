@@ -21,13 +21,13 @@ export default class NoticeForm extends Component {
         role="button"
         tabIndex="0"
         style={{ outline: 'none' }}
-        className="modal-block-m modal-block-m_dark"
+        className={css(styles.modalBlockM, styles.modalBlockMDark)}
         onClick={cancel}
       >
-        <div className="modal-block-m__inner">
-          <div className="modal-block-m__container">
-            <div className="modal-block-m__header">
-              <div className="modal-block-m__close">
+        <div className={css(styles.modalBlockMInner)}>
+          <div className={css(styles.modalBlockMContainer)}>
+            <div className={css(styles.modalBlockMHeader)}>
+              <div className={css(styles.modalBlockMClose)}>
                 <CloseButton onClick={cancel} light />
               </div>
             </div>
@@ -73,6 +73,39 @@ export default class NoticeForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  modalBlockM: {
+    backgroundColor: '#ffffff',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 20,
+  },
+  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
+  modalBlockMInner: {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    paddingBottom: '50px',
+    boxSizing: 'border-box',
+  },
+  modalBlockMContainer: {
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  modalBlockMHeader: {
+    paddingTop: '20px',
+    paddingBottom: '20px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  modalBlockMClose: {
+    width: '16px',
+    height: '16px',
+  },
   noticeMessage: {
     width: '100%',
     padding: '20px',
