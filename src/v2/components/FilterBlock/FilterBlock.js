@@ -189,9 +189,9 @@ class FilterBlock extends Component {
           {
             ({ closeModal }) => (
               <>
-                <h3 className="modal-block-m__title">Фильтры</h3>
-                <div className="modal-block-m__filter-item">
-                  <div className="field-select-m">
+                <h3 className={css(styles.modalBlockMTitle)}>Фильтры</h3>
+                <div className={css(styles.modalBlockMFilterItem)}>
+                  <div>
                     <span className={css(styles.fieldSelectMTitle)}>Категория</span>
                     <CategoryRangeSelector
                       categoryTo={categoryTo}
@@ -200,8 +200,8 @@ class FilterBlock extends Component {
                     />
                   </div>
                 </div>
-                <div className="modal-block-m__filter-item">
-                  <div className="field-select-m">
+                <div className={css(styles.modalBlockMFilterItem)}>
+                  <div>
                     {
                       viewMode === 'scheme'
                         ? (
@@ -232,8 +232,8 @@ class FilterBlock extends Component {
                     }
                   </div>
                 </div>
-                <div className="modal-block-m__filter-item">
-                  <div className="field-select-m">
+                <div className={css(styles.modalBlockMFilterItem)}>
+                  <div>
                     <span className={css(styles.fieldSelectMTitle)}>Фильтры</span>
                     <DropDownListMultipleSelector
                       value={
@@ -253,7 +253,7 @@ class FilterBlock extends Component {
                     />
                   </div>
                 </div>
-                <div className="modal-block-m__filter-button">
+                <div className={css(styles.modalBlockMFilterButton)}>
                   <Button
                     size="big"
                     buttonStyle="normal"
@@ -263,7 +263,7 @@ class FilterBlock extends Component {
                   />
                 </div>
                 <Button
-                  customClass="modal-block-m__filter-button-cancel"
+                  customClass={css(styles.modalBlockMFilterButtonCancel)}
                   title="Сбросить фильтры"
                   onClick={() => this.setAllFiltersToDefault(closeModal)}
                 />
@@ -277,6 +277,32 @@ class FilterBlock extends Component {
 }
 
 const styles = StyleSheet.create({
+  modalBlockMTitle: {
+    fontSize: '18px',
+    color: '#1F1F1F',
+    marginTop: 0,
+    fontFamily: 'GilroyBold, sans-serif',
+    marginBottom: '36px',
+  },
+  modalBlockMFilterItem: { marginBottom: '24px' },
+  modalBlockMFilterButton: { marginTop: '34px' },
+  modalBlockMFilterButtonCancel: {
+    padding: 0,
+    paddingTop: '14px',
+    paddingBottom: '14px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: '#C2C3C8',
+    fontSize: '14px',
+    fontFamily: 'GilroyRegular, sans-serif',
+    width: '100%',
+    transition: '.4s ease-out',
+    marginTop: '20px',
+    ':hover': {
+      backgroundColor: '#C6C7CC',
+      color: '#1f1f1f',
+    },
+  },
   fieldSelectMTitle: {
     color: '#1f1f1f',
     fontSize: '16px',
