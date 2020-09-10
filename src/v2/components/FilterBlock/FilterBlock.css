@@ -38,14 +38,6 @@
     justify-content: flex-end;
 }
 
-.modal-block-m__header-btn {
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-    position: static;
-    z-index: 20;
-}
-
 .modal-block-m__title {
     font-size: 18px;
     color: #1F1F1F;
@@ -139,10 +131,4 @@
 .modal-block-m__close {
     width: 16px;
     height: 16px;
-}
-
-.modal-block-m__header-btn {
-    width: 16px;
-    height: 16px;
-    margin-left: 18px;
 }
