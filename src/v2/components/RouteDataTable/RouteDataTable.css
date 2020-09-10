@@ -30,19 +30,3 @@
     margin-left: -10px;
     margin-top: -3px;
 }
-
-.route-m__route-image-wrapper {
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    overflow: hidden;
-    transform: translateX(-50%);
-    left: 50%;
-    display: inline-block;
-}
-
-.route-m__route-image-wrapper img {
-    height: 100%;
-    width: auto;
-    z-index: 2;
-}
