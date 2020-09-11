@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import './Pagination.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 const Pagination = ({
   page, firstPage, lastPage, pagesList, onPageChange,
@@ -10,7 +11,7 @@ const Pagination = ({
     currentPage === page ? ' pagination-m__item_active' : ''
   );
   return (
-    <div className="content-m__pagination">
+    <div className={css(styles.contentMPagination)}>
       {
         pagesList.length > 1 && (
           <div className="pagination-m">
@@ -46,6 +47,14 @@ const Pagination = ({
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  contentMPagination: {
+    marginTop: '30px',
+    display: 'flex',
+    justifyContent: 'center',
+  }
+});
 
 Pagination.propTypes = {
   page: PropTypes.number.isRequired,

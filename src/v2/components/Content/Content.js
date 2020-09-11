@@ -9,15 +9,15 @@ import Pagination from '@/v2/components/Pagination/Pagination';
 import NUM_OF_DISPLAYED_PAGES from '@/v1/Constants/Pagination';
 import SectorContext from '@/v1/contexts/SectorContext';
 import getNumOfPages from '@/v1/utils/getNumOfPages';
-import './Content.css';
 import {
   setSelectedPage,
 } from '@/v1/actions';
-import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
+import reloadRoutesAction from '@/v2/utils/reloadRoutes';
 import getViewMode from '@/v1/utils/getViewMode';
 import getPage from '@/v1/utils/getPage';
 import getNumOfRoutes from '@/v1/utils/getNumOfRoutes';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
+import { StyleSheet, css } from '../../aphrodite';
 
 class Content extends Component {
   componentDidMount() {
@@ -112,12 +112,12 @@ class Content extends Component {
           ({ sector }) => {
             const diagram = sector && sector.diagram && sector.diagram.url;
             const numOfRoutes = (viewMode === 'scheme'
-              ? getArrayByIds(routeIds, routes).length
-              : getNumOfRoutes(sectors, spotId, sectorId)
+                ? getArrayByIds(routeIds, routes).length
+                : getNumOfRoutes(sectors, spotId, sectorId)
             );
             return (
-              <div className="content-m">
-                <div className="content-m__container">
+              <div className={css(styles.contentM)}>
+                <div className={css(styles.contentMContainer)}>
                   <FilterControl
                     viewMode={viewMode}
                     numOfRoutes={numOfRoutes}
@@ -161,6 +161,21 @@ class Content extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  contentM: {
+    paddingTop: '68px',
+    paddingBottom: '68px',
+    backgroundColor: '#FAFAFA'
+  },
+  contentMContainer: {
+    maxWidth: '1600px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
+});
 
 Content.propTypes = {
   numOfPages: PropTypes.number.isRequired,
