@@ -6,6 +6,7 @@ import ViewModeSwitcher from '@/v1/components/ViewModeSwitcher/ViewModeSwitcher'
 import getFilters from '@/v1/utils/getFilters';
 import './FilterControl.css';
 import { setSelectedFilter, setSelectedViewMode } from '@/v1/actions';
+import { StyleSheet, css } from '../../aphrodite';
 
 class FilterControl extends Component {
   getSpotId = () => {
@@ -47,7 +48,7 @@ class FilterControl extends Component {
           </span>
           Фильтры
         </button>
-        <div className="content-m__nav">
+        <div className={css(styles.contentMNav)}>
           <div className="content-m__info-block">{`Всего трасс: ${numOfRoutes}`}</div>
           <ViewModeSwitcher
             onViewModeChange={this.onViewModeChange}
@@ -59,6 +60,16 @@ class FilterControl extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  contentMNav: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '26px',
+    marginBottom: '26px',
+  },
+});
 
 FilterControl.propTypes = {
   viewModeData: PropTypes.object,
