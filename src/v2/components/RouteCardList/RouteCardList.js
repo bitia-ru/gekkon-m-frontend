@@ -6,7 +6,7 @@ import * as R from 'ramda';
 import RouteRow from '@/v1/components/RouteRow/RouteRow';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
-import AddRouteButton from '@/v1/components/AddRouteButton/AddRouteButton';
+import AddRouteButton from '@/v2/components/AddRouteButton/AddRouteButton';
 import { StyleSheet, css } from '../../aphrodite';
 
 const RouteCardList = ({
