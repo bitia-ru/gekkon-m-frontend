@@ -8,7 +8,7 @@ import Slider from '@/v2/components/Slider/Slider';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
 import SpotContext from '@/v1/contexts/SpotContext';
-import './Header.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 class Header extends Component {
   constructor(props) {
@@ -60,17 +60,17 @@ class Header extends Component {
               <SectorContext.Consumer>
                 {
                   ({ sector }) => (
-                    <header className="header-m">
+                    <header className={css(styles.headerM)}>
                       <div
-                        className="header-m__items-container"
+                        className={css(styles.headerMItemsContainer)}
                         style={
                           (data.photo && bgImageLoaded)
                             ? { backgroundImage: `url(${this.photosInternal[data.photo.url].src})` }
                             : {}
                         }
                       >
-                        <h1 className="header-m__header">{data.name}</h1>
-                        <p className="header-m__descr">{data.description}</p>
+                        <h1 className={css(styles.headerMHeader)}>{data.name}</h1>
+                        <p className={css(styles.headerMDescr)}>{data.description}</p>
                         <InfoBlock infoData={data.infoData} />
                       </div>
                       <Slider
@@ -89,6 +89,45 @@ class Header extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  headerM: {
+    backgroundColor: '#F2F1EB',
+    width: '100%',
+    minHeight: '602px',
+    maxWidth: '100%',
+    position: 'relative',
+    fontFamily: 'GilroyRegular, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+  },
+  headerMItemsContainer: {
+    paddingTop: '134px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+  },
+  headerMHeader: {
+    fontFamily: 'GilroyBold',
+    fontSize: '36px',
+    lineHeight: '44px',
+    marginBottom: '24px',
+    marginTop: 0,
+    color: '#ffffff',
+  },
+  headerMDescr: {
+    marginBottom: '28px',
+    color: '#ffffff',
+  },
+});
 
 Header.propTypes = {
   data: PropTypes.object.isRequired,
