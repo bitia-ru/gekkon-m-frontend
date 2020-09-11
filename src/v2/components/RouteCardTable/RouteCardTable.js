@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import RouteCard from '@/v2/components/RouteCard/RouteCard';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
-import AddRouteButton from '@/v1/components/AddRouteButton/AddRouteButton';
+import AddRouteButton from '@/v2/components/AddRouteButton/AddRouteButton';
 import { css, StyleSheet } from '../../aphrodite';
 
 const RouteCardTable = ({

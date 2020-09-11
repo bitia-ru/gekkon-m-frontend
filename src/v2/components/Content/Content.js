@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import RouteCardView from '@/v2/components/RouteCardView/RouteCardView';
 import FilterControl from '@/v2/components/FilterControl/FilterControl';
-import Pagination from '@/v1/components/Pagination/Pagination';
+import Pagination from '@/v2/components/Pagination/Pagination';
 import NUM_OF_DISPLAYED_PAGES from '@/v1/Constants/Pagination';
 import SectorContext from '@/v1/contexts/SectorContext';
 import getNumOfPages from '@/v1/utils/getNumOfPages';
