@@ -38,8 +38,11 @@ import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
 import showToastr from '@/v2/utils/showToastr';
+import withModals from '@/v2/modules/modalable';
+import RouteAscents from '../../forms/RouteAscents/RouteAscents';
 import './RoutesShowModal.css';
 import { StyleSheet, css } from '../../aphrodite';
+import { ModalContainerContext } from '../../modules/modalable';
 
 class RoutesShowModal extends Component {
   constructor(props) {
@@ -59,6 +62,15 @@ class RoutesShowModal extends Component {
   componentDidMount() {
     const { loadRoute: loadRouteProp } = this.props;
     loadRouteProp(this.getRouteId());
+  }
+
+  modals() {
+    return {
+      ascents: {
+        hashRoute: true,
+        body: <RouteAscents />,
+      },
+    };
   }
 
   getRouteId = () => {
@@ -263,32 +275,7 @@ class RoutesShowModal extends Component {
     }
   };
 
-  changeAscentResult = (routeId) => {
-    const {
-      user,
-      routes,
-      addAscent: addAscentProp,
-      updateAscent: updateAscentProp,
-    } = this.props;
-    const route = routes[routeId];
-    const ascent = R.find(R.propEq('user_id', user.id))(getArrayFromObject(route.ascents));
-    if (ascent) {
-      let result;
-      if (ascent.result === 'red_point') {
-        result = 'flash';
-      } else if (ascent.result === 'flash') {
-        result = 'unsuccessful';
-      } else {
-        result = 'red_point';
-      }
-      const params = { ascent: { result } };
-      updateAscentProp(ascent.id, params);
-    } else {
-      const result = 'red_point';
-      const params = { ascent: { result, user_id: user.id, route_id: routeId } };
-      addAscentProp(params);
-    }
-  };
+  changeAscentResult = () => this.props.history.push('#ascents');
 
   render() {
     const {
@@ -359,169 +346,179 @@ class RoutesShowModal extends Component {
                 />
               )
             }
-            <div className={css(styles.routeM, styles.scrollable)}>
-              <div className="route-m__container">
-                <div className="route-m__block">
-                  <div className="route-m__close">
-                    <CloseButton onClick={() => onClose()} />
-                  </div>
-                </div>
-                {
-                  user && (
-                    <RouteStatus
-                      changeAscentResult={() => this.changeAscentResult(routeId)}
-                    />
-                  )
-                }
-                <h1 className="route-m__title" style={user ? {} : { marginTop: '0px' }}>
-                  <span className="route-m__title-number">
-                    {this.getRouteNumber(route)}
-                  </span>
-                  {
-                    route.name && (
-                      <span className="route-m__title-place-wrapper">
-                        <span className="route-m__title-place">
-                          <span className="route-m__title-place">
-                            {`(“${route.name}”)`}
-                          </span>
-                        </span>
-                      </span>
-                    )
-                  }
-                </h1>
-              </div>
-              <div className="route-m__route-block">
-                <div className="route-m__route">
-                  {
-                    showLoadPhotoMsg && (
-                      <div className="route-m__route-descr">
-                        <div className="route-m__route-photo-placeholder" />
+            <ModalContainerContext.Consumer>
+              {
+                ({ isModalShown }) => (
+                  <div
+                    className={
+                      css(styles.routeM, isModalShown ? styles.unscrollable : styles.scrollable)
+                    }
+                  >
+                    <div className="route-m__container">
+                      <div className="route-m__block">
+                        <div className="route-m__close">
+                          <CloseButton onClick={() => onClose()}/>
+                        </div>
                       </div>
-                    )
-                  }
-                  {
-                    route.photo && (
-                      <RouteView
-                        route={route}
-                        routePhoto={route.photo.url}
-                        pointers={this.pointers()}
-                        onClick={() => this.setState({ showRouteMark: true })}
-                        routeImageLoading={routeImageLoading}
-                        onImageLoad={() => this.setState({ routeImageLoading: false })}
-                      />
-                    )
-                  }
-                  <ShowSchemeButton
-                    disabled={!route.data || route.data.position === undefined}
-                    onClick={() => this.setState({ schemeModalVisible: true })}
-                  />
-                </div>
-                <div className="route-m__route-footer">
-                  <div className="route-m__route-information">
-                    <div className="route-m__route-count">
-                      <LikeButton
-                        numOfLikes={numOfLikes}
-                        isLiked={like !== undefined}
-                        onChange={
-                          !user
-                            ? null
-                            : afterChange => this.onLikeChange(
-                              routeId, afterChange,
-                            )
-                        }
-                      />
-                    </div>
-                    <div className="route-m__route-count">
-                      <Counter
-                        number={numOfRedpoints}
-                        text="redpoints"
-                        type={currentUserHasRedpoints() && 'redpoints'}
-                      />
-                    </div>
-                    <div className="route-m__route-count">
-                      <Counter
-                        number={numOfFlash}
-                        text="flash"
-                        type={currentUserHasFlashes() && 'flashes'}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="route-m__container">
-                {
-                  (user && avail(user)) && <div className="track-m__notice">
-                    <NoticeButton onClick={this.showNoticeForm} />
-                    <div className="track-m__notice-tooltip">
                       {
-                        false && showTooltip && <Tooltip
-                          text="Сообщить об ошибке"
-                        />
+                        user && (
+                          <RouteStatus
+                            changeAscentResult={() => this.changeAscentResult(routeId)}
+                          />
+                        )
                       }
+                      <h1 className="route-m__title" style={user ? {} : { marginTop: '0px' }}>
+                        <span className="route-m__title-number">
+                          {this.getRouteNumber(route)}
+                        </span>
+                        {
+                          route.name && (
+                            <span className="route-m__title-place-wrapper">
+                              <span className="route-m__title-place">
+                                <span className="route-m__title-place">
+                                  {`(“${route.name}”)`}
+                                </span>
+                              </span>
+                            </span>
+                          )
+                        }
+                      </h1>
                     </div>
-                  </div>
-                }
-                <RouteDataTable route={route} user={user} />
-              </div>
-              {
-                route.description && (
-                  <div className="route-m__item">
-                    <div className="collapsable-block-m">
-                      <button type="button" className="collapsable-block-m__header">
-                        Описание
-                      </button>
-                      <div className="collapsable-block-m__content">
-                        {route.description}
+                    <div className="route-m__route-block">
+                      <div className="route-m__route">
+                        {
+                          showLoadPhotoMsg && (
+                            <div className="route-m__route-descr">
+                              <div className="route-m__route-photo-placeholder"/>
+                            </div>
+                          )
+                        }
+                        {
+                          route.photo && (
+                            <RouteView
+                              route={route}
+                              routePhoto={route.photo.url}
+                              pointers={this.pointers()}
+                              onClick={() => this.setState({ showRouteMark: true })}
+                              routeImageLoading={routeImageLoading}
+                              onImageLoad={() => this.setState({ routeImageLoading: false })}
+                            />
+                          )
+                        }
+                        <ShowSchemeButton
+                          disabled={!route.data || route.data.position === undefined}
+                          onClick={() => this.setState({ schemeModalVisible: true })}
+                        />
+                      </div>
+                      <div className="route-m__route-footer">
+                        <div className="route-m__route-information">
+                          <div className="route-m__route-count">
+                            <LikeButton
+                              numOfLikes={numOfLikes}
+                              isLiked={like !== undefined}
+                              onChange={
+                                !user
+                                  ? null
+                                  : afterChange => this.onLikeChange(
+                                  routeId, afterChange,
+                                  )
+                              }
+                            />
+                          </div>
+                          <div className="route-m__route-count">
+                            <Counter
+                              number={numOfRedpoints}
+                              text="redpoints"
+                              type={currentUserHasRedpoints() && 'redpoints'}
+                            />
+                          </div>
+                          <div className="route-m__route-count">
+                            <Counter
+                              number={numOfFlash}
+                              text="flash"
+                              type={currentUserHasFlashes() && 'flashes'}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    <div className="route-m__container">
+                      {
+                        (user && avail(user)) && <div className="track-m__notice">
+                          <NoticeButton onClick={this.showNoticeForm}/>
+                          <div className="track-m__notice-tooltip">
+                            {
+                              false && showTooltip && <Tooltip
+                                text="Сообщить об ошибке"
+                              />
+                            }
+                          </div>
+                        </div>
+                      }
+                      <RouteDataTable route={route} user={user}/>
+                    </div>
+                    {
+                      route.description && (
+                        <div className="route-m__item">
+                          <div className="collapsable-block-m">
+                            <button type="button" className="collapsable-block-m__header">
+                              Описание
+                            </button>
+                            <div className="collapsable-block-m__content">
+                              {route.description}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    {
+                      (user && this.canEditRoute(user, route)) && (
+                        <div className="route-m__route-controls">
+                          <div className="route-m__btn-delete">
+                            <Button
+                              size="big"
+                              buttonStyle="gray"
+                              title="Удалить"
+                              smallFont
+                              onClick={this.removeRoute}
+                            />
+                          </div>
+                          <div className="route-m__btn-save">
+                            <Button
+                              size="big"
+                              buttonStyle="normal"
+                              title="Редактировать"
+                              smallFont
+                              onClick={() => openEdit(routeId)}
+                            />
+                          </div>
+                        </div>
+                      )
+                    }
+                    <div className="route-m__item">
+                      <CommentBlock
+                        startAnswer={this.startAnswer}
+                        user={user}
+                        removeComment={comment => this.removeComment(routeId, comment)}
+                        comments={route.comments || []}
+                      />
+                    </div>
+                    <div className="route-m__enter-comment">
+                      <CommentForm
+                        quoteComment={quoteComment}
+                        setTextareaRef={this.setTextareaRef}
+                        goToProfile={() => history.push('#profile')}
+                        user={user}
+                        content={commentContent}
+                        saveComment={this.saveComment}
+                        onContentChange={this.onCommentContentChange}
+                        removeQuoteComment={this.removeQuoteComment}
+                      />
+                    </div>
                   </div>
                 )
               }
-              {
-                (user && this.canEditRoute(user, route)) && (
-                  <div className="route-m__route-controls">
-                    <div className="route-m__btn-delete">
-                      <Button
-                        size="big"
-                        buttonStyle="gray"
-                        title="Удалить"
-                        smallFont
-                        onClick={this.removeRoute}
-                      />
-                    </div>
-                    <div className="route-m__btn-save">
-                      <Button
-                        size="big"
-                        buttonStyle="normal"
-                        title="Редактировать"
-                        smallFont
-                        onClick={() => openEdit(routeId)}
-                      />
-                    </div>
-                  </div>
-                )
-              }
-              <div className="route-m__item">
-                <CommentBlock
-                  startAnswer={this.startAnswer}
-                  user={user}
-                  removeComment={comment => this.removeComment(routeId, comment)}
-                  comments={route.comments || []}
-                />
-              </div>
-              <div className="route-m__enter-comment">
-                <CommentForm
-                  quoteComment={quoteComment}
-                  setTextareaRef={this.setTextareaRef}
-                  goToProfile={() => history.push('#profile')}
-                  user={user}
-                  content={commentContent}
-                  saveComment={this.saveComment}
-                  onContentChange={this.onCommentContentChange}
-                  removeQuoteComment={this.removeQuoteComment}
-                />
-              </div>
-            </div>
+            </ModalContainerContext.Consumer>
             {
               schemeModalVisible && <SchemeModal
                 currentRoute={route}
@@ -547,6 +544,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scrollable: { overflowY: 'auto' },
+  unscrollable: { overflowY: 'hidden' },
 });
 
 RoutesShowModal.propTypes = {
@@ -578,4 +576,6 @@ const mapDispatchToProps = dispatch => ({
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoutesShowModal));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(withModals(RoutesShowModal)),
+);
