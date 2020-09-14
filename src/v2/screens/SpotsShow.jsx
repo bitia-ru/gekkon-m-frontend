@@ -55,7 +55,9 @@ class SpotsShow extends React.PureComponent {
     }
   };
 
-  openEdit = (routeId) => { this.props.history.push(`${this.props.match.url}/${routeId}/edit`); };
+  openEdit = (routeId) => {
+    this.props.history.push(`${this.props.match.url}/routes/${routeId}/edit`);
+  };
 
   cancelEdit = () => { this.props.history.goBack(); };
 
