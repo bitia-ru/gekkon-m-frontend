@@ -7,6 +7,8 @@ import SpotsShow from '@/v2/screens/SpotsShow';
 import SpotsIndex from '@/v2/screens/SpotsIndex';
 import LoginVKError from '@/v2/components/LoginVK/LoginVKError';
 import LoginVKSuccess from '@/v2/components/LoginVK/LoginVKSuccess';
+import About from '@/v2/components/About/About';
+import Faq from '@/v2/components/Faq/Faq';
 
 const V2 = ({ currentUser }) => (
   <>
@@ -14,6 +16,8 @@ const V2 = ({ currentUser }) => (
       currentUser !== undefined ? (
         <Switch>
           <Route exact path={['/', '/spots']} component={SpotsIndex} />
+          <Route exact path="/about" component={About} />
+          <Route exact path="/faq" component={Faq} />
           <Route path="/spots/:id/sectors/:sector_id" component={SpotsShow} />
           <Route path="/spots/:id" component={SpotsShow} />
           <Route path="/error" component={LoginVKError} />
