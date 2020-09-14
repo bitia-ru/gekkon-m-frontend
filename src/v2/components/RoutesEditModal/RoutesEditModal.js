@@ -26,6 +26,7 @@ import getArrayByIds from '@/v1/utils/getArrayByIds';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
 import { default as reloadRoutesAction } from '@/v2/utils/reloadRoutes';
 import './RoutesEditModal.css';
+import { css, StyleSheet } from '../../aphrodite';
 
 class RoutesEditModal extends Component {
   constructor(props) {
@@ -392,7 +393,7 @@ class RoutesEditModal extends Component {
                   />
                 )
                 : (
-                  <div className="route-m">
+                  <div className={css(styles.routeM)}>
                     <div className="route-m__container">
                       <div className="route-m__block">
                         <div className="route-m__close">
@@ -558,6 +559,14 @@ class RoutesEditModal extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  routeM: {
+    height: '100%',
+    overflowY: 'auto',
+    backgroundColor: '#FFFFFF',
+  },
+});
 
 RoutesEditModal.propTypes = {
   user: PropTypes.object,

@@ -39,6 +39,7 @@ import { loadSpot as loadSpotAction } from '@/v2/redux/spots/actions';
 import { setSelectedPage } from '@/v1/actions';
 import showToastr from '@/v2/utils/showToastr';
 import './RoutesShowModal.css';
+import { StyleSheet, css } from '../../aphrodite';
 
 class RoutesShowModal extends Component {
   constructor(props) {
@@ -358,7 +359,7 @@ class RoutesShowModal extends Component {
                 />
               )
             }
-            <div className="route-m">
+            <div className={css(styles.routeM, styles.scrollable)}>
               <div className="route-m__container">
                 <div className="route-m__block">
                   <div className="route-m__close">
@@ -539,6 +540,14 @@ class RoutesShowModal extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  routeM: {
+    height: '100%',
+    backgroundColor: '#FFFFFF',
+  },
+  scrollable: { overflowY: 'auto' },
+});
 
 RoutesShowModal.propTypes = {
   user: PropTypes.object,

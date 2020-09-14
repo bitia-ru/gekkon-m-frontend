@@ -98,10 +98,10 @@ const style = StyleSheet.create({
     height: '100%',
     width: '100%',
     zIndex: 20,
+    overflow: 'auto',
   },
   modalBlockM__inner: {
     width: '100%',
-    height: '100%',
     overflow: 'auto',
     paddingBottom: '50px',
     boxSizing: 'border-box',
