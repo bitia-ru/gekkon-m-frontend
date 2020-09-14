@@ -56,7 +56,12 @@ class MainScreen extends React.PureComponent {
       <ModalContainerContext.Consumer>
         {
           ({ isModalShown }) => (
-            <div>
+            <div className={
+              css(
+                style.container,
+                isModalShown ? style.unscrollable : style.scrollable,
+              )
+            }>
               <div style={{ flex: 1 }}>
                 <LoadingIndicator>
                   <Logo />
@@ -103,6 +108,14 @@ class MainScreen extends React.PureComponent {
 }
 
 const style = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexFlow: 'column',
+    height: '100vh',
+    overflowX: 'hidden',
+  },
+  scrollable: { overflowY: 'auto' },
+  unscrollable: { overflowY: 'hidden' },
 });
 
 export default withRouter(withModals(MainScreen));
