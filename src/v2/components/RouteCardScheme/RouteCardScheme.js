@@ -22,18 +22,14 @@ class RouteCardScheme extends Component {
   };
 
   render() {
-    const {
-      diagram,
-      routes,
-      routeIds,
-      onRouteClick,
-    } = this.props;
+    const { diagram, routes, routeIds, onRouteClick } = this.props;
     const { selectedRouteId } = this.state;
     const route = routes[selectedRouteId];
+
     return (
       <div className={css(styles.contentMInnerMap)}>
         <div className={css(styles.contentMColXs12)}>
-          <div>
+          <div className={css(styles.schemeContainer)}>
             <Scheme
               currentRoutes={getArrayByIds(routeIds, routes)}
               diagram={diagram}
@@ -53,9 +49,7 @@ class RouteCardScheme extends Component {
               className={css(styles.contentMInnerMapCard)}
               onClick={() => onRouteClick(route.id)}
             >
-              <RouteCard
-                route={route}
-              />
+              <RouteCard route={route} />
             </div>
           }
         </div>

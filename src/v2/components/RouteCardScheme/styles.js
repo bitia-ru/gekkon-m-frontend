@@ -22,6 +22,12 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: '100%',
   },
+  schemeContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    border: '1px solid #F0F0F0',
+    height: '280px',
+  },
 });
 
 export default styles;
