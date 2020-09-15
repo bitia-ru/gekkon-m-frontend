@@ -66,3 +66,20 @@
 .btn-m_gray:hover {
     background-color: #D7D7D7;
 }
+
+
+.btn-m_filter {
+    background-color: #ffffff;
+    border: 2px solid #DDE2EF;
+    padding: 0;
+    font-size: 24px;
+    line-height: 100%;
+    color: #DDE2EF;
+    font-weight: bold;
+}
+
+.btn-m_filter:hover {
+    background-color: #fafafa;
+    border-color: #006CEB;
+    color: #006CEB;
+}
