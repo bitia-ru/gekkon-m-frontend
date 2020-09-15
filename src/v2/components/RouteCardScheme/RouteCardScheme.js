@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import RouteCard from '@/v1/components/RouteCard/RouteCard';
 import Scheme from '@/v1/components/Scheme/Scheme';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
-import { StyleSheet, css } from '../../aphrodite';
+import { css } from '../../aphrodite';
+import styles from './styles';
 
 class RouteCardScheme extends Component {
   constructor(props) {
@@ -62,29 +63,6 @@ class RouteCardScheme extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  contentMInnerMapCard: {
-    marginTop: '20px',
-    display: 'flex',
-  },
-  contentMInnerMap: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  contentMColSm6: {
-    '@media screen and (mix-width: 720px)': {
-      width: 'calc(50% - 24px)',
-      maxWidth: '50%',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  contentMColXs12: {
-    width: '100%',
-    maxWidth: '100%',
-  },
-});
 
 RouteCardScheme.propTypes = {
   diagram: PropTypes.string,
