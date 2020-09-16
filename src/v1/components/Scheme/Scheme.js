@@ -17,8 +17,9 @@ class Scheme extends Component {
   }
 
   render() {
-    const { sectors, currentRoutes, onClick } = this.props;
+    const { sectors, currentRoutes, onClick, pointerFactor } = this.props;
     const { imageIsLoading } = this.state;
+
     return (
       <SectorContext.Consumer>
         {
@@ -49,6 +50,7 @@ class Scheme extends Component {
                             category={route.category}
                             color={route.holds_color === null ? undefined : route.holds_color.color}
                             onClick={() => onClick(route.id)}
+                            scaleValue={pointerFactor}
                           />
                         ),
                         currentRoutes,
@@ -69,10 +71,12 @@ Scheme.propTypes = {
   currentRoutes: PropTypes.array.isRequired,
   sectors: PropTypes.object.isRequired,
   onClick: PropTypes.func,
+  pointerFactor: PropTypes.number,
 };
 
 Scheme.defaultProps = {
   onClick: null,
+  pointerFactor: 1,
 };
 
 const mapStateToProps = state => ({
