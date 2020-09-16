@@ -15,7 +15,8 @@ class RouteCardScheme extends Component {
 
     this.state = {
       selectedRouteId: null,
-      schemeIsScaled: false,
+      schemeScaleValue: 1,
+      schemeScaleStep: 0.5,
     };
   }
 
@@ -23,24 +24,38 @@ class RouteCardScheme extends Component {
     this.setState({ selectedRouteId: id });
   };
 
-  changeSchemeScale = () => {
-    this.setState(
-      prevState => ({
-        schemeIsScaled: !prevState.schemeIsScaled,
-      }),
-    );
+  changeSchemeScale = (way) => {
+    const { schemeScaleValue, schemeScaleStep } = this.state;
+    if (way === 'increase' && schemeScaleValue < 6) {
+      this.setState(
+        prevState => ({
+          schemeScaleValue: prevState.schemeScaleValue + schemeScaleStep,
+        }),
+      );
+    }
+    if (way === 'decrease' && schemeScaleValue > 1) {
+      this.setState(
+        prevState => ({
+          schemeScaleValue: prevState.schemeScaleValue - schemeScaleStep,
+        }),
+      );
+    }
   };
+
+  changeSchemeScaleStep = (e) => {
+    this.setState({ schemeScaleStep: Number(e.target.value) });
+  }
 
   render() {
     const { diagram, routes, routeIds, onRouteClick } = this.props;
-    const { selectedRouteId, schemeIsScaled } = this.state;
+    const { selectedRouteId, schemeScaleValue, schemeScaleStep } = this.state;
     const route = routes[selectedRouteId];
 
     return (
       <div className={css(styles.contentMInnerMap)}>
         <div className={css(styles.contentMColXs12)}>
           <div className={css(styles.schemeContainer)}>
-            <div style={{ transform: `scale(${schemeIsScaled ? 4 : 1})` }}>
+            <div style={{ transform: `scale(${schemeScaleValue})` }}>
               <Scheme
                 currentRoutes={getArrayByIds(routeIds, routes)}
                 diagram={diagram}
@@ -49,12 +64,30 @@ class RouteCardScheme extends Component {
             </div>
           </div>
           <div className={css(styles.scalingButtonContainer)}>
+            <span style={{ width: '120px' }}>{`Масштаб: x${schemeScaleValue}`}</span>
+            <label htmlFor="schemeScaleStep">
+              {'Шаг: '}
+              <input
+                onChange={this.changeSchemeScaleStep}
+                value={schemeScaleStep}
+                style={{ width: '22px', height: '40px' }}
+                id="schemeScaleStep"
+              />
+            </label>
             <div>
               <Button
                 size="medium"
                 buttonStyle="filter"
-                onClick={this.changeSchemeScale}
-                title={schemeIsScaled ? '—' : '+'}
+                onClick={() => this.changeSchemeScale('increase')}
+                title="+"
+              />
+            </div>
+            <div>
+              <Button
+                size="medium"
+                buttonStyle="filter"
+                onClick={() => this.changeSchemeScale('decrease')}
+                title="—"
               />
             </div>
           </div>

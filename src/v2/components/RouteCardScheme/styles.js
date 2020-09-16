@@ -32,8 +32,10 @@ const styles = StyleSheet.create({
   },
   scalingButtonContainer: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     paddingTop: '20px',
+    flexWrap: 'no-wrap',
     '> div': {
       flex: '0 0 52px',
     },
