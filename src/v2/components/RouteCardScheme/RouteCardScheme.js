@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import RouteCard from '@/v1/components/RouteCard/RouteCard';
 import Scheme from '@/v1/components/Scheme/Scheme';
+import Button from '@/v1/components/Button/Button';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import { css } from '../../aphrodite';
 import styles from './styles';
@@ -14,6 +15,7 @@ class RouteCardScheme extends Component {
 
     this.state = {
       selectedRouteId: null,
+      schemeIsScaled: false,
     };
   }
 
@@ -21,20 +23,40 @@ class RouteCardScheme extends Component {
     this.setState({ selectedRouteId: id });
   };
 
+  changeSchemeScale = () => {
+    this.setState(
+      prevState => ({
+        schemeIsScaled: !prevState.schemeIsScaled,
+      }),
+    );
+  };
+
   render() {
     const { diagram, routes, routeIds, onRouteClick } = this.props;
-    const { selectedRouteId } = this.state;
+    const { selectedRouteId, schemeIsScaled } = this.state;
     const route = routes[selectedRouteId];
 
     return (
       <div className={css(styles.contentMInnerMap)}>
         <div className={css(styles.contentMColXs12)}>
-          <div>
-            <Scheme
-              currentRoutes={getArrayByIds(routeIds, routes)}
-              diagram={diagram}
-              onClick={this.selectRoute}
-            />
+          <div className={css(styles.schemeContainer)}>
+            <div style={{ transform: `scale(${schemeIsScaled ? 4 : 1})` }}>
+              <Scheme
+                currentRoutes={getArrayByIds(routeIds, routes)}
+                diagram={diagram}
+                onClick={this.selectRoute}
+              />
+            </div>
+          </div>
+          <div className={css(styles.scalingButtonContainer)}>
+            <div>
+              <Button
+                size="medium"
+                buttonStyle="filter"
+                onClick={this.changeSchemeScale}
+                title={schemeIsScaled ? '—' : '+'}
+              />
+            </div>
           </div>
         </div>
         <div

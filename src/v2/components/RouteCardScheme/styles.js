@@ -22,6 +22,22 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: '100%',
   },
+  schemeContainer: {
+    overflow: 'scroll',
+    position: 'relative',
+    userSelect: 'none',
+    '> div': {
+      transformOrigin: '0% 0%',
+    },
+  },
+  scalingButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingTop: '20px',
+    '> div': {
+      flex: '0 0 52px',
+    },
+  },
 });
 
 export default styles;
