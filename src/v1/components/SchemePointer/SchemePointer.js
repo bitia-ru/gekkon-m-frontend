@@ -9,6 +9,7 @@ const SchemePointer = ({
   category,
   position,
   color,
+  scaleValue,
 }) => {
   const hexToRgb = (hex) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -42,6 +43,7 @@ const SchemePointer = ({
         color: getFontColor(color),
         left: `${position.left}%`,
         top: `${position.top}%`,
+        transform: `scale(${scaleValue}) translate(-50%, -50%)`,
       }}
       onClick={onClick}
       className={divClassNames}
@@ -57,12 +59,14 @@ SchemePointer.propTypes = {
   color: PropTypes.string,
   position: PropTypes.object.isRequired,
   category: PropTypes.string.isRequired,
+  scaleValue: PropTypes.number,
 };
 
 SchemePointer.defaultProps = {
   active: false,
   onClick: null,
   color: '#ffffff',
+  scaleValue: 1,
 };
 
 export default SchemePointer;

@@ -27,6 +27,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     border: '1px solid #F0F0F0',
     height: '280px',
+    overflow: 'scroll',
+    position: 'relative',
+    userSelect: 'none',
+    '> div': {
+      transformOrigin: '0% 0%',
+    },
+  },
+  scalingButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingTop: '12px',
+    '> div': {
+      flex: '0 0 52px',
+    },
+  },
+  scalingButtonWrapper: {
+    display: 'flex',
+    '> button': {
+      width: '50px',
+      marginLeft: '10px',
+    },
   },
 });
 
