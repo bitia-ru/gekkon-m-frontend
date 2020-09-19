@@ -14,7 +14,8 @@ export const reloadRoutes = (spotId, sectorId) => (
   (dispatch, getState) => {
     const state = getState();
     const user = state.usersStore.users[state.usersStore.currentUserId];
-    const { sectors, selectedViewModes, selectedFilters, selectedPages, } = state;
+    const sectors = state.sectorsStore.sectors;
+    const { selectedViewModes, selectedFilters, selectedPages, } = state;
     const currentViewMode = getViewMode(sectors, selectedViewModes, spotId, sectorId);
     const filters = getFilters(selectedFilters, spotId, sectorId);
     const {
