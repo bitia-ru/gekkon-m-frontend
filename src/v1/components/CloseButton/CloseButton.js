@@ -1,11 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './CloseButton.css';
 
-const CloseButton = ({
-  onClick, light,
-}) => (
-  <button type="button" className={`close-m${light ? ' close-m_light' : ''}`} onClick={onClick} />
+
+const CloseButton = ({ onClick, light }) => (
+  <button
+    type="button"
+    className={`close-m${light ? ' close-m_light' : ''}`}
+    onClick={
+      (event) => {
+        event.stopPropagation();
+        onClick(event);
+      }
+    }
+  />
 );
 
 CloseButton.propTypes = {
