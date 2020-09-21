@@ -1,6 +1,7 @@
 .map {
     width: 100%;
     position: relative;
+    transform-origin: left top;
 }
 
 .map__map-img {

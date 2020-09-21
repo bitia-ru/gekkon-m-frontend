@@ -20,7 +20,6 @@ class RouteCardScheme extends Component {
 
     this.state = {
       selectedRouteId: null,
-      schemeScaleFactors: [1, 3, 5],
       currentScale: 0,
     };
   }
@@ -28,6 +27,8 @@ class RouteCardScheme extends Component {
   schemeFactor = () => this.SCHEME_SCALE_FACTORS[this.state.currentScale];
 
   pointerFactor = () => this.SCHEME_POINTER_SCALE_FACTORS[this.state.currentScale];
+
+  getScaleFactor = currentScale => this.SCHEME_SCALE_FACTORS[currentScale];
 
   selectRoute = (id) => {
     this.setState({ selectedRouteId: id });
@@ -40,6 +41,27 @@ class RouteCardScheme extends Component {
         currentScale: Math.min(prevState.currentScale + 1, this.SCHEME_SCALE_FACTORS_MAX),
       }),
     );
+
+    setTimeout(
+      () => {
+        const { currentScale } = this.state;
+        const newScaleFactor = this.getScaleFactor(currentScale);
+        const prevScaleFactor = this.getScaleFactor(currentScale - 1);
+        const originalWidth = this.schemeContainerRef.clientWidth;
+        const originalHeight = this.schemeContainerRef.clientHeight;
+        const prevScrollTopPos = this.schemeContainerRef.scrollTop || 1;
+        const prevScrollLeftPos = this.schemeContainerRef.scrollLeft || 1;
+        const newScrollLeftPos = prevScrollLeftPos * (newScaleFactor / prevScaleFactor);
+        const newScrollTopPos = prevScrollTopPos * (newScaleFactor / prevScaleFactor);
+        this.schemeContainerRef.scrollLeft = prevScaleFactor === 1
+          ? ((this.schemeContainerRef.scrollWidth - originalWidth) / 2)
+          : newScrollLeftPos + (originalWidth / prevScaleFactor);
+        this.schemeContainerRef.scrollTop = prevScaleFactor === 1
+          ? ((this.schemeContainerRef.scrollHeight - originalHeight) / 2)
+          : newScrollTopPos + (originalHeight / prevScaleFactor);
+      },
+      0,
+    );
   };
 
   decreaseSchemeScale = () => {
@@ -47,6 +69,24 @@ class RouteCardScheme extends Component {
       prevState => ({
         currentScale: Math.max(prevState.currentScale - 1, 0),
       }),
+    );
+
+    const prevScrollTopPos = this.schemeContainerRef.scrollTop || 1;
+    const prevScrollLeftPos = this.schemeContainerRef.scrollLeft || 1;
+
+    setTimeout(
+      () => {
+        const { currentScale } = this.state;
+        const newScaleFactor = this.getScaleFactor(currentScale);
+        const prevScaleFactor = this.getScaleFactor(currentScale + 1);
+        const newScrollTopPos = prevScrollTopPos * (newScaleFactor / prevScaleFactor);
+        const newScrollLeftPos = prevScrollLeftPos * (newScaleFactor / prevScaleFactor);
+        const originalHeight = this.schemeContainerRef.clientHeight;
+        const originalWidth = this.schemeContainerRef.clientWidth;
+        this.schemeContainerRef.scrollTop = newScrollTopPos - (originalHeight / prevScaleFactor);
+        this.schemeContainerRef.scrollLeft = newScrollLeftPos - (originalWidth / prevScaleFactor);
+      },
+      0,
     );
   };
 
@@ -58,7 +98,7 @@ class RouteCardScheme extends Component {
       },
       0,
     );
-  }
+  };
 
   render() {
     const { diagram, routes, routeIds, onRouteClick } = this.props;
@@ -68,15 +108,17 @@ class RouteCardScheme extends Component {
     return (
       <div className={css(styles.contentMInnerMap)}>
         <div className={css(styles.contentMColXs12)}>
-          <div className={css(styles.schemeContainer)}>
-            <div style={{ transform: `scale(${this.schemeFactor()})` }}>
-              <Scheme
-                currentRoutes={getArrayByIds(routeIds, routes)}
-                diagram={diagram}
-                onClick={this.selectRoute}
-                pointerFactor={this.pointerFactor()}
-              />
-            </div>
+          <div
+            className={css(styles.schemeContainer)}
+            ref={(ref) => { this.schemeContainerRef = ref; }}
+          >
+            <Scheme
+              currentRoutes={getArrayByIds(routeIds, routes)}
+              diagram={diagram}
+              onClick={this.selectRoute}
+              pointerFactor={this.pointerFactor()}
+              schemeFactor={this.schemeFactor()}
+            />
           </div>
           <div className={css(styles.scalingButtonContainer)}>
             <div className={css(styles.scalingButtonWrapper)}>
