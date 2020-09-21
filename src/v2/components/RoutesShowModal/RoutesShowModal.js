@@ -206,7 +206,7 @@ class RoutesShowModal extends Component {
             this.props.reloadRoutes(spotId, 0);
             setSelectedPageProp(spotId, 0, 1);
           }
-          history.push(R.replace(/\/routes\/[0-9]*/, '', match.url));
+          history.goBack();
         },
       );
     }
@@ -355,7 +355,7 @@ class RoutesShowModal extends Component {
                     <div className={css(styles.routeMContainer)}>
                       <div className={css(styles.routeMBlock)}>
                         <div className={css(styles.routeMClose)}>
-                          <CloseButton onClick={() => onClose()} />
+                          <CloseButton onClick={onClose} />
                         </div>
                       </div>
                       {
