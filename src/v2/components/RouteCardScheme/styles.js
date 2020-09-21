@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
     overflow: 'scroll',
     position: 'relative',
     userSelect: 'none',
-    '> div': {
-      transformOrigin: '0% 0%',
-    },
   },
   scalingButtonContainer: {
     display: 'flex',

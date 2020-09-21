@@ -17,7 +17,7 @@ class Scheme extends Component {
   }
 
   render() {
-    const { sectors, currentRoutes, onClick, pointerFactor } = this.props;
+    const { sectors, currentRoutes, onClick, pointerFactor, schemeFactor } = this.props;
     const { imageIsLoading } = this.state;
 
     return (
@@ -31,9 +31,9 @@ class Scheme extends Component {
             );
             const diagram = currentSector && currentSector.diagram && currentSector.diagram.url;
             return (
-              <>
+              <div className="map" style={{ transform: `scale(${schemeFactor})` }}>
                 {
-                  diagram && <div className="map">
+                  diagram && <>
                     <img
                       onLoad={() => this.setState({ imageIsLoading: false })}
                       style={{ visibility: imageIsLoading ? 'hidden' : 'visible' }}
@@ -56,9 +56,9 @@ class Scheme extends Component {
                         currentRoutes,
                       )
                     }
-                  </div>
+                  </>
                 }
-              </>
+              </div>
             );
           }
         }
