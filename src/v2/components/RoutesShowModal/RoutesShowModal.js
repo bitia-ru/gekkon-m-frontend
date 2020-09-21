@@ -558,6 +558,7 @@ RoutesShowModal.propTypes = {
 const mapStateToProps = state => ({
   selectedFilters: state.selectedFilters,
   routes: state.routesStoreV2.routes,
+  sectors: state.sectorsStore.sectors,
   user: state.usersStore.users[state.usersStore.currentUserId],
 });
 
