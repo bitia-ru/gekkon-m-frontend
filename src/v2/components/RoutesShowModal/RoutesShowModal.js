@@ -208,7 +208,7 @@ class RoutesShowModal extends Component {
             this.props.reloadRoutes(spotId, 0);
             setSelectedPageProp(spotId, 0, 1);
           }
-          history.push(R.replace(/\/routes\/[0-9]*/, '', match.url));
+          history.goBack();
         },
       );
     }
@@ -357,7 +357,7 @@ class RoutesShowModal extends Component {
                     <div className="route-m__container">
                       <div className="route-m__block">
                         <div className="route-m__close">
-                          <CloseButton onClick={() => onClose()}/>
+                          <CloseButton onClick={onClose} />
                         </div>
                       </div>
                       {

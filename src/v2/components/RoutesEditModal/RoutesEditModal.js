@@ -131,7 +131,7 @@ class RoutesEditModal extends Component {
     updateRouteProp(
       routeId,
       params,
-      () => history.push(R.replace('/edit', '', `${match.url}`)),
+      () => history.replace(R.replace('/edit', '', `${match.url}`)),
       () => this.setState({ isWaiting: false }),
     );
   };
@@ -147,7 +147,7 @@ class RoutesEditModal extends Component {
     addRouteProp(
       params,
       (payload) => {
-        history.push(
+        history.replace(
           R.replace('new', payload.id, `${match.url}`),
         );
         this.props.reloadSector(payload.sector_id);
@@ -397,7 +397,7 @@ class RoutesEditModal extends Component {
                     <div className="route-m__container">
                       <div className="route-m__block">
                         <div className="route-m__close">
-                          <CloseButton onClick={() => onClose()} />
+                          <CloseButton onClick={onClose} />
                         </div>
                       </div>
                       <h1 className="route-m__title" style={{ marginTop: '0px' }}>
