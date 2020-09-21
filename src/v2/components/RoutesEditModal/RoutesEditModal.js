@@ -66,8 +66,8 @@ class RoutesEditModal extends Component {
       loadSectorProp(
         sectorId,
         params,
-        (response) => {
-          this.afterSectorIsLoaded(response.data.payload);
+        (payload) => {
+          this.afterSectorIsLoaded(payload);
         },
       );
     }
@@ -146,13 +146,13 @@ class RoutesEditModal extends Component {
     this.setState({ isWaiting: true });
     addRouteProp(
       params,
-      (response) => {
+      (payload) => {
         history.push(
-          R.replace('new', response.data.payload.id, `${match.url}`),
+          R.replace('new', payload.id, `${match.url}`),
         );
-        this.props.reloadSector(response.data.payload.sector_id);
+        this.props.reloadSector(payload.sector_id);
         this.props.reloadRoutes(
-          sectors[response.data.payload.sector_id].spot_id, response.data.payload.sector_id,
+          sectors[payload.sector_id].spot_id, payload.sector_id,
         );
       },
       () => this.setState({ isWaiting: false }),
