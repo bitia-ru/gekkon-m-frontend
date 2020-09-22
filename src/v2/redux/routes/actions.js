@@ -1,9 +1,8 @@
 import * as R from 'ramda';
 import Api from '../../utils/Api';
-import { CARDS_PER_PAGE } from '@/v1/Constants/RouteCardTable';
+import CARDS_PER_PAGE from '@/v1/Constants/RouteCardTable';
 import getObjectFromArray from '@/v1/utils/getObjectFromArray';
 import toastHttpError from '@/v2/utils/toastHttpError';
-import { loadRoutesRequest } from '@/v1/stores/routes/actions';
 
 export const acts = {
   LOAD_ROUTES_REQUEST: 'LOAD_ROUTES_REQUEST_V2',
