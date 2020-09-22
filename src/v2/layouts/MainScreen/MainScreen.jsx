@@ -93,11 +93,7 @@ class MainScreen extends React.PureComponent {
                 </LoadingIndicator>
               </div>
               <div style={{ flex: 0 }}>
-                <Footer
-                  logIn={() => {}}
-                  signUp={() => {}}
-                  logOut={() => {}}
-                />
+                <Footer />
               </div>
             </div>
           )

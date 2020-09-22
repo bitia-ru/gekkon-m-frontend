@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
 import {
+  TELEGRAM_LINK,
   INSTA_LINK,
   VK_LINK,
-  FACEBOOK_LINK,
-  TWITTER_LINK,
 } from '../../Constants/SocialLinks';
 import { notReady, notExist } from '../../utils';
 import './Footer.css';
@@ -23,14 +22,11 @@ const Footer = ({ logIn, signUp, logOut, user }) => {
         <div className="footer-m__social">
           <h3 className="footer__header">Соцсети</h3>
           <ul className="social-links">
-            <li><SocialLinkButton href={INSTA_LINK} xlinkHref={`${socialLinks}#icon-inst`} /></li>
+            <li>
+              <SocialLinkButton href={TELEGRAM_LINK} xlinkHref={`${socialLinks}#icon-telegram`} />
+            </li>
             <li><SocialLinkButton href={VK_LINK} xlinkHref={`${socialLinks}#icon-vk`} /></li>
-            <li>
-              <SocialLinkButton href={FACEBOOK_LINK} xlinkHref={`${socialLinks}#icon-facebook`} />
-            </li>
-            <li>
-              <SocialLinkButton href={TWITTER_LINK} xlinkHref={`${socialLinks}#icon-twitter`} />
-            </li>
+            <li><SocialLinkButton href={INSTA_LINK} xlinkHref={`${socialLinks}#icon-inst`} /></li>
           </ul>
         </div>
 
