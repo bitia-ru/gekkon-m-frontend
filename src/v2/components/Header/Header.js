@@ -19,7 +19,18 @@ class Header extends Component {
     this.photosInternal = {};
   }
 
-  componentWillReceiveProps(newProps) {
+  onSliderClick = (sectorId, currentSectors) => {
+    const { changeSectorFilter } = this.props;
+    const index = R.findIndex(R.propEq('id', sectorId))(currentSectors) + 1;
+    if (index < currentSectors.length) {
+      changeSectorFilter(currentSectors[index].id);
+    } else {
+      changeSectorFilter(0);
+    }
+  };
+
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (!newProps.data.photo) {
       return;
     }
@@ -33,16 +44,6 @@ class Header extends Component {
     );
     this.photosInternal[newProps.data.photo.url].src = newProps.data.photo.url;
   }
-
-  onSliderClick = (sectorId, currentSectors) => {
-    const { changeSectorFilter } = this.props;
-    const index = R.findIndex(R.propEq('id', sectorId))(currentSectors) + 1;
-    if (index < currentSectors.length) {
-      changeSectorFilter(currentSectors[index].id);
-    } else {
-      changeSectorFilter(0);
-    }
-  };
 
   render() {
     const {
