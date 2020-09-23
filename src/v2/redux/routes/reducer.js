@@ -52,7 +52,16 @@ const routesStoreReducer = (
       ),
       numOfActiveRequests: state.numOfActiveRequests - 1,
     };
-  case acts.LOAD_ROUTE_PROPERTY_SUCCESS:
+  case acts.LOAD_ROUTE_PROPERTY:
+    return {
+      ...state,
+      routes: R.mergeDeepRight(
+        state.routes,
+        { [action.routeId]: { [action.routePropertyName]: action.routePropertyValue } },
+      ),
+      numOfActiveRequests: state.numOfActiveRequests - 1,
+    };
+  case acts.LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS:
     return {
       ...state,
       routes: R.mergeDeepRight(
