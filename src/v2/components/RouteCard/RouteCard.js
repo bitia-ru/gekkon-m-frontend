@@ -11,7 +11,8 @@ import RouteContext from '@/v1/contexts/RouteContext';
 import { avail, notAvail } from '@/v1/utils';
 import getArrayFromObject from '@/v1/utils/getArrayFromObject';
 import Category from '@/v1/components/Category/Category';
-import './RouteCard.css';
+import { css } from '../../aphrodite';
+import styles from './styles';
 
 class RouteCard extends Component {
   constructor(props) {
@@ -37,18 +38,20 @@ class RouteCard extends Component {
         ? null
         : (R.find(R.propEq('user_id', user.id))(ascents))
     );
+    const endSoon = installedUntil && date >= installedUntil;
     return (
       <RouteContext.Provider value={{ route }}>
         <a
-          className={`card-m${
-            (ascent && ascent.result !== 'unsuccessful')
-              ? ' card-m_done'
-              : ''
-          }`}
+          className={
+            css(
+              styles.cardM,
+              (ascent && ascent.result !== 'unsuccessful') && styles.cardMDone,
+            )
+          }
         >
-          <article className="card-m__inner">
-            <div className="card-m__image">
-              <div className="card-m__image-inner">
+          <article className={css(styles.cardMInner)}>
+            <div className={css(styles.cardMImage)}>
+              <div className={css(styles.cardMImageInner)}>
                 {
                   route.photo && (
                     <img
@@ -60,35 +63,43 @@ class RouteCard extends Component {
                   )
                 }
               </div>
-              <div className="card-m__route-status">
+              <div className={css(styles.cardMRouteStatus)}>
                 {
                   (ascent && ascent.result !== 'unsuccessful') && (
-                    <div className="route-card__track-status">
+                    <div>
                       <RouteStatus />
                     </div>
                   )
                 }
               </div>
             </div>
-            <div className="card-m__info">
-              <div className="card-m__header">
-                <div className="card-m__number">
+            <div className={css(styles.cardMInfo)}>
+              <div className={css(styles.cardMHeader)}>
+                <div className={css(styles.cardMNumber)}>
                   {route.number ? `№${route.number}` : `#${route.id}`}
                 </div>
-                <h1 className="card-m__title">{route.name}</h1>
+                <h1 className={css(styles.cardMTitle)}>{route.name}</h1>
               </div>
-              <div className="card-m__footer">
+              <div className={css(styles.cardMFooter)}>
                 <span
                   className={
-                    `card-m__date${(installedUntil && date >= installedUntil)
-                      ? ' card-m__date_end-soon'
-                      : ''
-                    }`}
+                    css(
+                      styles.cardMDate,
+                      endSoon && styles.cardMDateEndSoon,
+                    )
+                  }
                 >
                   {
                     route.installed_until && (
                       <>
-                        <span className="card-m__date-icon">
+                        <span
+                          className={
+                            css(
+                              styles.cardMDateIcon,
+                              endSoon && styles.cardMDateIconEndSoon,
+                            )
+                          }
+                        >
                           <svg>
                             <use
                               xlinkHref={
@@ -104,7 +115,7 @@ class RouteCard extends Component {
                     )
                   }
                 </span>
-                <span className="card-m__complexity">
+                <span className={css(styles.cardMComplexity)}>
                   <Category
                     category={route.category}
                     size="small"
@@ -114,7 +125,7 @@ class RouteCard extends Component {
                   {
                     route.holds_color && (
                       <div
-                        className="card-m__route_holds_color"
+                        className={css(styles.cardMRouteHoldsColor)}
                         style={{ backgroundColor: route.holds_color?.color || 'rgba(0, 0, 0, 0)' }}
                       />
                     )
