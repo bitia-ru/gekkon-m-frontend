@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import RouteCard from '@/v1/components/RouteCard/RouteCard';
+import RouteCard from '@/v2/components/RouteCard/RouteCard';
 import Scheme from '@/v1/components/Scheme/Scheme';
 import Button from '@/v1/components/Button/Button';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
