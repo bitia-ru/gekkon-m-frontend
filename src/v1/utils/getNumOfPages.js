@@ -1,9 +1,5 @@
-const getNumOfPages = (state) => {
-  const { routesStore } = state;
-  if (routesStore.filtrationResults[0]) {
-    return routesStore.filtrationResults[0].numOfPages;
-  }
-  return 0;
-};
+const getNumOfPages = state => (
+  state.routesStoreV2?.filtrationResults[0]?.numOfPages || 0
+);
 
 export default getNumOfPages;
