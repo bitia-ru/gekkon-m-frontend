@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as R from 'ramda';
 import moment from 'moment';
 import { SOON_END_PERIOD } from '@/v1/Constants/Route';
 import RouteStatus from '@/v1/components/RouteStatus/RouteStatus';
 import timeFromNow from '@/v1/Constants/DateTimeFormatter';
 import RouteContext from '@/v1/contexts/RouteContext';
-import { avail, notAvail } from '@/v1/utils';
-import getArrayFromObject from '@/v1/utils/getArrayFromObject';
 import Category from '@/v1/components/Category/Category';
 import { css } from '../../aphrodite';
 import styles from './styles';
@@ -24,20 +21,14 @@ class RouteCard extends Component {
   }
 
   render() {
-    const {
-      user, route,
-    } = this.props;
+    const { route } = this.props;
     const { imageIsLoading } = this.state;
     moment.locale('ru');
     const date = moment().add(SOON_END_PERIOD, 'days');
     const installedUntil = route.installed_until ? moment(route.installed_until) : null;
     const clockIcons = require('./images/card-sprite.svg');
-    const ascents = avail(route.ascents) && getArrayFromObject(route.ascents);
-    const ascent = (
-      notAvail(user) || notAvail(ascents)
-        ? null
-        : (R.find(R.propEq('user_id', user.id))(ascents))
-    );
+    const { ascent_result: ascentResult } = route;
+    const ascentIsSuccess = ascentResult && ascentResult !== 'unsuccessful';
     const endSoon = installedUntil && date >= installedUntil;
     return (
       <RouteContext.Provider value={{ route }}>
@@ -45,7 +36,7 @@ class RouteCard extends Component {
           className={
             css(
               styles.cardM,
-              (ascent && ascent.result !== 'unsuccessful') && styles.cardMDone,
+              ascentIsSuccess && styles.cardMDone,
             )
           }
         >
@@ -65,7 +56,7 @@ class RouteCard extends Component {
               </div>
               <div className={css(styles.cardMRouteStatus)}>
                 {
-                  (ascent && ascent.result !== 'unsuccessful') && (
+                  ascentIsSuccess && (
                     <div>
                       <RouteStatus />
                     </div>
