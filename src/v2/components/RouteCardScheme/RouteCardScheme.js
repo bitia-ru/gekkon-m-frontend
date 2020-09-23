@@ -122,26 +122,20 @@ class RouteCardScheme extends Component {
           </div>
           <div className={css(styles.scalingButtonContainer)}>
             <div className={css(styles.scalingButtonWrapper)}>
-              {
-                currentScale > 0 && (
-                  <Button
-                    size="medium"
-                    buttonStyle="filter"
-                    onClick={() => this.decreaseSchemeScale()}
-                    title="—"
-                  />
-                )
-              }
-              {
-                currentScale < this.SCHEME_SCALE_FACTORS_MAX && (
-                  <Button
-                    size="medium"
-                    buttonStyle="filter"
-                    onClick={() => this.increaseSchemeScale()}
-                    title="+"
-                  />
-                )
-              }
+              <Button
+                size="medium"
+                buttonStyle={currentScale === 0 ? 'disabled' : 'filter'}
+                onClick={() => this.decreaseSchemeScale()}
+                title="—"
+                disabled={currentScale === 0}
+              />
+              <Button
+                size="medium"
+                buttonStyle={currentScale === this.SCHEME_SCALE_FACTORS_MAX ? 'disabled' : 'filter'}
+                onClick={() => this.increaseSchemeScale()}
+                title="+"
+                disabled={currentScale === this.SCHEME_SCALE_FACTORS_MAX}
+              />
             </div>
           </div>
         </div>
