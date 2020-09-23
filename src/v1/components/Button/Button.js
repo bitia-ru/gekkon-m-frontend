@@ -17,6 +17,7 @@ const Button = ({
   const styleClass = {
     gray: 'btn-m_gray',
     filter: 'btn-m_filter',
+    disabled: 'btn-m_disabled',
     normal: ' ',
   }[buttonStyle] || 'btn-m_transparent';
 
