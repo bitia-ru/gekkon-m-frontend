@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
-import RouteCard from '@/v1/components/RouteCard/RouteCard';
+import RouteCard from '@/v2/components/RouteCard/RouteCard';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import SectorContext from '@/v1/contexts/SectorContext';
 import AddRouteButton from '@/v1/components/AddRouteButton/AddRouteButton';
