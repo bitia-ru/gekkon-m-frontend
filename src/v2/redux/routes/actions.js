@@ -10,7 +10,8 @@ export const acts = {
   LOAD_ROUTES_SUCCESS: 'LOAD_ROUTES_SUCCESS_V2',
   LOAD_ROUTE_SUCCESS: 'LOAD_ROUTE_SUCCESS_V2',
   LOAD_ROUTE_DATA_SUCCESS: 'LOAD_ROUTE_DATA_SUCCESS_V2',
-  LOAD_ROUTE_PROPERTY_SUCCESS: 'LOAD_ROUTE_PROPERTY_SUCCESS_V2',
+  LOAD_ROUTE_PROPERTY: 'LOAD_ROUTE_PROPERTY_V2',
+  LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS: 'LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS_V2',
   REMOVE_ROUTE_PROPERTY_BY_ID_SUCCESS: 'REMOVE_ROUTE_PROPERTY_BY_ID_SUCCESS_V2',
   REMOVE_ROUTE_SUCCESS: 'REMOVE_ROUTE_SUCCESS_V2',
   LOAD_FILTRATION_RESULTS: 'LOAD_FILTRATION_RESULTS_V2',
@@ -70,16 +71,12 @@ const prepareAllRoutes = routes => (
 
 export const loadRoutes = (url, params) => (
   (dispatch) => {
-    dispatch({
-      type: acts.LOAD_ROUTES_REQUEST,
-    });
+    dispatch({ type: acts.LOAD_ROUTES_REQUEST });
 
-    const paramsCopy = R.clone(params);
-    paramsCopy.with = ['ascents'];
     Api.get(
       url,
       {
-        params: paramsCopy,
+        params,
         success(payload, metadata) {
           const routeIds = R.map(route => route.id, payload);
           const numOfPages = Math.max(
@@ -281,7 +278,7 @@ export const addLike = (params, afterAll) => (
         method: 'post',
         success(payload) {
           dispatch({
-            type: acts.LOAD_ROUTE_PROPERTY_SUCCESS,
+            type: acts.LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS,
             routeId: payload.route_id,
             routePropertyName: 'likes',
             routePropertyData: payload,
@@ -303,9 +300,7 @@ export const addLike = (params, afterAll) => (
 
 export const addAscent = (params, afterSuccess) => (
   (dispatch) => {
-    dispatch({
-      type: acts.LOAD_ROUTES_REQUEST,
-    });
+    dispatch({ type: acts.LOAD_ROUTES_REQUEST });
 
     Api.post(
       '/v1/ascents',
@@ -315,17 +310,21 @@ export const addAscent = (params, afterSuccess) => (
         type: 'form-multipart',
         success(payload) {
           dispatch({
-            type: acts.LOAD_ROUTE_PROPERTY_SUCCESS,
+            type: acts.LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS,
             routeId: payload.route_id,
             routePropertyName: 'ascents',
             routePropertyData: payload,
           });
-          afterSuccess();
+          dispatch({
+            type: acts.LOAD_ROUTE_PROPERTY,
+            routeId: payload.route_id,
+            routePropertyName: 'ascent_result',
+            routePropertyValue: payload.result,
+          });
+          afterSuccess && afterSuccess();
         },
         failed(error) {
-          dispatch({
-            type: acts.LOAD_ROUTES_FAILED,
-          });
+          dispatch({ type: acts.LOAD_ROUTES_FAILED });
 
           toastHttpError(error);
         },
@@ -336,9 +335,7 @@ export const addAscent = (params, afterSuccess) => (
 
 export const updateAscent = (id, params, afterSuccess) => (
   (dispatch) => {
-    dispatch({
-      type: acts.LOAD_ROUTES_REQUEST,
-    });
+    dispatch({ type: acts.LOAD_ROUTES_REQUEST });
 
     Api.post(
       `/v1/ascents/${id}`,
@@ -348,17 +345,21 @@ export const updateAscent = (id, params, afterSuccess) => (
         type: 'form-multipart',
         success(payload) {
           dispatch({
-            type: acts.LOAD_ROUTE_PROPERTY_SUCCESS,
+            type: acts.LOAD_ROUTE_PROPERTY_BY_ID_SUCCESS,
             routeId: payload.route_id,
             routePropertyName: 'ascents',
             routePropertyData: payload,
           });
-          afterSuccess();
+          dispatch({
+            type: acts.LOAD_ROUTE_PROPERTY,
+            routeId: payload.route_id,
+            routePropertyName: 'ascent_result',
+            routePropertyValue: payload.result,
+          });
+          afterSuccess && afterSuccess();
         },
         failed(error) {
-          dispatch({
-            type: acts.LOAD_ROUTES_FAILED,
-          });
+          dispatch({ type: acts.LOAD_ROUTES_FAILED });
 
           toastHttpError(error);
         },
@@ -381,12 +382,18 @@ export const removeAscent = (id, afterSuccess) => (
             routePropertyName: 'ascents',
             routePropertyId: payload.id,
           });
-          afterSuccess();
+          dispatch({
+            type: acts.LOAD_ROUTE_PROPERTY,
+            routeId: payload.route_id,
+            routePropertyName: 'ascent_result',
+            routePropertyValue: null,
+          });
+          afterSuccess && afterSuccess();
         },
         failed(error) {
-          dispatch({
-            type: acts.LOAD_ROUTES_FAILED,
-          });
+          dispatch({ type: acts.LOAD_ROUTES_FAILED });
+
+          toastHttpError(error);
         },
       },
     );

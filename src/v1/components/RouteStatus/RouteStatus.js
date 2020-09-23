@@ -1,30 +1,18 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as R from 'ramda';
-import { notAvail, avail } from '../../utils';
 import RouteContext from '../../contexts/RouteContext';
-import getArrayFromObject from '../../utils/getArrayFromObject';
 import './RouteStatus.css';
 
-const RouteStatus = ({
-  user, changeAscentResult,
-}) => (
+const RouteStatus = ({ changeAscentResult }) => (
   <RouteContext.Consumer>
     {
       ({ route }) => {
-        const ascents = avail(route.ascents) && getArrayFromObject(route.ascents);
-        const ascent = (
-          notAvail(user) || notAvail(ascents)
-            ? null
-            : (R.find(R.propEq('user_id', user.id))(ascents))
-        );
-        const complete = (ascent && ascent.result !== 'unsuccessful');
+        const { ascent_result: ascentResult } = route;
+        const complete = (ascentResult && ascentResult !== 'unsuccessful');
         let resultClass = '';
         let resultText = 'Не пройдена';
         if (complete) {
-          if (ascent.result === 'red_point') {
+          if (ascentResult === 'red_point') {
             resultClass = ' route-status-m__type_redpoint';
             resultText = 'Пролез';
           } else {
@@ -49,16 +37,8 @@ const RouteStatus = ({
   </RouteContext.Consumer>
 );
 
-RouteStatus.propTypes = {
-  changeAscentResult: PropTypes.func,
-};
+RouteStatus.propTypes = { changeAscentResult: PropTypes.func };
 
-RouteStatus.defaultProps = {
-  changeAscentResult: null,
-};
+RouteStatus.defaultProps = { changeAscentResult: null };
 
-const mapStateToProps = state => ({
-  user: state.usersStore.users[state.usersStore.currentUserId],
-});
-
-export default withRouter(connect(mapStateToProps)(RouteStatus));
+export default RouteStatus;
