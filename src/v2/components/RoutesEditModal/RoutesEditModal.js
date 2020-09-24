@@ -21,6 +21,7 @@ import { avail } from '@/v1/utils';
 import { loadRouteMarkColors } from '@/v1/stores/route_mark_colors/utils';
 import { loadUsers } from '@/v1/stores/users/utils';
 import { loadSector } from '@/v1/stores/sectors/utils';
+import { addWallPhoto as addWallPhotoAction } from '../../redux/wall_photos/actions';
 import { addRoute, loadRoute, updateRoute } from '@/v2/redux/routes/actions';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
 import { reloadSector as reloadSectorAction } from '@/v1/utils/reloadSector';
@@ -38,8 +39,9 @@ class RoutesEditModal extends Component {
       fieldsOld: {},
       showCropper: false,
       photo: {
-        content: null, file: null, crop: null, rotate: null,
+        crop: null, rotate: null,
       },
+      wallPhotoId: null,
       showRouteMark: false,
       routeImageLoading: true,
       schemeModalVisible: false,
@@ -162,7 +164,7 @@ class RoutesEditModal extends Component {
 
   save = () => {
     const {
-      route, photo, currentPointers, currentPointersOld,
+      route, photo, currentPointers, currentPointersOld, wallPhotoId,
     } = this.state;
     const {
       routes, sectors, user,
@@ -213,8 +215,8 @@ class RoutesEditModal extends Component {
       }
       formData.append('route[category]', route.category);
     }
-    if (route.photo !== (routeProp.photo ? routeProp.photo.url : null)) {
-      formData.append('route[photo]', route.photoFile);
+    if (wallPhotoId || (routeProp.photo?.url && route.photo === null)) {
+      formData.append('route[wall_photo_id]', wallPhotoId);
     }
     if (photo.crop !== null) {
       formData.append('data[photo][cropping][x]', Math.round(photo.crop.x));
@@ -282,21 +284,22 @@ class RoutesEditModal extends Component {
   };
 
   onNewPhotoFileSelected = (file) => {
-    const onFileRead = () => {
-      const { photo } = this.state;
-      photo.content = this.fileReader.result;
-      this.setState({ showCropper: true, photo });
-    };
-
-    // TODO: There is a time gap between file had been chosen and had been read. Fill this gap with
-    //       sort of spinner.
-
-    this.fileReader = new FileReader();
-    this.fileReader.onloadend = onFileRead;
-    this.fileReader.readAsDataURL(file);
-    const { photo } = this.state;
-    photo.file = file;
-    this.setState({ photo });
+    const { route } = this.state;
+    this.setState({ isWaiting: true });
+    const formData = new FormData();
+    formData.append('wall_photo[sector_id]', route.sector_id);
+    formData.append('wall_photo[photo]', file);
+    this.props.addWallPhoto(
+      formData,
+      (payload) => {
+        this.setState({
+          showCropper: true,
+          photo: { url: payload.photo.url },
+          wallPhotoId: payload.id,
+        });
+      },
+      () => this.setState({ isWaiting: false }),
+    );
   };
 
   noCrop = (crop, image) => {
@@ -314,13 +317,10 @@ class RoutesEditModal extends Component {
 
   saveCropped = (src, crop, rotate, image) => {
     const { route, photo } = this.state;
-    route.photo = src;
-    route.photoFile = photo.file;
     const photoCopy = R.clone(photo);
     if (this.noCrop(crop, image)) {
       photoCopy.crop = null;
       photoCopy.rotate = (rotate === 0 ? null : rotate);
-      this.setState({ route, showCropper: false, photo: photoCopy });
     } else {
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
@@ -331,8 +331,8 @@ class RoutesEditModal extends Component {
         height: crop.height * scaleY,
       };
       photoCopy.rotate = (rotate === 0 ? null : rotate);
-      this.setState({ route, showCropper: false, photo: photoCopy });
     }
+    this.setState({ route: { ...route, photo: src }, showCropper: false, photo: photoCopy });
   };
 
   render() {
@@ -386,7 +386,7 @@ class RoutesEditModal extends Component {
               showCropper
                 ? (
                   <RoutePhotoCropper
-                    src={photo.content}
+                    src={photo.url}
                     close={() => this.setState({ showCropper: false })}
                     save={this.saveCropped}
                   />
@@ -764,6 +764,9 @@ const mapDispatchToProps = dispatch => ({
     updateRoute(url, params, afterSuccess, afterAll),
   ),
   addRoute: (params, afterSuccess, afterAll) => dispatch(addRoute(params, afterSuccess, afterAll)),
+  addWallPhoto: (params, afterSuccess, afterAll) => dispatch(
+    addWallPhotoAction(params, afterSuccess, afterAll),
+  ),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoutesEditModal));
