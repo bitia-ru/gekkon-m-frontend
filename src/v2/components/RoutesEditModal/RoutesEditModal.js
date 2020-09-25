@@ -361,200 +361,218 @@ class RoutesEditModal extends Component {
     return (
       <RouteContext.Provider value={{ route }}>
         {
-          avail(route) && <>
-            <ScrollToTopOnMount />
-            {
-              showRouteMark
-                ? (
-                  <RouteEditor
-                    routePhoto={
-                      typeof (route.photo) === 'string'
-                        ? route.photo
-                        : route.photo.url
-                    }
-                    pointers={currentPointers}
-                    editable
-                    updatePointers={this.updatePointers}
-                    hide={() => this.setState({ showRouteMark: false })}
-                    routeImageLoading={routeImageLoading}
-                    onImageLoad={() => this.setState({ routeImageLoading: false })}
-                  />
-                )
-                : ''
-            }
-            {
-              showCropper
-                ? (
-                  <RoutePhotoCropper
-                    src={photo.url}
-                    close={() => this.setState({ showCropper: false })}
-                    save={this.saveCropped}
-                  />
-                )
-                : (
-                  <div className={css(styles.routeM)}>
-                    <div className={css(styles.routeMContainer)}>
-                      <div className={css(styles.routeMBlock)}>
-                        <div className={css(styles.routeMClose)}>
-                          <CloseButton onClick={onClose} />
+          avail(route) && (
+            <div className={css(styles.routeModalContainer)}>
+              <ScrollToTopOnMount />
+              {
+                showRouteMark
+                  ? (
+                    <RouteEditor
+                      routePhoto={
+                        typeof (route.photo) === 'string'
+                          ? route.photo
+                          : route.photo.url
+                      }
+                      pointers={currentPointers}
+                      editable
+                      updatePointers={this.updatePointers}
+                      hide={() => this.setState({ showRouteMark: false })}
+                      routeImageLoading={routeImageLoading}
+                      onImageLoad={() => this.setState({ routeImageLoading: false })}
+                    />
+                  )
+                  : ''
+              }
+              {
+                showCropper
+                  ? (
+                    <RoutePhotoCropper
+                      src={photo.url}
+                      close={() => this.setState({ showCropper: false })}
+                      save={this.saveCropped}
+                    />
+                  )
+                  : (
+                    <div className={css(styles.routeM)}>
+                      <div className={css(styles.routeMContainer)}>
+                        <div className={css(styles.routeMBlock)}>
+                          <div className={css(styles.routeMClose)}>
+                            <CloseButton onClick={onClose} />
+                          </div>
                         </div>
-                      </div>
-                      <h1 className={css(styles.routeMTitle)} style={{ marginTop: '0px' }}>
-                        №
-                        {' '}
-                        <input
-                          type="text"
-                          onChange={event => this.onRouteParamChange(event.target.value, 'number')}
-                          className={css(styles.routeMTitleInput, styles.routeMTitleInputDark)}
-                          value={route.number === null ? '' : route.number}
-                        />
-                        <span className={css(styles.routeMTitlePlaceWrapper)}>
-                          <span className={css(styles.routeMTitlePlaceEdit)}>(“</span>
+                        <h1 className={css(styles.routeMTitle)} style={{ marginTop: '0px' }}>
+                          №
+                          {' '}
                           <input
                             type="text"
-                            onChange={event => this.onRouteParamChange(event.target.value, 'name')}
-                            className={css(styles.routeMTitleInput)}
-                            value={route.name === null ? '' : route.name}
-                          />
-                          <span className={css(styles.routeMTitlePlaceEdit)}>”)</span>
-                        </span>
-                      </h1>
-                    </div>
-                    <div>
-                      <div className={css(styles.routeMRoute)}>
-                        {
-                          (!route.photo || !routeImageLoading) && (
-                            <div className={css(styles.routeMRouteDescr)}>
-                              <div className={css(styles.routeMRouteDescrPicture)} />
-                              <div className={css(styles.routeMRouteDescrText)}>
-                                Загрузите фото трассы
-                              </div>
-                            </div>
-                          )
-                        }
-                        {
-                          route.photo && (
-                            <RouteView
-                              route={route}
-                              routePhoto={
-                                typeof (route.photo) === 'string'
-                                  ? route.photo
-                                  : route.photo.url
-                              }
-                              pointers={currentPointers}
-                              routeImageLoading={routeImageLoading}
-                              onImageLoad={() => this.setState({ routeImageLoading: false })}
-                            />
-                          )
-                        }
-                        <ShowSchemeButton
-                          disabled={route.data.position === undefined}
-                          onClick={() => this.setState({ schemeModalVisible: true })}
-                        />
-                      </div>
-                      <div className={css(styles.routeMRouteFooter)}>
-                        <div className={css(styles.routeMRouteFooterContainer)}>
-                          <div className={css(styles.routeMRouteFooterToggles)}>
-                            {
-                              route.photo && (
-                                <ButtonHandler
-                                  onClick={() => this.setState({ showRouteMark: true })}
-                                  title="Просмотр трассы"
-                                  xlinkHref={`${require('./images/point.svg')}#point`}
-                                />
+                            onChange={
+                              event => (
+                                this.onRouteParamChange(event.target.value, 'number')
                               )
                             }
-                          </div>
-                          <div className={css(styles.routeMRouteFooterToggles)}>
+                            className={css(styles.routeMTitleInput, styles.routeMTitleInputDark)}
+                            value={route.number === null ? '' : route.number}
+                          />
+                          <span className={css(styles.routeMTitlePlaceWrapper)}>
+                            <span className={css(styles.routeMTitlePlaceEdit)}>(“</span>
                             <input
-                              type="file"
-                              hidden
-                              ref={(ref) => {
-                                this.fileInput = ref;
-                              }}
-                              onChange={event => this.onNewPhotoFileSelected(event.target.files[0])}
-                            />
-                            {
-                              route.photo
-                                ? (
-                                  <>
-                                    <ButtonHandler
-                                      onClick={() => this.fileInput.click()}
-                                      title="Обновить фото"
-                                      xlinkHref={`${btnHandlerImage}#icon-btn-reload`}
-                                    />
-                                    <ButtonHandler
-                                      onClick={() => this.onRouteParamChange(null, 'photo')}
-                                      title="Удалить фото"
-                                      xlinkHref={`${btnHandlerImage}#icon-btn-close`}
-                                    />
-                                  </>
+                              type="text"
+                              onChange={
+                                event => (
+                                  this.onRouteParamChange(event.target.value, 'name')
                                 )
-                                : (
+                              }
+                              className={css(styles.routeMTitleInput)}
+                              value={route.name === null ? '' : route.name}
+                            />
+                            <span className={css(styles.routeMTitlePlaceEdit)}>”)</span>
+                          </span>
+                        </h1>
+                      </div>
+                      <div>
+                        <div className={css(styles.routeMRoute)}>
+                          {
+                            (!route.photo || !routeImageLoading) && (
+                              <div className={css(styles.routeMRouteDescr)}>
+                                <div className={css(styles.routeMRouteDescrPicture)} />
+                                <div className={css(styles.routeMRouteDescrText)}>
+                                  Загрузите фото трассы
+                                </div>
+                              </div>
+                            )
+                          }
+                          {
+                            route.photo && (
+                              <RouteView
+                                route={route}
+                                routePhoto={
+                                  typeof (route.photo) === 'string'
+                                    ? route.photo
+                                    : route.photo.url
+                                }
+                                pointers={currentPointers}
+                                routeImageLoading={routeImageLoading}
+                                onImageLoad={() => this.setState({ routeImageLoading: false })}
+                              />
+                            )
+                          }
+                          <ShowSchemeButton
+                            disabled={route.data.position === undefined}
+                            onClick={() => this.setState({ schemeModalVisible: true })}
+                          />
+                        </div>
+                        <div className={css(styles.routeMRouteFooter)}>
+                          <div className={css(styles.routeMRouteFooterContainer)}>
+                            <div className={css(styles.routeMRouteFooterToggles)}>
+                              {
+                                route.photo && (
                                   <ButtonHandler
-                                    onClick={() => this.fileInput.click()}
-                                    title="Загрузить фото"
-                                    xlinkHref={`${btnHandlerImage}#icon-btn-download`}
+                                    onClick={() => this.setState({ showRouteMark: true })}
+                                    title="Просмотр трассы"
+                                    xlinkHref={`${require('./images/point.svg')}#point`}
                                   />
                                 )
-                            }
+                              }
+                            </div>
+                            <div className={css(styles.routeMRouteFooterToggles)}>
+                              <input
+                                type="file"
+                                hidden
+                                ref={
+                                  (ref) => { this.fileInput = ref; }
+                                }
+                                onChange={
+                                  event => this.onNewPhotoFileSelected(event.target.files[0])
+                                }
+                              />
+                              {
+                                route.photo
+                                  ? (
+                                    <>
+                                      <ButtonHandler
+                                        onClick={() => this.fileInput.click()}
+                                        title="Обновить фото"
+                                        xlinkHref={`${btnHandlerImage}#icon-btn-reload`}
+                                      />
+                                      <ButtonHandler
+                                        onClick={
+                                          () => (
+                                            this.onRouteParamChange(null, 'photo')
+                                          )
+                                        }
+                                        title="Удалить фото"
+                                        xlinkHref={`${btnHandlerImage}#icon-btn-close`}
+                                      />
+                                    </>
+                                  )
+                                  : (
+                                    <ButtonHandler
+                                      onClick={() => this.fileInput.click()}
+                                      title="Загрузить фото"
+                                      xlinkHref={`${btnHandlerImage}#icon-btn-download`}
+                                    />
+                                  )
+                              }
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={css(styles.routeMContainer)}>
-                      <RouteDataEditableTable
-                        onRouteParamChange={this.onRouteParamChange}
-                        routeMarkColors={routeMarkColors}
-                        users={users}
-                      />
-                    </div>
-                    <div className={css(styles.routeMItem)}>
-                      <div>
-                        <button type="button" className={css(styles.collapsableBlockMHeader)}>
-                          Описание
-                        </button>
-                        <textarea
-                          className={css(styles.routeMDescrEdit)}
-                          onChange={
-                            event => this.onRouteParamChange(event.target.value, 'description')
-                          }
-                          value={route.description ? route.description : ''}
+                      <div className={css(styles.routeMContainer)}>
+                        <RouteDataEditableTable
+                          onRouteParamChange={this.onRouteParamChange}
+                          routeMarkColors={routeMarkColors}
+                          users={users}
                         />
                       </div>
-                    </div>
-                    <div className={css(styles.routeMRouteControls)}>
-                      <div className={css(styles.routeMBtnDelete)}>
-                        <Button
-                          size="big"
-                          buttonStyle="gray"
-                          title="Отмена"
-                          smallFont
-                          onClick={() => cancel(route.id)}
-                        />
+                      <div className={css(styles.routeMItem)}>
+                        <div>
+                          <button type="button" className={css(styles.collapsableBlockMHeader)}>
+                            Описание
+                          </button>
+                          <textarea
+                            className={css(styles.routeMDescrEdit)}
+                            onChange={
+                              event => (
+                                this.onRouteParamChange(event.target.value, 'description')
+                              )
+                            }
+                            value={route.description ? route.description : ''}
+                          />
+                        </div>
                       </div>
-                      <div className={css(styles.routeMBtnSave)}>
-                        <Button
-                          size="big"
-                          buttonStyle="normal"
-                          title="Сохранить"
-                          smallFont
-                          isWaiting={isWaiting}
-                          disabled={saveDisabled}
-                          onClick={this.save}
-                        />
+                      <div className={css(styles.routeMRouteControls)}>
+                        <div className={css(styles.routeMBtnDelete)}>
+                          <Button
+                            size="big"
+                            buttonStyle="gray"
+                            title="Отмена"
+                            smallFont
+                            onClick={() => cancel(route.id)}
+                          />
+                        </div>
+                        <div className={css(styles.routeMBtnSave)}>
+                          <Button
+                            size="big"
+                            buttonStyle="normal"
+                            title="Сохранить"
+                            smallFont
+                            isWaiting={isWaiting}
+                            disabled={saveDisabled}
+                            onClick={this.save}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-            }
-            {
-              schemeModalVisible && <SchemeModal
-                currentRoute={route}
-                close={() => this.setState({ schemeModalVisible: false })}
-              />
-            }
-          </>
+                  )
+              }
+              {
+                schemeModalVisible && <SchemeModal
+                  currentRoute={route}
+                  close={() => this.setState({ schemeModalVisible: false })}
+                />
+              }
+            </div>
+          )
         }
       </RouteContext.Provider>
     );
@@ -562,6 +580,11 @@ class RoutesEditModal extends Component {
 }
 
 const styles = StyleSheet.create({
+  routeModalContainer: {
+    position: 'relative',
+    zIndex: 20,
+    height: '100%',
+  },
   routeM: {
     height: '100%',
     overflowY: 'auto',
