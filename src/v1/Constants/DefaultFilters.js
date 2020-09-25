@@ -1,4 +1,3 @@
-import moment from 'moment/moment';
 import RESULT_FILTERS from './ResultFilters';
 import { CATEGORIES } from './Categories';
 
@@ -10,7 +9,7 @@ export const DEFAULT_FILTERS = {
   categoryFrom: CATEGORIES[0],
   categoryTo: CATEGORIES[CATEGORIES.length - 1],
   period: 0,
-  date: moment().format(),
+  date: undefined,
   ...RESULT_FILTERS,
   personal: PERSONAL_DEFAULT,
   outdated: OUTDATED_DEFAULT,
