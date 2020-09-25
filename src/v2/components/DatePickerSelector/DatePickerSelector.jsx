@@ -28,7 +28,7 @@ class DatePickerSelector extends React.PureComponent {
             onClick={() => this.setState({ expanded: true })}
             className={dateClass}
           >
-            {date ? formatter(date) : null}
+            {date ? formatter(date) : 'сегодня'}
           </div>
         </div>
         {
