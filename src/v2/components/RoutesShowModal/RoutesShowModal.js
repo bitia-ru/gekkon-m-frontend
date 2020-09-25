@@ -324,7 +324,7 @@ class RoutesShowModal extends Component {
       user && R.find(R.propEq('user_id', user.id))(flashes)
     );
     return (
-      <>
+      <div className={css(styles.routeModalContainer)}>
         {
           avail(route) && <RouteContext.Provider value={{ route }}>
             <ScrollToTopOnMount />
@@ -534,12 +534,17 @@ class RoutesShowModal extends Component {
             }
           </RouteContext.Provider>
         }
-      </>
+      </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  routeModalContainer: {
+    position: 'relative',
+    zIndex: 20,
+    height: '100%',
+  },
   routeM: {
     height: '100%',
     backgroundColor: '#FFFFFF',

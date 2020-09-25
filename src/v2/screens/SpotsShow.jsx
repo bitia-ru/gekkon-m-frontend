@@ -74,43 +74,38 @@ class SpotsShow extends React.PureComponent {
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
     return (
-      <Switch>
-        <Route
-          path={[`${match.path}/routes/:route_id/edit`, `${match.path}/routes/new`]}
-          render={() => (
-            <RoutesEditModal
-              onClose={this.closeRoutesModal}
-              cancel={this.cancelEdit}
+      <>
+        <Switch>
+          <Route
+            path={[`${match.path}/routes/:route_id/edit`, `${match.path}/routes/new`]}
+            render={() => (
+              <RoutesEditModal
+                onClose={this.closeRoutesModal}
+                cancel={this.cancelEdit}
+              />
+            )}
+          />
+          <Route
+            path={`${match.path}/routes/:route_id`}
+            render={() => (
+              <RoutesShowModal
+                onClose={this.closeRoutesModal}
+                openEdit={this.openEdit}
+              />
+            )}
+          />
+        </Switch>
+        <MainScreen
+          header={
+            <Header
+              data={getCurrentSpotOrSectorData(spots, sectors, spotId, sectorId)}
+              changeSectorFilter={this.changeSectorFilter}
             />
-          )}
-        />
-        <Route
-          path={`${match.path}/routes/:route_id`}
-          render={() => (
-            <RoutesShowModal
-              onClose={this.closeRoutesModal}
-              openEdit={this.openEdit}
-            />
-          )}
-        />
-        <Route
-          path={match.path}
-          render={() => (
-            <>
-              <MainScreen
-                header={
-                  <Header
-                    data={getCurrentSpotOrSectorData(spots, sectors, spotId, sectorId)}
-                    changeSectorFilter={this.changeSectorFilter}
-                  />
-                }
-              >
-                <Content />
-              </MainScreen>
-            </>
-          )}
-        />
-      </Switch>
+          }
+        >
+          <Content />
+        </MainScreen>
+      </>
     );
   };
 
