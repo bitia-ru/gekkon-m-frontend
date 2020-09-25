@@ -64,10 +64,16 @@ class MainScreen extends React.PureComponent {
             }>
               <div style={{ flex: 1 }}>
                 <LoadingIndicator>
-                  <Logo />
-                  <MainNav
-                    showMenu={() => this.setState({ showMenu: true })}
-                  />
+                  {
+                    !this.props.hideLogoAndMainNav && (
+                      <>
+                        <Logo />
+                        <MainNav
+                          showMenu={() => this.setState({ showMenu: true })}
+                        />
+                      </>
+                    )
+                  }
                   {
                     header && (
                       typeof header === 'string' || typeof header === 'number'
