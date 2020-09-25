@@ -21,6 +21,7 @@ import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSel
 import DropDownListMultipleSelector
   from '@/v2/components/DropDownListMultipleSelector/DropDownListMultipleSelector';
 import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
+import { avail } from '@/v1/utils';
 import {
   LIKED_DEFAULT,
   OUTDATED_DEFAULT,
@@ -171,17 +172,21 @@ class FilterBlock extends Component {
     } = this.state;
     const spotId = this.getSpotId();
     const sectorId = this.getSectorId();
-    const { sectors, selectedViewModes } = this.props;
+    const { sectors, selectedViewModes, user } = this.props;
     const viewMode = getViewMode(sectors, selectedViewModes, spotId, sectorId);
     const formatter = (
       viewMode === 'scheme'
         ? dateToTextFormatter
         : (d => moment(d).format(DATE_FORMAT))
     );
+    const defaultFilters = R.filter(
+      e => !R.contains(e.id, R.concat(R.keys(RESULT_FILTERS), ['liked'])),
+      filters,
+    );
     const currentFilters = (
       viewMode === 'scheme'
-        ? R.filter(f => f.id !== 'outdated', filters)
-        : filters
+        ? R.filter(f => f.id !== 'outdated', avail(user) ? filters : defaultFilters)
+        : avail(user) ? filters : defaultFilters
     );
     return (
       <Modal>
