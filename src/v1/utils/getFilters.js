@@ -15,7 +15,11 @@ export const prepareFilters = (filters) => {
     ...filters,
     filters: R.map(
       e => {
-        const filter = filters[e] || R.find(R.propEq('id', e))(DEFAULT_FILTERS);
+        const filter = (
+          filters[e] !== undefined
+            ? filters[e]
+            : R.find(R.propEq('id', e))(DEFAULT_FILTERS)
+        );
         return {
           clickable: true,
           id: e,
