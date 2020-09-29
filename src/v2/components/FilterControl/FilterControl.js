@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import ViewModeSwitcher from '@/v1/components/ViewModeSwitcher/ViewModeSwitcher';
 import getFilters from '@/v1/utils/getFilters';
 import './FilterControl.css';
-import { setSelectedFilter, setSelectedViewMode } from '@/v1/actions';
+import { setAllSelectedFilters as setAllSelectedFiltersAction } from '@/v2/redux/selectedFilters/actions';
+import { setSelectedViewMode } from '@/v1/actions';
 
 class FilterControl extends Component {
   getSpotId = () => {
@@ -20,7 +21,7 @@ class FilterControl extends Component {
 
   onViewModeChange = (viewMode) => {
     const {
-      setSelectedFilter: setSelectedFilterProp,
+      setAllSelectedFilters,
       setSelectedViewMode: setSelectedViewModeProp,
       selectedFilters,
     } = this.props;
@@ -29,7 +30,7 @@ class FilterControl extends Component {
     setSelectedViewModeProp(spotId, sectorId, viewMode);
     if (viewMode === 'scheme') {
       const filters = getFilters(selectedFilters, spotId, sectorId);
-      setSelectedFilterProp(spotId, sectorId, filters);
+      setAllSelectedFilters(spotId, sectorId, filters);
     }
   };
 
@@ -65,7 +66,7 @@ FilterControl.propTypes = {
   viewMode: PropTypes.string.isRequired,
   numOfRoutes: PropTypes.number.isRequired,
   history: PropTypes.object,
-  setSelectedFilter: PropTypes.func,
+  setAllSelectedFilters: PropTypes.func,
   setSelectedViewMode: PropTypes.func,
   selectedFilters: PropTypes.object,
 };
@@ -78,8 +79,8 @@ const mapDispatchToProps = dispatch => ({
   setSelectedViewMode: (spotId, sectorId, viewMode) => (
     dispatch(setSelectedViewMode(spotId, sectorId, viewMode))
   ),
-  setSelectedFilter: (spotId, sectorId, filters) => (
-    dispatch(setSelectedFilter(spotId, sectorId, filters))
+  setAllSelectedFilters: (spotId, sectorId, filters) => (
+    dispatch(setAllSelectedFiltersAction(spotId, sectorId, filters))
   ),
 });
 

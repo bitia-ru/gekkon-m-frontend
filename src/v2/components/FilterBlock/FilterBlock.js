@@ -8,7 +8,8 @@ import { DATE_FORMAT, dateToTextFormatter } from '@/v1/Constants/Date';
 import Button from '@/v1/components/Button/Button';
 import { CATEGORIES } from '@/v1/Constants/Categories';
 import getFilters, { prepareFilters } from '@/v1/utils/getFilters';
-import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
+import { setAllSelectedFilters as setAllSelectedFiltersAction } from '@/v2/redux/selectedFilters/actions';
+import { setSelectedPage } from '@/v1/actions';
 import './FilterBlock.css';
 import getViewMode from '@/v1/utils/getViewMode';
 import { ModalContext } from '@/v2/modules/modalable';
@@ -65,7 +66,7 @@ class FilterBlock extends Component {
   changeAllFilters = (categoryFrom, categoryTo, period, date, filters) => {
     const {
       user,
-      setSelectedFilter: setSelectedFilterProp,
+      setAllSelectedFilters,
       setSelectedPage: setSelectedPageProp,
     } = this.props;
     const spotId = this.getSpotId();
@@ -97,7 +98,7 @@ class FilterBlock extends Component {
       },
       R.keys(RESULT_FILTERS),
     )
-    setSelectedFilterProp(spotId, sectorId, newFilters);
+    setAllSelectedFilters(spotId, sectorId, newFilters);
     setSelectedPageProp(spotId, sectorId, 1);
   };
 
@@ -281,8 +282,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setSelectedFilter: (spotId, sectorId, filters) => (
-    dispatch(setSelectedFilter(spotId, sectorId, filters))
+  setAllSelectedFilters: (spotId, sectorId, filters) => (
+    dispatch(setAllSelectedFiltersAction(spotId, sectorId, filters))
   ),
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
 });

@@ -11,6 +11,7 @@ import { default as usersReducerV2 } from '@/v2/redux/users/reducer';
 import { default as userSessionReducerV2 } from '@/v2/redux/user_session/reducer';
 import { default as spotsStoreReducerV2 } from '@/v2/redux/spots/reducer';
 import { default as routesReducerV2 } from '@/v2/redux/routes/reducer';
+import { default as selectedFiltersReducerV2 } from '@/v2/redux/selectedFilters/reducer';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -61,63 +62,10 @@ const selectedViewModesReducer = (state = {}, action) => {
   }
 };
 
-const selectedFiltersReducer = (state = {}, action) => {
-  let selectedFilters;
-  let routeFilters;
-  switch (action.type) {
-  case acts.SET_DEFAULT_SELECTED_FILTERS:
-    selectedFilters = state === null ? {} : { ...state };
-    routeFilters = localStorage.getItem('routeFilters');
-    if (routeFilters) {
-      selectedFilters = JSON.parse(routeFilters);
-    }
-    if (selectedFilters[action.spotId] === undefined) {
-      const defaultFilters = {
-        ...DEFAULT_FILTERS,
-        wasChanged: false,
-      };
-      const sectorsDefaultFilters = R.map(
-        sectorId => [sectorId, defaultFilters],
-        action.sectorIds,
-      );
-      selectedFilters[action.spotId] = {
-        0: defaultFilters,
-        ...R.fromPairs(sectorsDefaultFilters),
-      };
-    }
-    return selectedFilters;
-  case acts.SET_SELECTED_FILTER:
-    if (action.sectorId === 0) {
-      selectedFilters = { ...state };
-      const spotSelectedFilters = { ...selectedFilters[action.spotId] };
-      selectedFilters[action.spotId] = R.map(
-        (filters) => {
-          const filtersCopy = { ...filters };
-          if (!filtersCopy.wasChanged) {
-            return action.filters;
-          }
-          return filtersCopy;
-        },
-        spotSelectedFilters,
-      );
-      return selectedFilters;
-    }
-    return {
-      ...state,
-      [action.spotId]: {
-        ...state[action.spotId],
-        [action.sectorId]: { ...action.filters, wasChanged: true },
-      },
-    };
-  default:
-    return state;
-  }
-};
-
 export default combineReducers({
   tab: tabReducer,
   selectedPages: selectedPagesReducer,
-  selectedFilters: selectedFiltersReducer,
+  selectedFilters: selectedFiltersReducerV2,
   selectedViewModes: selectedViewModesReducer,
   routeMarkColorsStore: routeMarkColorsStoreReducer,
   usersStore: usersStoreReducer,
