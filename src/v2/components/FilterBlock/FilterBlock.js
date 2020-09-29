@@ -6,9 +6,7 @@ import * as R from 'ramda';
 import moment from 'moment/moment';
 import { DATE_FORMAT, dateToTextFormatter } from '@/v1/Constants/Date';
 import Button from '@/v1/components/Button/Button';
-import PERIOD_FILTERS from '@/v1/Constants/PeriodFilters';
 import { CATEGORIES } from '@/v1/Constants/Categories';
-import { DEFAULT_FILTERS } from '@/v1/Constants/DefaultFilters';
 import getFilters, { prepareFilters } from '@/v1/utils/getFilters';
 import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
 import './FilterBlock.css';
@@ -20,13 +18,7 @@ import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownL
 import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSelector';
 import DropDownListMultipleSelector
   from '@/v2/components/DropDownListMultipleSelector/DropDownListMultipleSelector';
-import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
-import {
-  LIKED_DEFAULT,
-  OUTDATED_DEFAULT,
-  PERSONAL_DEFAULT
-} from '@/v1/Constants/DefaultFilters';
-
+import { RESULT_FILTERS, PERIOD_FILTERS, DEFAULT_FILTERS } from '@/v1/Constants/filters';
 
 class FilterBlock extends Component {
   constructor(props) {

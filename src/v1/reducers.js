@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import * as R from 'ramda';
 import * as acts from './Constants/Actions';
-import { DEFAULT_FILTERS } from './Constants/DefaultFilters';
+import { DEFAULT_FILTERS } from './Constants/filters';
 import routeMarkColorsStoreReducer from './stores/route_mark_colors/reducers';
 import usersStoreReducer from './stores/users/reducers';
 import routesStoreReducer from './stores/routes/reducers';
