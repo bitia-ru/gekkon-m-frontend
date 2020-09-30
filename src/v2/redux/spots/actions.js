@@ -2,7 +2,8 @@ import * as R from 'ramda';
 import Api from '../../utils/Api';
 import toastHttpError from '@/v2/utils/toastHttpError';
 import numToStr from '@/v1/Constants/NumToStr';
-import { setDefaultSelectedFilters, setDefaultSelectedPages} from '@/v1/actions';
+import { setDefaultSelectedFilters } from '@/v2/redux/selectedFilters/actions';
+import { setDefaultSelectedPages } from '@/v1/actions';
 import { loadSectors } from '@/v1/stores/sectors/actions';
 
 export const acts = {

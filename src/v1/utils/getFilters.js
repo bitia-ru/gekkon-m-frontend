@@ -1,6 +1,5 @@
 import * as R from 'ramda';
-import { DEFAULT_FILTERS } from '../Constants/DefaultFilters';
-import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
+import { RESULT_FILTERS, DEFAULT_FILTERS } from '@/v1/Constants/filters';
 
 const filtersLookUp = {
   personal: 'Авторские трассы',
@@ -16,7 +15,11 @@ export const prepareFilters = (filters) => {
     ...filters,
     filters: R.map(
       e => {
-        const filter = filters[e] || R.find(R.propEq('id', e))(DEFAULT_FILTERS);
+        const filter = (
+          filters[e] !== undefined
+            ? filters[e]
+            : R.find(R.propEq('id', e))(DEFAULT_FILTERS)
+        );
         return {
           clickable: true,
           id: e,

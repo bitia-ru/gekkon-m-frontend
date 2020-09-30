@@ -6,11 +6,10 @@ import * as R from 'ramda';
 import moment from 'moment/moment';
 import { DATE_FORMAT, dateToTextFormatter } from '@/v1/Constants/Date';
 import Button from '@/v1/components/Button/Button';
-import PERIOD_FILTERS from '@/v1/Constants/PeriodFilters';
 import { CATEGORIES } from '@/v1/Constants/Categories';
-import { DEFAULT_FILTERS } from '@/v1/Constants/DefaultFilters';
 import getFilters, { prepareFilters } from '@/v1/utils/getFilters';
-import { setSelectedFilter, setSelectedPage } from '@/v1/actions';
+import { setAllSelectedFilters as setAllSelectedFiltersAction } from '@/v2/redux/selectedFilters/actions';
+import { setSelectedPage } from '@/v1/actions';
 import './FilterBlock.css';
 import getViewMode from '@/v1/utils/getViewMode';
 import { ModalContext } from '@/v2/modules/modalable';
@@ -20,13 +19,7 @@ import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownL
 import DatePickerSelector from '@/v2/components/DatePickerSelector/DatePickerSelector';
 import DropDownListMultipleSelector
   from '@/v2/components/DropDownListMultipleSelector/DropDownListMultipleSelector';
-import RESULT_FILTERS from '@/v1/Constants/ResultFilters';
-import {
-  LIKED_DEFAULT,
-  OUTDATED_DEFAULT,
-  PERSONAL_DEFAULT
-} from '@/v1/Constants/DefaultFilters';
-
+import { RESULT_FILTERS, PERIOD_FILTERS, DEFAULT_FILTERS } from '@/v1/Constants/filters';
 
 class FilterBlock extends Component {
   constructor(props) {
@@ -73,7 +66,7 @@ class FilterBlock extends Component {
   changeAllFilters = (categoryFrom, categoryTo, period, date, filters) => {
     const {
       user,
-      setSelectedFilter: setSelectedFilterProp,
+      setAllSelectedFilters,
       setSelectedPage: setSelectedPageProp,
     } = this.props;
     const spotId = this.getSpotId();
@@ -105,7 +98,7 @@ class FilterBlock extends Component {
       },
       R.keys(RESULT_FILTERS),
     )
-    setSelectedFilterProp(spotId, sectorId, newFilters);
+    setAllSelectedFilters(spotId, sectorId, newFilters);
     setSelectedPageProp(spotId, sectorId, 1);
   };
 
@@ -289,8 +282,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setSelectedFilter: (spotId, sectorId, filters) => (
-    dispatch(setSelectedFilter(spotId, sectorId, filters))
+  setAllSelectedFilters: (spotId, sectorId, filters) => (
+    dispatch(setAllSelectedFiltersAction(spotId, sectorId, filters))
   ),
   setSelectedPage: (spotId, sectorId, page) => dispatch(setSelectedPage(spotId, sectorId, page)),
 });
