@@ -7,7 +7,7 @@ import UserIcon from '@/v2/components/UserIcon/UserIcon';
 import MenuList from '@/v2/components/MenuList/MenuList';
 import { USER_ITEMS_DATA, GUEST_ITEMS_DATA } from '@/v1/Constants/User';
 import { currentUser } from '@/v2/redux/user_session/utils';
-import { closeUserSession } from '@/v2/utils/auth';
+import { closeUserSession as closeUserSessionAction } from '@/v2/utils/auth';
 import { enterWithVk } from '../../utils/vk';
 import { StyleSheet, css } from '../../aphrodite';
 
@@ -45,7 +45,7 @@ class MainMenu extends React.PureComponent {
     }
     if (id === 2) {
       if (user) {
-        closeUserSession();
+        this.props.closeUserSession();
       } else {
         history.push('#signin');
       }
@@ -201,10 +201,15 @@ MainMenu.propTypes = {
   user: PropTypes.object,
   hideMenu: PropTypes.func.isRequired,
   history: PropTypes.object,
+  closeUserSession: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
   user: currentUser(state),
 });
 
-export default connect(mapStateToProps)(withRouter(MainMenu));
+const mapDispatchToProps = dispatch => (
+  { closeUserSession: () => dispatch(closeUserSessionAction()) }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(MainMenu));

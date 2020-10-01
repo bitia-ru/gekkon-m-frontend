@@ -10,7 +10,7 @@ import {
   VK_LINK,
 } from '@/v1/Constants/SocialLinks';
 import { notReady, notExist } from '@/v1/utils';
-import { closeUserSession } from '@/v2/utils/auth';
+import { closeUserSession as closeUserSessionAction } from '@/v2/utils/auth';
 import { StyleSheet, css } from '../../aphrodite';
 
 class Footer extends React.PureComponent {
@@ -85,7 +85,7 @@ class Footer extends React.PureComponent {
                           : (
                             <li className={css(styles.footerMListItem)}>
                               <a
-                                onClick={closeUserSession}
+                                onClick={this.props.closeUserSession}
                                 role="link"
                                 tabIndex={0}
                                 className={css(styles.footerMListLink)}
@@ -231,10 +231,15 @@ const styles = StyleSheet.create({
 Footer.propTypes = {
   user: PropTypes.object,
   history: PropTypes.object,
+  closeUserSession: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
   user: currentUser(state),
 });
 
-export default connect(mapStateToProps)(withRouter(Footer));
+const mapDispatchToProps = dispatch => (
+  { closeUserSession: () => dispatch(closeUserSessionAction()) }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Footer));
