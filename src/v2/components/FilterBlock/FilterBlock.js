@@ -92,14 +92,14 @@ class FilterBlock extends Component {
     if (user) {
       filter = R.find(R.propEq('id', 'liked'))(R.values(filters));
       newFilters['liked'] = filter.selected;
+      R.forEach(
+        (resultKey) => {
+          filter = R.find(R.propEq('id', resultKey))(R.values(filters));
+          newFilters[resultKey] = filter.selected;
+        },
+        R.keys(RESULT_FILTERS),
+      );
     }
-    R.forEach(
-      (resultKey) => {
-        filter = R.find(R.propEq('id', resultKey))(R.values(filters));
-        newFilters[resultKey] = filter.selected;
-      },
-      R.keys(RESULT_FILTERS),
-    )
     setSelectedFilterProp(spotId, sectorId, newFilters);
     setSelectedPageProp(spotId, sectorId, 1);
   };
