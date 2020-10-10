@@ -40,9 +40,6 @@ class RouteCardScheme extends Component {
       prevState => ({
         currentScale: Math.min(prevState.currentScale + 1, this.SCHEME_SCALE_FACTORS_MAX),
       }),
-    );
-
-    setTimeout(
       () => {
         const { currentScale } = this.state;
         const newScaleFactor = this.getScaleFactor(currentScale);
@@ -60,21 +57,16 @@ class RouteCardScheme extends Component {
           ? ((this.schemeContainerRef.scrollHeight - originalHeight) / 2)
           : newScrollTopPos + (originalHeight / prevScaleFactor);
       },
-      0,
     );
   };
 
   decreaseSchemeScale = () => {
+    const prevScrollTopPos = this.schemeContainerRef.scrollTop || 1;
+    const prevScrollLeftPos = this.schemeContainerRef.scrollLeft || 1;
     this.setState(
       prevState => ({
         currentScale: Math.max(prevState.currentScale - 1, 0),
       }),
-    );
-
-    const prevScrollTopPos = this.schemeContainerRef.scrollTop || 1;
-    const prevScrollLeftPos = this.schemeContainerRef.scrollLeft || 1;
-
-    setTimeout(
       () => {
         const { currentScale } = this.state;
         const newScaleFactor = this.getScaleFactor(currentScale);
@@ -86,7 +78,6 @@ class RouteCardScheme extends Component {
         this.schemeContainerRef.scrollTop = newScrollTopPos - (originalHeight / prevScaleFactor);
         this.schemeContainerRef.scrollLeft = newScrollLeftPos - (originalWidth / prevScaleFactor);
       },
-      0,
     );
   };
 
@@ -125,14 +116,14 @@ class RouteCardScheme extends Component {
               <Button
                 size="medium"
                 buttonStyle={currentScale === 0 ? 'disabled' : 'filter'}
-                onClick={() => this.decreaseSchemeScale()}
+                onClick={this.decreaseSchemeScale}
                 title="—"
                 disabled={currentScale === 0}
               />
               <Button
                 size="medium"
                 buttonStyle={currentScale === this.SCHEME_SCALE_FACTORS_MAX ? 'disabled' : 'filter'}
-                onClick={() => this.increaseSchemeScale()}
+                onClick={this.increaseSchemeScale}
                 title="+"
                 disabled={currentScale === this.SCHEME_SCALE_FACTORS_MAX}
               />
