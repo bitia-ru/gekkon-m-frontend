@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import { css, StyleSheet } from '../../aphrodite';
 import withModals, { ModalContainerContext } from '../../modules/modalable';
+import MainScreenContext from '@/v2/contexts/MainScreenContext';
 import Profile from '../../forms/Profile/Profile';
 import LogInForm from '../../forms/LogInForm/LogInForm';
 import SignUpForm from '../../forms/SignUpForm/SignUpForm';
@@ -56,12 +57,13 @@ class MainScreen extends React.PureComponent {
       <ModalContainerContext.Consumer>
         {
           ({ isModalShown }) => (
-            <div className={
-              css(
+            <div
+              className={css(
                 style.container,
                 isModalShown ? style.unscrollable : style.scrollable,
-              )
-            }>
+              )}
+              ref={(ref) => { this.containerRef = ref; }}
+            >
               <div style={{ flex: 1 }}>
                 <LoadingIndicator>
                   <Logo />
@@ -89,7 +91,9 @@ class MainScreen extends React.PureComponent {
                       )
                       : ''
                   }
-                  {children && children}
+                  <MainScreenContext.Provider value={{ parentContainerRef: this.containerRef }}>
+                    {children && children}
+                  </MainScreenContext.Provider>
                 </LoadingIndicator>
               </div>
               <div style={{ flex: 0 }}>
