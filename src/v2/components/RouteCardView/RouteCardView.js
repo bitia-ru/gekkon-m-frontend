@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import MainScreenContext from '@/v2/contexts/MainScreenContext';
 import RouteCardTable from '../RouteCardTable/RouteCardTable';
 import RouteCardList from '../RouteCardList/RouteCardList';
 import RouteCardScheme from '../RouteCardScheme/RouteCardScheme';
@@ -12,10 +13,15 @@ export default class RouteCardView extends Component {
     switch (viewMode) {
     case 'scheme':
       return (
-        <RouteCardScheme
-          diagram={diagram}
-          onRouteClick={onRouteClick}
-        />
+        <MainScreenContext.Consumer>
+          {({ parentContainerRef }) => (
+            <RouteCardScheme
+              diagram={diagram}
+              onRouteClick={onRouteClick}
+              parentContainerRef={parentContainerRef}
+            />
+          )}
+        </MainScreenContext.Consumer>
       );
     case 'table':
       return (

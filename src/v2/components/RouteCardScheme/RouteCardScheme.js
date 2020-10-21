@@ -6,6 +6,7 @@ import RouteCard from '@/v2/components/RouteCard/RouteCard';
 import Scheme from '@/v1/components/Scheme/Scheme';
 import Button from '@/v1/components/Button/Button';
 import getArrayByIds from '@/v1/utils/getArrayByIds';
+import scrollIntoView from '@/v2/utils/scrollIntoView';
 import { css } from '../../aphrodite';
 import styles from './styles';
 
@@ -50,9 +51,10 @@ class RouteCardScheme extends Component {
   };
 
   scrollToRouteCard = () => {
+    const { parentContainerRef } = this.props;
     setTimeout(
       () => {
-        this.cardRef.scrollIntoView({ block: 'end', behavior: 'smooth' });
+        scrollIntoView(parentContainerRef, this.cardRef);
       },
       0,
     );
@@ -127,6 +129,7 @@ RouteCardScheme.propTypes = {
   routeIds: PropTypes.array.isRequired,
   routes: PropTypes.object.isRequired,
   onRouteClick: PropTypes.func.isRequired,
+  parentContainerRef: PropTypes.node,
 };
 
 const mapStateToProps = state => ({
