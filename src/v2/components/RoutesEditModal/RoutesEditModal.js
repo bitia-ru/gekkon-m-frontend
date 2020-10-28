@@ -626,6 +626,7 @@ const styles = StyleSheet.create({
     display: 'inline-block',
     lineHeight: '35px',
     height: '35px',
+    padding: '1px 2px',
     boxSizing: 'border-box',
     ':hover': { borderBottom: '2px solid #E3E3E3' },
   },
