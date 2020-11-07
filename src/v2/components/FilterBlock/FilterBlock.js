@@ -212,6 +212,7 @@ class FilterBlock extends Component {
                               date={date || DEFAULT_FILTERS.date}
                               onChange={this.changeDate}
                               dateClass={css(styles.fieldSelectMSelect)}
+                              defaultDate="сегодня"
                             />
                           </>
                         )
