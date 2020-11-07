@@ -4,6 +4,12 @@ import moment from 'moment/moment';
 import DatePicker from '@/v2/components/DatePicker/DatePicker';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
+const styles = StyleSheet.create({
+  fieldSelectMContainer: {
+    position: 'relative',
+  },
+});
+
 class DatePickerSelector extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -16,7 +22,12 @@ class DatePickerSelector extends React.PureComponent {
   render() {
     const { expanded } = this.state;
     const {
-      date, formatter, onChange, dateClass, clearable,
+      date,
+      formatter,
+      onChange,
+      dateClass,
+      clearable,
+      defaultDate,
     } = this.props;
     return (
       <>
@@ -28,7 +39,7 @@ class DatePickerSelector extends React.PureComponent {
             onClick={() => this.setState({ expanded: true })}
             className={dateClass}
           >
-            {date ? formatter(date) : 'сегодня'}
+            {date ? formatter(date) : defaultDate}
           </div>
         </div>
         {
@@ -48,11 +59,7 @@ class DatePickerSelector extends React.PureComponent {
   }
 }
 
-const styles = StyleSheet.create({
-  fieldSelectMContainer: {
-    position: 'relative',
-  },
-});
+DatePickerSelector.defaultProps = { defaultDate: 'не задано' };
 
 DatePickerSelector.propTypes = {
   date: PropTypes.string,
@@ -60,6 +67,7 @@ DatePickerSelector.propTypes = {
   onChange: PropTypes.func,
   dateClass: PropTypes.string,
   clearable: PropTypes.bool,
+  defaultDate: PropTypes.string,
 };
 
 export default DatePickerSelector;
