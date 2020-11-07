@@ -98,20 +98,6 @@ class MainMenu extends React.PureComponent {
             onClick={this.onItemSelect}
             textFieldName="title"
           />
-          <div className={css(styles.mMenuList)}>
-            <h3 className={css(styles.mMenuHeader)}>
-              Соцсети
-            </h3>
-            <ul className={css(styles.socialLinks)}>
-              <li>
-                <SocialLinkButton
-                  onClick={() => enterWithVk('logIn')}
-                  xlinkHref={`${socialLinks}#icon-vk`}
-                  dark
-                />
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     );
