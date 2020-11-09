@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 20,
   },
-  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
+  modalBlockMDark: { backgroundColor: 'rgba(0, 0, 0)' },
   modalBlockMCropContainer: {
     height: '100vh',
     overflow: 'hidden',
