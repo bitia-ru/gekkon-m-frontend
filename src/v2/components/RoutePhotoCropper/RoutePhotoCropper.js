@@ -33,7 +33,6 @@ export default class RoutePhotoCropper extends Component {
         this.setState({ src: res.toDataURL('image/jpeg') });
       },
       {
-        maxWidth: this.imageContainerRef.clientWidth / 2,
         canvas: true,
         pixelRatio: 1,
         orientation: true,
