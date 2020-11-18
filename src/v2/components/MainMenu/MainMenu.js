@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import UserIcon from '@/v2/components/UserIcon/UserIcon';
 import MenuList from '@/v2/components/MenuList/MenuList';
 import { USER_ITEMS_DATA, GUEST_ITEMS_DATA } from '@/v1/Constants/User';
 import { currentUser } from '@/v2/redux/user_session/utils';
 import { closeUserSession } from '@/v2/utils/auth';
-import { enterWithVk } from '../../utils/vk';
 import { StyleSheet, css } from '../../aphrodite';
 
 class MainMenu extends React.PureComponent {
@@ -59,9 +57,6 @@ class MainMenu extends React.PureComponent {
 
   render() {
     const { user, hideMenu } = this.props;
-    const socialLinks = require(
-      '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
     return (
       <div className={css(styles.mMenu)}>
         <div>
@@ -105,19 +100,6 @@ class MainMenu extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  socialLinks: {
-    margin: 0,
-    padding: 0,
-    display: 'flex',
-    alignItems: 'center',
-    '> li': {
-      listStyleType: 'none',
-      marginRight: '8px',
-      marginLeft: '8px',
-    },
-    '> li:first-child': { marginLeft: 0 },
-    '> li:last-child': { marginRight: 0 },
-  },
   mMenu: {
     width: '100%',
     backgroundColor: '#ffffff',
@@ -173,13 +155,6 @@ const styles = StyleSheet.create({
     backgroundSize: '16px 16px',
     backgroundPosition: '0 center',
     ':placeholder': { color: '#1f1f1f' },
-  },
-  mMenuHeader: {
-    fontSize: '16px',
-    color: '#1f1f1f',
-    lineHeight: '24px',
-    fontFamily: 'GilroyRegular, sans-serif',
-    fontWeight: 'normal',
   },
 });
 
