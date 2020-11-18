@@ -93,7 +93,7 @@ const withModals = (BaseComponent) => {
         const hash = location.hash.slice(1);
 
         if (hash && super.modals()[hash]) {
-          history.replace({ pathname: location.pathname, hash: '' });
+          history.goBack();
         }
       });
     };
