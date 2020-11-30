@@ -4,8 +4,9 @@ export const CATEGORIES_ITEMS = [
   { id: 0, title: 'Все', clickable: true },
   { id: 1, title: '6A+ и ниже', clickable: true },
   { id: 2, title: '6A-6B+', clickable: true },
-  { id: 3, title: '6B-7A+', clickable: true },
-  { id: 4, title: '7A и выше', clickable: true },
+  { id: 3, title: '6B-6C+', clickable: true },
+  { id: 4, title: '6C-7A+', clickable: true },
+  { id: 5, title: '7A и выше', clickable: true },
 ];
 
 export const CATEGORIES = [
