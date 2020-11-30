@@ -146,9 +146,12 @@ class FilterBlock extends Component {
       this.setState({ categoryFrom: '6a', categoryTo: '6b+' });
       break;
     case 3:
-      this.setState({ categoryFrom: '6b', categoryTo: '7a+' });
+      this.setState({ categoryFrom: '6b', categoryTo: '6c+' });
       break;
     case 4:
+      this.setState({ categoryFrom: '6c', categoryTo: '7a+' });
+      break;
+    case 5:
       this.setState({ categoryFrom: '7a', categoryTo: CATEGORIES[CATEGORIES.length - 1] });
       break;
     default:
