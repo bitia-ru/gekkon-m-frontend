@@ -52,10 +52,13 @@ const reloadRoutes = (spotId, sectorId) => (
         dFrom.setDate(d.getDate() - 7);
         break;
       case 3:
-        dFrom.setMonth(d.getMonth() - 1);
+        dFrom.setDate(d.getDate() - 14);
         break;
       case 4:
-        dFrom.setYear(d.getFullYear() - 1);
+        dFrom.setMonth(d.getMonth() - 1);
+        break;
+      case 5:
+        dFrom.setMonth(d.getMonth() - 2);
         break;
       default:
         break;
