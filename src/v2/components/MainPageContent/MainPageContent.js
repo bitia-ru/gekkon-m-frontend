@@ -7,8 +7,25 @@ import { css, StyleSheet } from '@/v2/aphrodite';
 import { loadSpots } from '@/v2/redux/spots/actions';
 
 const sortSpotsByActivity = (spot1, spot2) => {
-  const activity1 = spot1?.data?.statistics?.activity;
-  const activity2 = spot2?.data?.statistics?.activity;
+  const activity1 = (
+    spot1?.data?.statistics?.activity === undefined ? (
+      spot1?.statistics?.activity
+    ) : (
+      spot1?.data?.statistics?.activity
+    )
+  );
+
+  const activity2 = (
+    spot2?.data?.statistics?.activity === undefined ? (
+      spot2?.statistics?.activity
+    ) : (
+      spot2?.data.statistics?.activity
+    )
+  );
+
+  if (activity1 === undefined) return +1;
+  if (activity2 === undefined) return -1;
+
   return activity2 - activity1;
 };
 
@@ -19,14 +36,6 @@ const MainPageContent = () => {
   useEffect(() => { dispatch(loadSpots()); }, []);
 
   const publicSpots = R.filter(spot => spot.data && spot.data.public)(Object.values(spots));
-  const spotsWithActivity = R.filter(
-    spot => (spot.data?.statistics?.activity !== undefined),
-    publicSpots,
-  );
-  const spotsWithoutActivity = R.filter(
-    spot => (spot.data?.statistics?.activity === undefined),
-    publicSpots,
-  );
 
   return (
     <>
@@ -37,7 +46,7 @@ const MainPageContent = () => {
           <div className={css(style.spotsInnerContainer)}>
             {
               R.map(spot => <SpotCard key={spot.id} spot={spot} />)(
-                R.concat(R.sort(sortSpotsByActivity, spotsWithActivity), spotsWithoutActivity),
+                R.sort(sortSpotsByActivity, publicSpots),
               )
             }
           </div>
