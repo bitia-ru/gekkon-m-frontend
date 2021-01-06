@@ -39,7 +39,7 @@
     "@babel/preset-react": "^7.0.0",
     "aphrodite": "^2.4.0",
     "autoprefixer": "^9.7.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-loader": "^8.0.4",
     "bcryptjs": "^2.4.3",
     "classnames": "^2.2.6",
