@@ -346,7 +346,7 @@ class LogInForm extends Component {
                   <ul className={css(styles.socialLinks)}>
                     <li>
                       <SocialLinkButton
-                        onClick={() => enterWithVk('logIn')}
+                        onClick={() => enterWithVk('logIn', null, this.state.rememberMe)}
                         xlinkHref={`${socialLinks}#icon-vk`}
                         dark
                       />
