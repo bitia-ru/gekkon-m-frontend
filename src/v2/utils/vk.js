@@ -11,7 +11,7 @@ const redirectUri = () => (
   )
 );
 
-const params = (type, token) => ({
+const params = (type, token, rememberMe) => ({
   client_id: CLIENT_ID,
   scope: 'email%2Cphotos',
   redirect_uri: redirectUri(),
@@ -20,13 +20,14 @@ const params = (type, token) => ({
   state: JSON.stringify({
     method: type,
     token,
+    rememberMe,
   }),
 });
 
-const paramsSerialized = (type, token) => (
+const paramsSerialized = (type, token, rememberMe) => (
   R.join('&')(
     R.map(v => `${v[0]}=${v[1]}`)(
-      R.toPairs(params(type, token)),
+      R.toPairs(params(type, token, rememberMe)),
     ),
   )
 );
@@ -40,9 +41,9 @@ export const afterVkEnter = (ev) => {
   window.removeEventListener('message', afterVkEnter);
 };
 
-export const enterWithVk = (type, token) => {
+export const enterWithVk = (type, token, rememberMe) => {
   window.open(
-    `https://oauth.vk.com/authorize?${paramsSerialized(type, token)}`,
+    `https://oauth.vk.com/authorize?${paramsSerialized(type, token, rememberMe)}`,
     'VK',
     'resizable,scrollbars,status',
   );
