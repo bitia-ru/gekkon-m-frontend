@@ -433,7 +433,10 @@ class RoutesEditModal extends Component {
                         <div className={css(styles.routeMRoute)}>
                           {
                             (!route.photo || !routeImageLoading) && (
-                              <div className={css(styles.routeMRouteDescr)}>
+                              <div
+                                className={css(styles.routeMRouteDescr)}
+                                onClick={() => this.fileInput.click()}
+                              >
                                 <div className={css(styles.routeMRouteDescrPicture)} />
                                 <div className={css(styles.routeMRouteDescrText)}>
                                   Загрузите фото трассы
