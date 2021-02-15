@@ -11,6 +11,7 @@ import { default as usersReducerV2 } from '@/v2/redux/users/reducer';
 import { default as userSessionReducerV2 } from '@/v2/redux/user_session/reducer';
 import { default as spotsStoreReducerV2 } from '@/v2/redux/spots/reducer';
 import { default as routesReducerV2 } from '@/v2/redux/routes/reducer';
+import initializedAtReducer from '@/v2/redux/initializedAt/reducer';
 
 const tabReducer = (state = 1, action) => {
   switch (action.type) {
@@ -128,4 +129,5 @@ export default combineReducers({
   usersStoreV2: usersReducerV2,
   userSessionV2: userSessionReducerV2,
   routesStoreV2: routesReducerV2,
+  initializedAt: initializedAtReducer,
 });

@@ -28,6 +28,13 @@ export const saveState = (state) => {
 
     data.routeMarkColors = state.routeMarkColorsStore.routeMarkColors;
     data.news = state.newsStore.news;
+
+    if (state.initializedAt === undefined) {
+      data.initializedAt = new Date().getTime();
+    } else {
+      data.initializedAt = state.initializedAt;
+    }
+
     localForage.setItem('reduxState', data);
   } catch (_err) {
     // ignore write errors
@@ -65,6 +72,9 @@ const getDataFromLocalForagePromise = () => (
           state.usersStore = USERS_DEFAULT_STORE_FORMAT;
           state.usersStore.users = data.users;
           state.usersStore.sortedUserIds = data.sortedUserIds;
+
+          state.initializedAt = data.initializedAt;
+
           resolve(state);
         } catch (_err) {
           resolve(undefined);
