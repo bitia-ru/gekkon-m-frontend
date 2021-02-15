@@ -5,11 +5,12 @@ Sentry.init({ dsn: SentryDsn }); // eslint-disable-line no-undef
 /* eslint-disable import/first */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import Main from './Main';
 import { configureStoreAsync, saveState } from './store';
 import ErrorBoundary from '@/ErrorBoundary';
+import ExceptionTestComponent from '@/v2/utils/ExceptionTestComponent';
 import './index.css';
 import './fonts.css';
 /* eslint-enable import/first */
@@ -65,6 +66,7 @@ configureStoreAsync().then((result) => {
       <ErrorBoundary>
         <Provider store={store}>
           <BrowserRouter>
+            <Route path="/debug/test_exception_handler" component={ExceptionTestComponent} />
             <Main />
           </BrowserRouter>
         </Provider>
