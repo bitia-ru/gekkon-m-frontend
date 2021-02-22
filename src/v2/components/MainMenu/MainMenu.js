@@ -50,10 +50,6 @@ class MainMenu extends React.PureComponent {
         history.push('#signin');
       }
     }
-    if (id === 3) {
-      document.cookie = 'gekkon_creator_mode=1';
-      document.location.reload(true);
-    }
     hideMenu();
   };
 
