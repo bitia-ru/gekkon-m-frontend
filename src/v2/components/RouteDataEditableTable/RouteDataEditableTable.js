@@ -22,6 +22,8 @@ const RouteDataEditableTable = ({
   onRouteParamChange,
   routeMarkColors,
   users,
+  match,
+  spots,
 }) => {
   const fieldSelectClass = css(
     styles.fieldSelectMSelect,
@@ -35,6 +37,15 @@ const RouteDataEditableTable = ({
     styles.fieldSelectMSelectTransparent,
     styles.fieldSelectMSelectSmall,
   );
+  const onMarksColorSelect = (marksColor) => {
+    const spotId = match.params.id;
+    const spot = spots[spotId];
+    const { markColorToCategory } = spot.data;
+    onRouteParamChange(marksColor, 'marks_color');
+    if (markColorToCategory && markColorToCategory[marksColor.id]) {
+      onRouteParamChange(markColorToCategory[marksColor.id], 'category');
+    }
+  };
   return (
     <RouteContext.Consumer>
       {
@@ -79,11 +90,7 @@ const RouteDataEditableTable = ({
                       color={route.marks_color}
                       fieldSelectClass={fieldSelectClass}
                       routeMarkColors={routeMarkColors}
-                      onChange={
-                        (marksColor) => {
-                          onRouteParamChange(marksColor, 'marks_color');
-                        }
-                      }
+                      onChange={onMarksColorSelect}
                     />
                   </div>
                 </div>
@@ -306,6 +313,8 @@ const styles = StyleSheet.create({
 
 RouteDataEditableTable.propTypes = {
   sectors: PropTypes.object.isRequired,
+  spots: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
   onRouteParamChange: PropTypes.func,
   routeMarkColors: PropTypes.array,
   users: PropTypes.array,
@@ -313,6 +322,7 @@ RouteDataEditableTable.propTypes = {
 
 const mapStateToProps = state => ({
   sectors: state.sectorsStore.sectors,
+  spots: state.spotsStoreV2.spots,
 });
 
 export default withRouter(connect(mapStateToProps)(RouteDataEditableTable));
