@@ -46,10 +46,6 @@ export default class MainMenu extends Component {
         logIn();
       }
     }
-    if (id === 3) {
-      document.cookie = "gekkon_creator_mode=1";
-      document.location.reload(true);
-    }
     hideMenu();
   };
 
