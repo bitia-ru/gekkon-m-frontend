@@ -32,7 +32,7 @@ export default class Marker extends Component {
 
     render() {
       const {
-        editable, left, top, dx, dy, radius, angle,
+        editable, left, top, dx, dy, radius, angle, pointerType,
       } = this.props;
       return (
         <React.Fragment>
@@ -46,7 +46,7 @@ export default class Marker extends Component {
           >
             <img
               draggable={false}
-              src={require('./images/hold-mark.png')}
+              src={require(`./images/${pointerType}.svg`)}
               style={{
                 touchAction: editable ? 'none' : 'auto',
                 width: `${radius * 2}px`,
@@ -72,6 +72,7 @@ Marker.propTypes = {
   dy: PropTypes.number.isRequired,
   radius: PropTypes.number.isRequired,
   angle: PropTypes.number.isRequired,
+  pointerType: PropTypes.string,
 };
 
 Marker.defaultProps = {

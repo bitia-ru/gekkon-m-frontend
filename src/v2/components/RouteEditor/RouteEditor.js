@@ -12,6 +12,7 @@ import {
 import RouteContext from '@/v1/contexts/RouteContext';
 import Trash from '@/v2/components/Trash/Trash';
 import CloseButton from '@/v1/components/CloseButton/CloseButton';
+import { getPointerType } from '@/v1/components/Marker/utils';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
 export default class RouteEditor extends Component {
@@ -352,6 +353,7 @@ export default class RouteEditor extends Component {
                             mapIndexed((pointer, index) => (
                               <Marker
                                 key={index}
+                                pointerType={getPointerType(editable, index, pointer)}
                                 editable={editable}
                                 removePointer={editable ? (() => this.removePointer(index)) : null}
                                 onStartMoving={
