@@ -4,6 +4,7 @@ import * as R from 'ramda';
 import Marker from '@/v1/components/Marker/Marker';
 import MARKER_RADIUS from '@/v1/Constants/Marker';
 import RouteContext from '@/v1/contexts/RouteContext';
+import { getPointerType } from '@/v1/components/Marker/utils';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
 export default class RouteView extends Component {
@@ -48,6 +49,7 @@ export default class RouteView extends Component {
                                 editable={false}
                                 angle={pointer.angle}
                                 radius={MARKER_RADIUS}
+                                pointerType={getPointerType(false, index, pointer)}
                                 dx={pointer.dx}
                                 dy={pointer.dy}
                                 left={pointer.x}
