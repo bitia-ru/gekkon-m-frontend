@@ -174,7 +174,9 @@ export default class Profile extends Component {
       return true;
     case 'login':
       if (value !== '' && !R.test(reLogin, value)) {
-        this.setState({ errors: R.merge(errors, { login: ['Неверный формат login'] }) });
+        this.setState({
+          errors: R.merge(errors, { login: ['Только латиница, цифры и знаки .-_'] }),
+        });
         return false;
       }
       if (value === '' && email === '' && phone === '' && user.data.vk_user_id === undefined) {
