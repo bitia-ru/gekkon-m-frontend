@@ -208,7 +208,9 @@ class Profile extends Component {
     case 'login': {
       const reLogin = /^[\.a-zA-Z0-9_-]+$/;
       if (value !== '' && !R.test(reLogin, value)) {
-        this.setState({ errors: R.merge(errors, { login: ['Неверный формат login'] }) });
+        this.setState({
+          errors: R.merge(errors, { login: ['Только латиница, цифры и знаки .-_'] }),
+        });
         return false;
       }
       if (value === '' && email === '' && phone === '' && noVk) {
