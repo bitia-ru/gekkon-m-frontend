@@ -371,6 +371,8 @@ class Profile extends Component {
                     </div>
                   </div>
                   <div className={css(styles.modalBlockMPaddingWrapper)}>
+                    <input type="text" style={{display: 'none'}} />
+                    <input type="password" style={{display: 'none'}} />
                     <FormField
                       placeholder="Имя"
                       id="name"
@@ -397,6 +399,7 @@ class Profile extends Component {
                       hasError={this.hasError('password')}
                       errorText={this.errorText('password')}
                       value={password}
+                      autocomplete="new-password"
                     />
                     <FormField
                       placeholder="Подтверждение пароля"
@@ -406,6 +409,7 @@ class Profile extends Component {
                       hasError={this.hasError('repeatPassword')}
                       errorText={this.errorText('repeatPassword')}
                       value={repeatPassword}
+                      autocomplete="new-password"
                     />
                     <FormField
                       placeholder="Email"
