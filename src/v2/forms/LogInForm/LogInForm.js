@@ -7,12 +7,10 @@ import TabBar from '@/v1/components/TabBar/TabBar';
 import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import Button from '@/v1/components/Button/Button';
 import FormField from '@/v1/components/FormField/FormField';
-import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import CheckBox from '@/v1/components/CheckBox/CheckBox';
 import RE_EMAIL from '@/v1/Constants/Constraints';
 import { createUserSession } from '../../utils/auth';
 import { enterWithVk } from '../../utils/vk';
-import { ModalContext } from '../../modules/modalable';
 import Api from '@/v2/utils/Api';
 import Modal from '../../layouts/Modal';
 import showToastr from '@/v2/utils/showToastr';
@@ -187,7 +185,7 @@ class LogInForm extends Component {
     }
   };
 
-  firstTabContent = (closeModal) => {
+  firstTabContent = () => {
     const {
       isWaiting, phone, passwordEnter, rememberMe,
     } = this.state;
@@ -240,7 +238,7 @@ class LogInForm extends Component {
     );
   };
 
-  secondTabContent = (closeModal) => {
+  secondTabContent = () => {
     const {
       isWaiting, email, password, rememberMe,
     } = this.state;
@@ -268,8 +266,7 @@ class LogInForm extends Component {
               email,
               password,
               () => {
-                closeModal();
-                window.location.reload(true);
+                window.location = '/';
               },
             )
           }
@@ -288,8 +285,7 @@ class LogInForm extends Component {
               email,
               password,
               () => {
-                closeModal();
-                window.location.reload(true);
+                window.location = '/';
               },
             )
           }
@@ -321,42 +317,34 @@ class LogInForm extends Component {
     );
     return (
       <Modal>
-        <ModalContext.Consumer>
-          {
-            ({ closeModal }) => (
-              <>
-                <h3 className={css(styles.modalBlockMTitleForm)}>
-                  Вход в систему
-                </h3>
-                <TabBar
-                  contentList={
-                    [
-                      this.firstTabContent(closeModal),
-                      this.secondTabContent(closeModal),
-                    ]
-                  }
-                  activeList={[false, true]}
-                  activeTab={2}
-                  titleList={['Телефон', 'Email / логин']}
-                />
-                <div className={css(styles.modalBlockMOr)}>
-                  <div className={css(styles.modalBlockMOrInner)}>или</div>
-                </div>
-                <div>
-                  <ul className={css(styles.socialLinks)}>
-                    <li>
-                      <SocialLinkButton
-                        onClick={() => enterWithVk('logIn', null, this.state.rememberMe)}
-                        xlinkHref={`${socialLinks}#icon-vk`}
-                        dark
-                      />
-                    </li>
-                  </ul>
-                </div>
-              </>
-            )
+        <h3 className={css(styles.modalBlockMTitleForm)}>
+          Вход в систему
+        </h3>
+        <TabBar
+          contentList={
+            [
+              this.firstTabContent(),
+              this.secondTabContent(),
+            ]
           }
-        </ModalContext.Consumer>
+          activeList={[false, true]}
+          activeTab={2}
+          titleList={['Телефон', 'Email / логин']}
+        />
+        <div className={css(styles.modalBlockMOr)}>
+          <div className={css(styles.modalBlockMOrInner)}>или</div>
+        </div>
+        <div>
+          <ul className={css(styles.socialLinks)}>
+            <li>
+              <SocialLinkButton
+                onClick={() => enterWithVk('logIn', null, this.state.rememberMe)}
+                xlinkHref={`${socialLinks}#icon-vk`}
+                dark
+              />
+            </li>
+          </ul>
+        </div>
       </Modal>
     );
   }
