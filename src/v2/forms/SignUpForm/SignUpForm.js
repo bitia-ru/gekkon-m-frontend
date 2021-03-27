@@ -9,13 +9,11 @@ import TabBar from '@/v1/components/TabBar/TabBar';
 import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import Button from '@/v1/components/Button/Button';
 import FormField from '@/v1/components/FormField/FormField';
-import CloseButton from '@/v1/components/CloseButton/CloseButton';
 import { PASSWORD_MIN_LENGTH } from '@/v1/Constants/User';
 import RE_EMAIL from '@/v1/Constants/Constraints';
 import { enterWithVk } from '../../utils/vk';
 import { createUser } from '../../utils/users';
 import Modal from '../../layouts/Modal';
-import { ModalContext } from '@/v2/modules/modalable';
 import showToastr from '@/v2/utils/showToastr';
 import toastHttpError from '@/v2/utils/toastHttpError';
 import { StyleSheet, css } from '@/v2/aphrodite';
@@ -161,7 +159,7 @@ class SignUpForm extends Component {
     );
   };
 
-  firstTabContent = (closeModal) => {
+  firstTabContent = () => {
     const { phone, passwordFromSms, isWaiting } = this.state;
     return (
       <form action="#">
@@ -196,7 +194,7 @@ class SignUpForm extends Component {
     );
   };
 
-  secondTabContent = (closeModal) => {
+  secondTabContent = () => {
     const {
       email, password, repeatPassword, isWaiting,
     } = this.state;
@@ -233,8 +231,7 @@ class SignUpForm extends Component {
               email,
               {
                 success() {
-                  closeModal();
-                  window.location.reload();
+                  window.location = '/';
                 },
               },
             )
@@ -254,8 +251,7 @@ class SignUpForm extends Component {
               email,
               {
                 success() {
-                  closeModal();
-                  window.location.reload();
+                  window.location = '/';
                 },
               },
             )
@@ -271,42 +267,34 @@ class SignUpForm extends Component {
     );
     return (
       <Modal>
-        <ModalContext.Consumer>
-          {
-            ({ closeModal }) => (
-              <>
-                <h3 className={css(styles.modalBlockMTitle, styles.modalBlockMTitleForm)}>
-                  Регистрация
-                </h3>
-                <TabBar
-                  contentList={
-                    [
-                      this.firstTabContent(closeModal),
-                      this.secondTabContent(closeModal),
-                    ]
-                  }
-                  activeList={[false, true]}
-                  activeTab={2}
-                  titleList={['Телефон', 'Email']}
-                />
-                <div className={css(styles.modalBlockMOr)}>
-                  <div className={css(styles.modalBlockMOrInner)}>или</div>
-                </div>
-                <div>
-                  <ul className={css(styles.socialLinks)}>
-                    <li>
-                      <SocialLinkButton
-                        onClick={() => enterWithVk('signUp')}
-                        xlinkHref={`${socialLinks}#icon-vk`}
-                        dark
-                      />
-                    </li>
-                  </ul>
-                </div>
-              </>
-            )
+        <h3 className={css(styles.modalBlockMTitle, styles.modalBlockMTitleForm)}>
+          Регистрация
+        </h3>
+        <TabBar
+          contentList={
+            [
+              this.firstTabContent(),
+              this.secondTabContent(),
+            ]
           }
-        </ModalContext.Consumer>
+          activeList={[false, true]}
+          activeTab={2}
+          titleList={['Телефон', 'Email']}
+        />
+        <div className={css(styles.modalBlockMOr)}>
+          <div className={css(styles.modalBlockMOrInner)}>или</div>
+        </div>
+        <div>
+          <ul className={css(styles.socialLinks)}>
+            <li>
+              <SocialLinkButton
+                onClick={() => enterWithVk('signUp')}
+                xlinkHref={`${socialLinks}#icon-vk`}
+                dark
+              />
+            </li>
+          </ul>
+        </div>
       </Modal>
     );
   }
