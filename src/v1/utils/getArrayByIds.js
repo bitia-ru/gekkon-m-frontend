@@ -1,7 +1,10 @@
 import * as R from 'ramda';
 
 const getArrayByIds = (ids, data) => (
-  R.map(p => p[1], R.filter(p => R.contains(parseInt(p[0], 10), ids), R.toPairs(data)))
+  R.pipe(
+    R.map(id => data[id]),
+    R.filter(e => e !== undefined),
+  )(ids)
 );
 
 export default getArrayByIds;

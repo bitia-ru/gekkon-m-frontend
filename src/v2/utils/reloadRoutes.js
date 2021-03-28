@@ -24,6 +24,7 @@ const reloadRoutes = (spotId, sectorId) => (
       date: currentDate,
       personal: currentPersonal,
       outdated: currentOutdated,
+      popular: currentPopular,
       liked: currentLiked,
     } = filters;
     const currentResult = R.keys(R.filter(e => e, R.pick(R.keys(RESULT_FILTERS), filters)));
@@ -33,6 +34,7 @@ const reloadRoutes = (spotId, sectorId) => (
         category: [[currentCategoryFrom], [currentCategoryTo]],
         personal: currentPersonal,
         outdated: currentViewMode === 'scheme' ? true : currentOutdated,
+        popular: currentPopular,
       },
     };
     if (avail(user)) {
