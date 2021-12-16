@@ -10,6 +10,7 @@ import RouteContext from '@/v1/contexts/RouteContext';
 import Category from '@/v1/components/Category/Category';
 import { css } from '../../aphrodite';
 import styles from './styles';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 class RouteCard extends Component {
   constructor(props) {
@@ -108,7 +109,7 @@ class RouteCard extends Component {
                 </span>
                 <span className={css(styles.cardMComplexity)}>
                   <Category
-                    category={route.category}
+                    category={routeCategoryToString(route)}
                     size="small"
                     position="right"
                     color={route.marks_color?.color || 'rgba(0, 0, 0, 0)'}

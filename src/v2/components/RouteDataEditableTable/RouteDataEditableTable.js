@@ -16,6 +16,7 @@ import DropDownPersonListSelector
   from '@/v2/components/DropDownPersonListSelector/DropDownPersonListSelector';
 import DropDownListSelector from '@/v2/components/DropDownListSelector/DropDownListSelector';
 import { css, StyleSheet } from '@/v2/aphrodite';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 const RouteDataEditableTable = ({
   sectors,
@@ -60,7 +61,7 @@ const RouteDataEditableTable = ({
                     Категория:
                   </div>
                   <CategorySelector
-                    category={route.category}
+                    category={routeCategoryToString(route)}
                     onChangeCategory={category => onRouteParamChange(category, 'category')}
                   />
                 </div>

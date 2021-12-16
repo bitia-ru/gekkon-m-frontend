@@ -34,6 +34,7 @@ jobs:
               git reset --hard HEAD && \
               git checkout release/current && \
               git reset --hard origin/release/current && \
+              git submodule update --init && \
               cd .. && \
               docker-compose build frontend_mobile && \
               docker-compose up -d

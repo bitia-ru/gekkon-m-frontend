@@ -6,6 +6,7 @@ import * as R from 'ramda';
 import SchemePointer from '../SchemePointer/SchemePointer';
 import SectorContext from '../../contexts/SectorContext';
 import './Scheme.css';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 class Scheme extends Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class Scheme extends Component {
                           route.data && route.data.position && <SchemePointer
                             key={route.id}
                             position={route.data.position}
-                            category={route.category}
+                            category={routeCategoryToString(route)}
                             color={route.holds_color === null ? undefined : route.holds_color.color}
                             onClick={() => onClick(route.id)}
                             scaleValue={pointerFactor}

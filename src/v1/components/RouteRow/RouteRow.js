@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RouteColor from '../RouteColor/RouteColor';
 import Category from '../Category/Category';
 import './RouteRow.css';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 const RouteRow = ({ onRouteClick, route }) => (
   <div
@@ -16,7 +17,7 @@ const RouteRow = ({ onRouteClick, route }) => (
       {route.number ? `№${route.number}` : `#${route.id}`}
     </div>
     <div className="table-m__row-item table-m__row-item_level">
-      <Category category={route.category} />
+      <Category category={routeCategoryToString(route)} />
     </div>
     <div className="table-m__row-item table-m__row-item_hook">
       <RouteColor route={route} fieldName="holds_color" />

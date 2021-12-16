@@ -8,6 +8,7 @@ import getColorStyle from '@/v1/Constants/RouteColorPicker';
 import { getCategoryColor } from '@/v1/Constants/Categories';
 import Category from '@/v2/components/Category/Category';
 import { StyleSheet, css } from '@/v2/aphrodite';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 const RouteDataTable = ({ route, user }) => {
   const isCurrentUserRoute = user && route.author_id === user.id;
@@ -30,7 +31,10 @@ const RouteDataTable = ({ route, user }) => {
           Категория:
         </div>
         <div className={css(styles.routeMTableItem, styles.routeMTableItemRight)}>
-          <Category category={route.category} color={getCategoryColor(route.category)} />
+          <Category
+            category={routeCategoryToString(route)}
+            color={getCategoryColor(route.category)}
+          />
         </div>
       </div>
       <div className={css(styles.routeMTableRow)}>
