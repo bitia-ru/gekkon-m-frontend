@@ -12,6 +12,7 @@ import { avail, notAvail } from '../../utils';
 import getArrayFromObject from '../../utils/getArrayFromObject';
 import Category from '../Category/Category';
 import './RouteCard.css';
+import { routeCategoryToString } from '@/lib/routeHelpers';
 
 class RouteCard extends Component {
   constructor(props) {
@@ -106,7 +107,7 @@ class RouteCard extends Component {
                 </span>
                 <span className="card-m__complexity">
                   <Category
-                    category={route.category}
+                    category={routeCategoryToString(route)}
                     size="small"
                     position="right"
                     color={route.marks_color?.color || 'rgba(0, 0, 0, 0)'}

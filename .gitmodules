@@ -1,0 +1,4 @@
+[submodule "src/lib"]
+	path = src/lib
+	url = git@github.com:bitia-ru/gekkon-js-lib.git
+	branch = a8297271305cb3381ea925dacbded5b147e5790a
