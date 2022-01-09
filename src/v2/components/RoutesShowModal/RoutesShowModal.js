@@ -58,8 +58,8 @@ class RoutesShowModal extends Component {
   }
 
   componentDidMount() {
-    const { loadRoute: loadRouteProp } = this.props;
-    loadRouteProp(this.getRouteId());
+    const { loadRoute: doLoadRoute } = this.props;
+    doLoadRoute(this.getRouteId());
   }
 
   modals() {
@@ -716,7 +716,7 @@ const mapDispatchToProps = dispatch => ({
   loadSpot: spotId => dispatch(loadSpotAction(spotId)),
   reloadSector: sectorId => dispatch(reloadSectorAction(sectorId)),
   reloadRoutes: (spotId, sectorId) => dispatch(reloadRoutesAction(spotId, sectorId)),
-  loadRoute: (url, afterLoad) => dispatch(loadRoute(url, afterLoad)),
+  loadRoute: id => dispatch(loadRoute(id, /* incrementViewsCount */ true)),
   removeComment: url => dispatch(removeComment(url)),
   addComment: (params, afterSuccess) => dispatch(addComment(params, afterSuccess)),
   removeLike: (url, afterAll) => dispatch(removeLike(url, afterAll)),
