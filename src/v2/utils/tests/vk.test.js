@@ -41,7 +41,7 @@ describe(
                   + 'scope=email%2Cphotos&'
                   + `redirect_uri=${locationOrigin}/api/foo/baz/bar&`
                   + 'response_type=code&'
-                  + 'v=5.74&'
+                  + 'v=5.131&'
                   + 'state={"method":"login","token":"foobar"}',
                 );
               },
@@ -62,7 +62,7 @@ describe(
                   + 'scope=email%2Cphotos&'
                   + 'redirect_uri=https://foobar.ru/api/foo/baz/bar&'
                   + 'response_type=code&'
-                  + 'v=5.74&'
+                  + 'v=5.131&'
                   + 'state={"method":"login","token":"foobar"}',
                 );
               },
@@ -83,7 +83,7 @@ describe(
                   + 'scope=email%2Cphotos&'
                   + 'redirect_uri=http://foobar.ru/api/foo/baz/bar&'
                   + 'response_type=code&'
-                  + 'v=5.74&'
+                  + 'v=5.131&'
                   + 'state={"method":"login","token":"foobar"}',
                 );
               },

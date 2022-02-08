@@ -16,7 +16,7 @@ const params = (type, token, rememberMe) => ({
   scope: 'email%2Cphotos',
   redirect_uri: redirectUri(),
   response_type: 'code',
-  v: '5.74',
+  v: '5.131',
   state: JSON.stringify({
     method: type,
     token,
