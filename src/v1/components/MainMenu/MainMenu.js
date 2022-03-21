@@ -96,9 +96,7 @@ export default class MainMenu extends Component {
               </li>
               { false
                   && <>
-                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-facebook`} dark unactive /></li>
                     <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-twitter`} dark unactive /></li>
-                    <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-inst`} dark unactive /></li>
                     <li><SocialLinkButton xlinkHref={`${socialLinks}#icon-youtube`} dark unactive /></li>
                   </>
               }

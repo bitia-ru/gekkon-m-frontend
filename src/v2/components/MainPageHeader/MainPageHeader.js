@@ -8,7 +8,6 @@ import { currentUser } from '@/v2/redux/user_session/utils';
 import SocialLinkButton from '@/v1/components/SocialLinkButton/SocialLinkButton';
 import {
   TELEGRAM_LINK,
-  INSTA_LINK,
   VK_LINK,
 } from '@/v1/Constants/SocialLinks';
 import { css, StyleSheet } from '@/v2/aphrodite';
@@ -80,13 +79,6 @@ class MainPageHeader extends Component {
                   </li>
                   <li>
                     <SocialLinkButton dark href={VK_LINK} xlinkHref={`${socialLinks}#icon-vk`} />
-                  </li>
-                  <li>
-                    <SocialLinkButton
-                      dark
-                      href={INSTA_LINK}
-                      xlinkHref={`${socialLinks}#icon-inst`}
-                    />
                   </li>
                 </ul>
               )

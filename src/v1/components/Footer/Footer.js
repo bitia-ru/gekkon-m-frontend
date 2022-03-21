@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import SocialLinkButton from '../SocialLinkButton/SocialLinkButton';
 import {
   TELEGRAM_LINK,
-  INSTA_LINK,
   VK_LINK,
 } from '../../Constants/SocialLinks';
 import { notReady, notExist } from '../../utils';
@@ -26,7 +25,6 @@ const Footer = ({ logIn, signUp, logOut, user }) => {
               <SocialLinkButton href={TELEGRAM_LINK} xlinkHref={`${socialLinks}#icon-telegram`} />
             </li>
             <li><SocialLinkButton href={VK_LINK} xlinkHref={`${socialLinks}#icon-vk`} /></li>
-            <li><SocialLinkButton href={INSTA_LINK} xlinkHref={`${socialLinks}#icon-inst`} /></li>
           </ul>
         </div>
 
