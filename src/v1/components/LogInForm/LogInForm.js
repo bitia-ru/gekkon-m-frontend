@@ -267,7 +267,7 @@ class LogInForm extends Component {
     const { enterWithVk } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
     return (
       <div className="modal-block-m">
         <div className="modal-block-m__inner">

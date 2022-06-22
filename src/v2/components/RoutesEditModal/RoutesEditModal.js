@@ -356,7 +356,7 @@ class RoutesEditModal extends Component {
     const routeChanged = JSON.stringify(route) !== JSON.stringify(fieldsOld);
     const pointersChanged = JSON.stringify(currentPointers) !== JSON.stringify(currentPointersOld);
     const saveDisabled = (!routeChanged && !pointersChanged);
-    const btnHandlerImage = require('../../../../img/btn-handler/btn-handler-sprite.svg');
+    const btnHandlerImage = require('../../../../img/btn-handler/btn-handler-sprite.svg').default;
     return (
       <RouteContext.Provider value={{ route }}>
         {
@@ -471,7 +471,7 @@ class RoutesEditModal extends Component {
                                   <ButtonHandler
                                     onClick={() => this.setState({ showRouteMark: true })}
                                     title="Просмотр трассы"
-                                    xlinkHref={`${require('./images/point.svg')}#point`}
+                                    xlinkHref={`${require('./images/point.svg').default}#point`}
                                   />
                                 )
                               }

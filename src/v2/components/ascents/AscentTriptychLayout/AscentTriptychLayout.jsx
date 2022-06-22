@@ -13,7 +13,7 @@ const AscentTriptychLayout = ({
     buttons={
       withFlash ? [
         {
-          name: <img src={require('./assets/red_point-black.svg')} />,
+          name: <img src={require('./assets/red_point-black.svg').default} />,
           description: 'Red point',
           onClick() {
             onButtonClick && onButtonClick('red_point');
@@ -21,14 +21,14 @@ const AscentTriptychLayout = ({
         },
         {
           default: true,
-          name: <img src={require('./assets/flash-white.svg')} />,
+          name: <img src={require('./assets/flash-white.svg').default} />,
           description: 'Flash',
           onClick() {
             onButtonClick && onButtonClick('flash');
           },
         },
         {
-          name: <img src={require('./assets/attempt-black.svg')} />,
+          name: <img src={require('./assets/attempt-black.svg').default} />,
           description: 'Попытка',
           onClick() {
             onButtonClick && onButtonClick('attempt');
@@ -40,7 +40,7 @@ const AscentTriptychLayout = ({
           name: (ascentCounts && ascentCounts['success'] !== undefined) ? (
             ascentCounts['success']
           ) : (
-            <img src={require('./assets/success-white.svg')} />
+            <img src={require('./assets/success-white.svg').default} />
           ),
           description: '+1 пролaз',
           onClick() {
@@ -51,7 +51,7 @@ const AscentTriptychLayout = ({
           name: (ascentCounts && ascentCounts['attempt'] !== undefined) ? (
             ascentCounts['attempt']
           ) : (
-            <img src={require('./assets/attempt-black.svg')} />
+            <img src={require('./assets/attempt-black.svg').default} />
           ),
           description: '+1 попытка',
           onClick() {

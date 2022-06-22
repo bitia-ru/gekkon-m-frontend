@@ -43,9 +43,9 @@ const RouteAscentsTableLayout = ({
                         <img
                           src={
                             ascent.success ? (
-                              require('./assets/success_indicator.svg')
+                              require('./assets/success_indicator.svg').default
                             ) : (
-                              require('./assets/fail_indicator.svg')
+                              require('./assets/fail_indicator.svg').default
                             )
                           }
                         />
@@ -91,7 +91,7 @@ const RouteAscentsTableLayout = ({
                               onRemoveClicked && onRemoveClicked(ascent.id);
                             }
                           }
-                          src={require('./assets/remove.svg')}
+                          src={require('./assets/remove.svg').default}
                         />
                       </td>
                     </tr>

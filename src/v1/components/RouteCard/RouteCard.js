@@ -31,7 +31,7 @@ class RouteCard extends Component {
     moment.locale('ru');
     const date = moment().add(SOON_END_PERIOD, 'days');
     const installedUntil = route.installed_until ? moment(route.installed_until) : null;
-    const clockIcons = require('./images/card-sprite.svg');
+    const clockIcons = require('./images/card-sprite.svg').default;
     const ascents = avail(route.ascents) && getArrayFromObject(route.ascents);
     const ascent = (
       notAvail(user) || notAvail(ascents)

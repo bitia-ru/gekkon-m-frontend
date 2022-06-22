@@ -12,7 +12,7 @@ const Faq = () => (
       header={
         <InfoPageHeader
           title={TITLE}
-          image={require('./images/faq.jpg')}
+          image={require('./images/faq.jpg').default}
         />
       }
     >

@@ -27,7 +27,7 @@ class RouteCard extends Component {
     moment.locale('ru');
     const date = moment().add(SOON_END_PERIOD, 'days');
     const installedUntil = route.installed_until ? moment(route.installed_until) : null;
-    const clockIcons = require('./images/card-sprite.svg');
+    const clockIcons = require('./images/card-sprite.svg').default;
     const { ascent_result: ascentResult } = route;
     const ascentIsSuccess = ascentResult && ascentResult !== 'unsuccessful';
     const endSoon = installedUntil && date >= installedUntil;

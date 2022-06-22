@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dmuy/Material-Toast/mdtoast.min.css">
-    <script crossorigin="..." src="https://browser.sentry-cdn.com/5.5.0/bundle.min.js"></script>
-    <script crossorigin="..." src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/dmuy/Material-Toast/mdtoast.js"></script>
-    <title>Roving Climbers</title>
+  <meta charset="utf-8">
+  <!--
+    This needed because of difference of settings "width" and "initial-scale" on some
+    browsers:
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script crossorigin="..." src="/sentry-cdn-bundle-5.5.0.min.js"></script>
+  <script crossorigin="..." src="/load-image.all.min.js"></script>
+
+  <link rel="stylesheet" href="/mdtoast.min.css">
+  <script src="/mdtoast.js"></script>
+
+  <title>Roving Climbers</title>
 </head>
 <body>
-<div id="app"></div>
+  <div id="app"></div>
 </body>
 </html>

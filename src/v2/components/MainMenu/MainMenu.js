@@ -57,7 +57,7 @@ class MainMenu extends React.PureComponent {
     const { user, hideMenu } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
     return (
       <div className={css(styles.mMenu)}>
         <div>

@@ -18,7 +18,7 @@ class Footer extends React.PureComponent {
 
     const socialLinks = require(
       '@/../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
 
     return (
       <footer className={css(styles.footerM)}>

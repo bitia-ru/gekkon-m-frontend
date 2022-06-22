@@ -22,7 +22,7 @@ const Trash = ({
       }
     >
       <svg aria-hidden="true">
-        <use xlinkHref={`${require('./images/trash-can.svg')}#trash-can`} />
+        <use xlinkHref={`${require('./images/trash-can.svg').default}#trash-can`} />
       </svg>
     </div>
   );

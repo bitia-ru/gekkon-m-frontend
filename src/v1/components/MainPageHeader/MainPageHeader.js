@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 import { notReady, notExist } from '../../utils';
 import './MainPageHeader.css';
 
-const bgImage = require('./images/main-page-header.jpg');
+const bgImage = require('./images/main-page-header.jpg').default;
 
 export default class MainPageHeader extends Component {
   constructor(props) {
@@ -63,11 +63,11 @@ export default class MainPageHeader extends Component {
             <div className="first-section-m__image">
               <picture>
                 <img
-                  src={require('./images/first-section-m-img.png')}
+                  src={require('./images/first-section-m-img.png').default}
                   srcSet={
                     (() => {
-                      const img_1_5x = require('./images/first-section-m-img.png@1.5x.png');
-                      const img_2x = require('./images/first-section-m-img.png@2x.png');
+                      const img_1_5x = require('./images/first-section-m-img.png@1.5x.png').default;
+                      const img_2x = require('./images/first-section-m-img.png@2x.png').default;
 
                       return `${img_1_5x} 1.5x, ${img_2x} 2x`;
                     })()

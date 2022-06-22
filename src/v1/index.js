@@ -4,7 +4,7 @@ Sentry.init({ dsn: SentryDsn }); // eslint-disable-line no-undef
 
 /* eslint-disable import/first */
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import Main from './Main';
@@ -61,17 +61,16 @@ configureStoreAsync().then((result) => {
   store.subscribe(() => {
     saveState(store.getState());
   });
-  ReactDOM.render(
-    (
-      <ErrorBoundary>
-        <Provider store={store}>
-          <BrowserRouter>
-            <Route path="/debug/test_exception_handler" component={ExceptionTestComponent} />
-            <Main />
-          </BrowserRouter>
-        </Provider>
-      </ErrorBoundary>
-    ),
-    document.getElementById('app'),
+  const root = createRoot(document.getElementById('app'));
+
+  root.render(
+    <ErrorBoundary>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Route path="/debug/test_exception_handler" component={ExceptionTestComponent} />
+          <Main />
+        </BrowserRouter>
+      </Provider>
+    </ErrorBoundary>
   );
 });
