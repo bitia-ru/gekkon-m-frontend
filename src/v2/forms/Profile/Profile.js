@@ -333,7 +333,7 @@ class Profile extends Component {
     const { user } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
     return (
       <Modal backgroundColor="#E8F2F9">
         {

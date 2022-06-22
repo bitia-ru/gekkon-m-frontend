@@ -11,7 +11,7 @@ const getColorStyle = (routeMarkColor) => {
     return { backgroundColor: routeMarkColor.color };
   }
   return {
-    backgroundImage: `url(${require('../../../img/route-img/no_color.png')})`,
+    backgroundImage: `url(${require('../../../img/route-img/no_color.png').default})`,
     backgroundPosition: 'center',
     backgroundSize: 'contain',
     backgroundRepeat: 'no-repeat',

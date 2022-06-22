@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './ModeButton.css';
 
-const icons = require('./images/toggle-direction-sprite.svg');
+const icons = require('./images/toggle-direction-sprite.svg').default;
 
 const schemeIcon = `${icons}#toggle-map`;
 const tableIcon = `${icons}#toggle-table`;

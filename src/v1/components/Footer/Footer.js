@@ -13,7 +13,7 @@ import './Footer.css';
 const Footer = ({ logIn, signUp, logOut, user }) => {
   const socialLinks = require(
     '../../../../img/social-links-sprite/social-links-sprite.svg',
-  );
+  ).default;
 
   return (
     <footer className="footer-m">

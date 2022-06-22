@@ -314,7 +314,7 @@ class LogInForm extends Component {
   render() {
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
     return (
       <Modal>
         <h3 className={css(styles.modalBlockMTitleForm)}>

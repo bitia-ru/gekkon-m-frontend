@@ -6,7 +6,7 @@ const Slider = ({ onClick }) => (
   <button type="button" className={css(styles.headerMItemsContainerButton)} onClick={onClick}>
     <span className={css(styles.headerMInfoIcon)}>
       <svg aria-hidden="true">
-        <use xlinkHref={`${require('./images/arrow.svg')}#arrow`} />
+        <use xlinkHref={`${require('./images/arrow.svg').default}#arrow`} />
       </svg>
     </span>
   </button>

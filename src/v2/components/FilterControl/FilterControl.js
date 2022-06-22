@@ -46,7 +46,7 @@ class FilterControl extends Component {
         >
           <span className={css(styles.btnFilterIcon)}>
             <svg aria-hidden="true">
-              <use xlinkHref={`${require('./images/filter-icon.svg')}#icon-filter`} />
+              <use xlinkHref={`${require('./images/filter-icon.svg').default}#icon-filter`} />
             </svg>
           </span>
           Фильтры

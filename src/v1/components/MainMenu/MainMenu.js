@@ -53,7 +53,7 @@ export default class MainMenu extends Component {
     const { user, hideMenu, enterWithVk } = this.props;
     const socialLinks = require(
       '../../../../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
     return (
       <div className="m-menu">
         <div className="m-menu__inner">

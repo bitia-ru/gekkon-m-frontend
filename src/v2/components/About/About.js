@@ -12,7 +12,7 @@ const About = () => (
       header={
         <InfoPageHeader
           title={TITLE}
-          image={require('./images/about.jpg')}
+          image={require('./images/about.jpg').default}
         />
       }
     >

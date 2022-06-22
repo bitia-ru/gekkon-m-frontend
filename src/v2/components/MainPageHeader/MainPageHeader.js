@@ -12,7 +12,7 @@ import {
 } from '@/v1/Constants/SocialLinks';
 import { css, StyleSheet } from '@/v2/aphrodite';
 
-const bgImage = require('./images/main-page-header.jpg');
+const bgImage = require('./images/main-page-header.jpg').default;
 
 class MainPageHeader extends Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class MainPageHeader extends Component {
 
     const socialLinks = require(
       '@/../img/social-links-sprite/social-links-sprite.svg',
-    );
+    ).default;
 
     return (
       <header
@@ -86,12 +86,12 @@ class MainPageHeader extends Component {
             <div className={css(styles.firstSectionMImage)}>
               <picture>
                 <img
-                  src={require('./images/first-section-m-img.png')}
+                  src={require('./images/first-section-m-img.png').default}
                   srcSet={
                     `${
-                      require('./images/first-section-m-img.png@1.5x.png')
+                      require('./images/first-section-m-img.png@1.5x.png').default
                     } 1.5x, ${
-                      require('./images/first-section-m-img.png@2x.png')
+                      require('./images/first-section-m-img.png@2x.png').default
                     } 2x`
                   }
                   alt="Скалолаз"
