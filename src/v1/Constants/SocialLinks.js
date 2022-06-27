@@ -1,2 +1,2 @@
 export const TELEGRAM_LINK = 'https://t.me/crags_ru';
-export const VK_LINK = 'https://vk.com/roving.climbers';
+export const TWITTER_LINK = 'https://twitter.com/crags_ru';
