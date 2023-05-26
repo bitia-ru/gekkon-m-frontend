@@ -190,11 +190,11 @@ class RoutesEditModal extends Component {
       const x = R.map(pointer => pointer.x, currentPointers);
       const y = R.map(pointer => pointer.y, currentPointers);
       const angle = R.map(pointer => pointer.angle, currentPointers);
-      if (route.holds_color) {
-        formData.append('route[mark][colors][holds]', route.holds_color.id);
+      if (holdsColorsChanged) {
+        formData.append('route[holds_color_id]', route.holds_color?.id || null);
       }
-      if (route.marks_color) {
-        formData.append('route[mark][colors][marks]', route.marks_color.id);
+      if (marksColorsChanged) {
+        formData.append('route[marks_color_id]', route.marks_color?.id || null);
       }
       R.forEach(e => formData.append('route[mark][pointers][x][]', e), x);
       R.forEach(e => formData.append('route[mark][pointers][y][]', e), y);
