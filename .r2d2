@@ -1,0 +1,3 @@
+deploy_type: docker_build
+image_name: gekkon-m-frontend
+image_version: 0.18.0
