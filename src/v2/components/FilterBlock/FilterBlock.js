@@ -88,6 +88,10 @@ class FilterBlock extends Component {
     if (filter) {
       newFilters['outdated'] = filter.selected;
     }
+    filter = R.find(R.propEq('id', 'popular'))(R.values(filters));
+    if (filter) {
+      newFilters['popular'] = filter.selected;
+    }
     newFilters['personal'] = personal;
     if (user) {
       filter = R.find(R.propEq('id', 'liked'))(R.values(filters));
