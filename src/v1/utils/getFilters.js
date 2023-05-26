@@ -8,7 +8,8 @@ const filtersLookUp = {
   liked: 'Понравившиеся мне',
   flash: 'Флешанул',
   red_point: 'Пролез',
-  unsuccessful: 'Не пройдена',
+  unsuccessful: 'Непройденные (пробовал, но не смог)',
+  not_tried: 'Нетронутые',
 };
 
 export const prepareFilters = (filters) => {
